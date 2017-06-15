@@ -38,13 +38,13 @@ When building, the `/build` directory will be _completely removed_ before new fi
 ##### Synopsis
 
 ```
-$ mope build[=[browser|server|node]>]
+$ mope build [browser|server|node]
 ```
 
 1. No target (`mope build`): All bundles to the `/build` directory
-2. Browser target: (`mope build=browser`): Browser renderer to `/build/browser-app/*/app.js`
-3. Server renderer target (`mope build=server`): Server renderer to `/build/server-app/*/server-app.js`
-4. App server target (`mope build=node`): App server to `/build/app-server.js`
+2. Browser target: (`mope build browser`): Browser renderer to `/build/browser-app/*/app.js`
+3. Server renderer target (`mope build server`): Server renderer to `/build/server-app/*/server-app.js`
+4. App server target (`mope build node`): App server to `/build/app-server.js`
 
 #### Run: `mope run`
 
