@@ -46,10 +46,7 @@ const startServer = () => {
 	if (!appServerProcess) {
 		args.push('--cold-start');
 	}
-	appServerProcess = fork(
-		path.resolve(__dirname, './_start-dev-server'),
-		args
-	);
+	appServerProcess = fork(path.resolve(__dirname, '_start-dev-server'), args);
 	ready.appServer = true;
 };
 
