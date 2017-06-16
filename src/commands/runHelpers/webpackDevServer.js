@@ -1,8 +1,11 @@
 const fs = require('fs');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
-const { getBrowserAppConfig, settings } = require('../build/config/buildUtils');
-const buildConfig = require('../build/config/env').properties;
+const {
+	getBrowserAppConfig,
+	settings,
+} = require('../buildCommands/config/buildUtils');
+const buildConfig = require('../buildCommands/config/env').properties;
 
 const localeCodes = ['en-US']; // TODO read locales from yargs
 const configs = localeCodes.map(getBrowserAppConfig);
