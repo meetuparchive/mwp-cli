@@ -3,7 +3,7 @@ module.exports = {
 	description: 'build application rendering bundle(s)',
 	builder: yargs =>
 		yargs
-			.commandDir('build')
+			.commandDir('buildCommands')
 			.demandCommand()
 			.array('locales') // treat locales as array, always
 			.option('locales', {

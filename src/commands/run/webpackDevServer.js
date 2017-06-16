@@ -1,11 +1,8 @@
 const fs = require('fs');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
-const { getBrowserAppConfig } = require('../../util/buildUtils');
-const buildConfig = require('meetup-web-platform/lib/util/config/build')
-	.default;
-
-const { settings } = require('../../util/buildUtils');
+const { getBrowserAppConfig, settings } = require('../build/config/buildUtils');
+const buildConfig = require('../build/config/env').properties;
 
 const localeCodes = ['en-US']; // TODO read locales from yargs
 const configs = localeCodes.map(getBrowserAppConfig);

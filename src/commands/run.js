@@ -2,7 +2,6 @@ const path = require('path');
 const chalk = require('chalk');
 
 const startDev = require(path.resolve(__dirname, './run/start-dev'));
-console.log(startDev);
 
 module.exports = {
 	command: 'run',

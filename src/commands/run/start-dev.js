@@ -5,7 +5,10 @@ const path = require('path');
 const chalk = require('chalk');
 const webpack = require('webpack');
 
-const { getServerAppConfig, settings } = require('../../util/buildUtils');
+const {
+	getServerAppConfig,
+	settings,
+} = require('../buildCommands/config/buildUtils');
 
 const serverAppLang = settings.localeCodes[0]; // top of the preferred lang list
 const serverAppPath = `${process.cwd()}/build/server-app/${serverAppLang}/server-app`;
