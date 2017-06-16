@@ -10,6 +10,7 @@
     "mope": "bin/mope.js"
   },
   "dependencies": {
+    "@alrra/travis-scripts": "3.0.1",
     "chalk": "^1.1.3",
     "convict": "^3.0.0",
     "meetup-web-platform": "3.3.1465",

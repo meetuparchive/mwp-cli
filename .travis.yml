@@ -11,12 +11,21 @@ branches:
   only:
     - master
 
+env:
+  global:
+    - CI_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER
+    secure: "hqWOBJAP6UgNSbKKGbc9reewR5ABEl2Lu4oG54LIMNWJqT4pGBwYfwsAuIhsVdy78FwUsnp+txLMTmiS+YacCM/F5RHdMUqikC7CTq1eq/8csoxND7W5d+vNVLuhwgwhAivLUY1kDHpqYVFX3IZ2E73sNQ997g1p+MhTdFOxirWi7PX6jPYrcAuPPfvFVhuFXgiXYGq0LIF37KQTNZ9i/nw84ZnnIq6qGyIBqROnUYXevBim4E5QEQod7jqfCkdQMYxALB8HOi7osg/F3gFd/Ha4Ba6V06T7RZChKpLkUdtESLt0TXD1o7DLdAJepdGuKfu1e1y2F0wFJdZO04HqkbAiLgIyx0KiFs0W1t07O4Sdxdlxk8JYCjQlMLdgXbRtKM0EhXaGsHMD4wTwuEemG4YYjs3aavdXyRiDuTlGrSsj8FsBgCwPaGkomaxQPQfaKNqZrK1GfVKFenW+Fvn3vToktv88jhQh9obi1aeqHE6ulnGksHBo5W6MJ5BYDQKX+ovvVaO0mT6oSmMmZbcqM47ayRGpDYueDf6+ZjlX/Q+9v0zzVFsmm96E7owrDmZtqQMUBH23xEMDE4gOQ38MlEJxtxxY8dPabvBWMudSJceB5l8doct/aRdEhH7wF0PSZwNWX4pvWDHQpdg5jrEDG0duH1wJp7Fa5ehb+5/vj5I="
+before_install:
+  - openssl aes-256-cbc -K $encrypted_5cfbacc72aef_key -iv $encrypted_5cfbacc72aef_iv -in github_deploy_key.enc -out github_deploy_key -d
+  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
+
 before_script:
   - git diff --exit-code yarn.lock
 
 after_script:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
+  - $(npm bin)/set-up-ssh --key "$encrypted_5cfbacc72aef_key" --iv "$encrypted_5cfbacc72aef_iv" --path-encrypted-key ".travis/github_deploy_key.enc"
   - >
     [ "${TRAVIS_BRANCH}" = "master" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ] &&
     export GIT_TAG=$(make version) ||
