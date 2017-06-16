@@ -1,6 +1,6 @@
 const minimist = require('minimist');
 const openBrowser = require('react-dev-utils/openBrowser');
-const runServer = require(`${process.cwd()}/build/app-server`).default;
+const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move this script into CLI - currently requires MWP dependency :/
 
 /*
  * This script should generally _NOT_ be run directly - it is intended to run

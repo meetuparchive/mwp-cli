@@ -10,7 +10,6 @@ module.exports = {
 	builder: yargs => yargs,
 	handler: argv => {
 		const { NODE_ENV } = process.env;
-		console.log(chalk.blue('Running the application server...'));
 		console.log(
 			chalk.green(`NODE_ENV=${process.env.NODE_ENV || '(empty)'}`)
 		);

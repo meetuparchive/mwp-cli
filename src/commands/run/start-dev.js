@@ -1,14 +1,11 @@
+const fs = require('fs');
 const fork = require('child_process').fork;
 const path = require('path');
 
 const chalk = require('chalk');
 const webpack = require('webpack');
 
-const {
-	getServerAppConfig,
-	appServerConfig,
-	settings,
-} = require('../../util/buildUtils');
+const { getServerAppConfig, settings } = require('../../util/buildUtils');
 
 const serverAppLang = settings.localeCodes[0]; // top of the preferred lang list
 const serverAppPath = `${process.cwd()}/build/server-app/${serverAppLang}/server-app`;
@@ -113,29 +110,12 @@ function run() {
 	);
 
 	/*
-	 * 3. Start the Webpack watch-mode compiler for the Node app server
+	 * 3. watch for server dep changes in order to restart
 	 */
-	const appServerCompileLogger = getCompileLogger('appServer');
-	const appServerCompiler = webpack(appServerConfig);
-	appServerCompiler.watch(
-		{ aggregateTimeout: 300 }, // watch options
-		(err, stats) => {
-			appServerCompileLogger(err, stats);
-			if (err) {
-				throw err;
-			}
-			const info = stats.toJson();
-
-			if (stats.hasErrors()) {
-				info.errors.forEach(err => console.error(chalk.red(err)));
-			}
-
-			if (stats.hasWarnings()) {
-				info.warnings.forEach(err => console.warn(chalk.yellow(err)));
-			}
-			// 5. (Re)start the Node app server when the Node app server is (re)-built
-			startServer();
-		}
+	fs.watchFile(`${process.cwd()}/scripts/app-server.js`, startServer);
+	fs.watchFile(
+		`${process.cwd()}/node_modules/meetup-web-platform/lib/index.js`,
+		startServer
 	);
 }
 
