@@ -17,7 +17,7 @@ env:
     - secure: "QiMiQu5OFaCKE9/ONeZOkkNc2nZjbFp0q29qvBRCZMV21l9lHHHOuDPbRnQzmS3gEMU8CkVsH5iVrdHEieKa4VTRDgYhw5WkpCF8Pj/Qbpkm6xPakmv4MEMLyMbLJGNVPVOajsCdoAET4zHIrKcs1xtQW3e8AVCz8UsHsbce65l4zT3d4M1LeWT8krPzebqRXuTm6L9pgFneybh5UK6jTLFNKgJkBisO1RdlnotAn2m01b3v2lq1LBM18qiiu/mktizItucd0Ey2X+1VHM2NZAzJGgauaf7FX4lACK4pQlJTI9WCU6ACqtF9Q8eE8awYSKJLteTUZoSggMqMRJfH7s1cI12243I09coqhHDZcbT5BJVLnxkgZ3F+eCfGWDN1WFJQJ5tlydxOf1trmzclWoglC2+/WqRUaAHV8hwP0yW4y+J6kczYNFxXTAVKtszzczHEGxXtfYUTv/c6zla4M4wb2bQvE1BgGYyjWxJrUXBX2e57gIH7493Vb58hHIRNgZ5NbDL963Ir3xGCsYODSmbeJEDBqUVzXmW5Dxgt96UcYOAiSbCbFYxOdsuCOn4EdqyUN7OAKVzt1J5pyRiHfm+KPBBiGgNXAIc6XIWRaKk5nrLtWcXFrjN8XKH1OIMUh9QFS2vG0XQjANK7oGQ36Ls6Cddt3om7wpe4yERGOK4="
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_5cfbacc72aef_key -iv $encrypted_5cfbacc72aef_iv -in ".travis/github_deploy_key.enc" -out github_deploy_key -d
+  - openssl aes-256-cbc -K $encrypted_5cfbacc72aef_key -iv $encrypted_5cfbacc72aef_iv -in '.travis/github_deploy_key.enc' -out github_deploy_key -d
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
 
 before_script:
@@ -26,7 +26,10 @@ before_script:
 after_script:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
-  - $(npm bin)/set-up-ssh --key "$encrypted_5cfbacc72aef_key" --iv "$encrypted_5cfbacc72aef_iv" --path-encrypted-key ".travis/github_deploy_key.enc"
+  - >
+    $(npm bin)/set-up-ssh --key "$encrypted_5cfbacc72aef_key" \
+                             --iv "$encrypted_5cfbacc72aef_iv" \
+                             --path-encrypted-key ".travis/github_deploy_key.enc"
   - >
     [ "${TRAVIS_BRANCH}" = "master" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ] &&
     export GIT_TAG=$(make version) ||
