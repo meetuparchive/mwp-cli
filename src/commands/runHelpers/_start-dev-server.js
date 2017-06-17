@@ -1,4 +1,4 @@
-const minimist = require('minimist');
+const yargs = require('yargs');
 const openBrowser = require('react-dev-utils/openBrowser');
 const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move this script into CLI - currently requires MWP dependency :/
 
@@ -18,12 +18,12 @@ const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move 
  * Parse the CLI args to return a map of { [localeCode]: string<import path> }
  */
 const nonLocaleCodeArgs = ['_', 'cold-start']; // arg keys that should not be part of returned map
+const { argv } = yargs;
 const getServerAppMap = () => {
-	const minimistArgs = minimist(process.argv.slice(2));
-	return Object.keys(minimistArgs)
+	return Object.keys(argv)
 		.filter(a => !nonLocaleCodeArgs.includes(a))
 		.reduce((map, localeCode) => {
-			const importPath = minimistArgs[localeCode];
+			const importPath = argv[localeCode];
 			map[localeCode] = require(importPath).default;
 			return map;
 		}, {});
