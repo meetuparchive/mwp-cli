@@ -19,11 +19,13 @@ const ready = {
 };
 let appServerProcess;
 
+const log = message => console.log(chalk.yellow('>>'), message);
+
 const getCompileLogger = type => (err, stats) => {
 	const message = ready[type]
 		? chalk.blue(`${type} updated`)
 		: chalk.green(`${type} bundle built`);
-	console.log(chalk.yellow('>>'), message);
+	log(message);
 };
 
 /*
@@ -54,6 +56,7 @@ function run() {
 	/*
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
 	 */
+	log(chalk.blue('building browser assets to memory'));
 	const browserAppCompileLogger = getCompileLogger('browserApp');
 	const wdsProcess = fork(path.resolve(__dirname, 'webpackDevServer'), [
 		serverAppLang,
@@ -76,6 +79,11 @@ function run() {
 	 * parallels the one done in the Webpack Dev Server, and WDS will print
 	 * error messages whenever there is something wrong.
 	 */
+	log(
+		chalk.blue(
+			`building server rendering bundle to ${settings.serverAppOutputPath}`
+		)
+	);
 	const serverAppCompileLogger = getCompileLogger('serverApp');
 	const serverAppCompiler = webpack(getServerAppConfig('en-US'));
 	serverAppCompiler.watch(
