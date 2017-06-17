@@ -1,6 +1,6 @@
 const yargs = require('yargs');
 const supportedLocales = require('./util/supportedLocales');
-const defaultLocales = NODE_ENV === 'production'
+const defaultLocales = process.env.NODE_ENV === 'production'
 	? supportedLocales
 	: supportedLocales.slice(0, 1); // default to top locale in dev
 

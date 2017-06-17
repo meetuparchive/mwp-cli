@@ -1,4 +1,5 @@
 const yargs = require('yargs');
+const supportedLocales = require('../../util/supportedLocales');
 const openBrowser = require('react-dev-utils/openBrowser');
 const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move this script into CLI - currently requires MWP dependency :/
 
@@ -17,11 +18,10 @@ const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move 
 /*
  * Parse the CLI args to return a map of { [localeCode]: string<import path> }
  */
-const nonLocaleCodeArgs = ['_', 'cold-start']; // arg keys that should not be part of returned map
 const { argv } = yargs;
 const getServerAppMap = () => {
 	return Object.keys(argv)
-		.filter(a => !nonLocaleCodeArgs.includes(a))
+		.filter(a => supportedLocales.includes(a))
 		.reduce((map, localeCode) => {
 			const importPath = argv[localeCode];
 			map[localeCode] = require(importPath).default;
@@ -35,8 +35,7 @@ const getServerAppMap = () => {
  * above
  */
 function startDevServer() {
-	const serverAppMap = getServerAppMap();
-	return runServer(serverAppMap);
+	return runServer(getServerAppMap());
 }
 
 /*
@@ -47,6 +46,7 @@ function startDevServer() {
 startDevServer().then(server => {
 	// if this is a cold start, open the browser
 	if (!process.argv.includes('--cold-start')) {
+		// TODO: use yargs to parse this arg
 		return server;
 	}
 	const { protocol, port } = server.settings.app.app_server;
