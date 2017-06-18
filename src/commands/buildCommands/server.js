@@ -57,6 +57,9 @@ module.exports = {
 	description: 'build the server-side renderer bundle',
 	builder: yargs => yargs,
 	handler: argv => {
+		console.log(
+			chalk.blue('building server bundle using current vendor bundles')
+		);
 		// TODO: make this run in parallel, not just concurrently
 		argv.locales.forEach(writeServerAppBundle);
 		// TODO: don't write app map until server app bundles complete
