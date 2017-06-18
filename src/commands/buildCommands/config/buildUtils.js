@@ -1,11 +1,16 @@
 const path = require('path');
 
-const webpackDir = `${process.cwd()}/scripts/webpack`;
+const getBrowserAppConfig = require(path.resolve(
+	__dirname,
+	'browserAppConfig'
+));
+const getServerAppConfig = require(path.resolve(__dirname, 'serverAppConfig'));
+const vendorBundlesConfig = require(path.resolve(
+	__dirname,
+	'vendorBundlesConfig'
+));
 
-const getBrowserAppConfig = require(`${webpackDir}/browserAppConfig`);
-const getServerAppConfig = require(`${webpackDir}/serverAppConfig`);
-const settings = require(`${webpackDir}/settings`);
-const vendorBundlesConfig = require(`${webpackDir}/vendorBundlesConfig`);
+const settings = require(path.resolve(__dirname, 'settings'));
 
 const getRelativeBundlePathGetter = (entry, output) => (stats, localeCode) => {
 	const entryChunk = stats.toJson().assetsByChunkName[entry];

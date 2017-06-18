@@ -14,9 +14,10 @@
     "convict": "^3.0.0",
     "meetup-web-platform": "3.3.1465",
     "react-dev-utils": "^3.0.0",
-    "stats-webpack-plugin": "^0.6.0",
+    "stats-webpack-plugin": "0.6.0",
     "webpack": "^2.6.1",
     "webpack-dev-server": "^2.4.5",
+    "webpack-manifest-plugin": "1.1.0",
     "webpack-node-externals": "^1.6.0",
     "yargs": "^8.0.2"
   }
