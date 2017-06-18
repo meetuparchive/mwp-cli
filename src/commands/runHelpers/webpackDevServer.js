@@ -8,7 +8,10 @@ const {
 } = require('../buildCommands/config/buildUtils');
 const buildConfig = require('../buildCommands/config/env').properties;
 
-const localeCodes = yargs.array('locales').demandOption('locales').argv.locales;
+const localeCodes = yargs
+	.array('locales') // treat locales as array, always
+	.option('locales')
+	.demandOption('locales').argv.locales;
 const configs = localeCodes.map(getBrowserAppConfig);
 const compiler = webpack(configs);
 if (process.send) {

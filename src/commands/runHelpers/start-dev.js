@@ -53,12 +53,14 @@ const startServer = () => {
 };
 
 function run() {
+	log(chalk.blue('building app, using existing vendor bundle'));
 	/*
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
 	 */
 	log(chalk.blue('building browser assets to memory'));
 	const browserAppCompileLogger = getCompileLogger('browserApp');
 	const wdsProcess = fork(path.resolve(__dirname, 'webpackDevServer'), [
+		'--locales',
 		serverAppLang,
 	]);
 	// the dev server compiler will send a message each time it completes a build
