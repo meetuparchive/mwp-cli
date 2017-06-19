@@ -10,7 +10,7 @@ $ mope <command> [<args>]
 
 ## Options
 
-### Supporting locales: `--locales=<localeCodes>`
+### Supporting locales: `--locales <localeCode> [<localeCode>...]`
 
 Some commands build or run the application, and supporting multiple languages
 can make the build process slow, so only the default `en-US` locale will be
