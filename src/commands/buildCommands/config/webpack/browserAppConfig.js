@@ -98,10 +98,7 @@ function getConfig(localeCode) {
 
 		resolveLoader: {
 			alias: {
-				'require-loader': path.resolve(
-					paths.utilsPath,
-					'require-loader.js'
-				),
+				'require-loader': path.resolve(__dirname, 'require-loader.js'),
 			},
 		},
 
@@ -120,16 +117,14 @@ function getConfig(localeCode) {
 			new webpack.DllReferencePlugin({
 				context: '.',
 				manifest: require(path.resolve(
-					paths.outPath,
-					'browser-app',
+					paths.vendorBundlesPath,
 					'react-dll-manifest.json'
 				)),
 			}),
 			new webpack.DllReferencePlugin({
 				context: '.',
 				manifest: require(path.resolve(
-					paths.outPath,
-					'browser-app',
+					paths.vendorBundlesPath,
 					'vendor-dll-manifest.json'
 				)),
 			}),

@@ -94,10 +94,7 @@ function getConfig(localeCode) {
 
 		resolveLoader: {
 			alias: {
-				'require-loader': path.resolve(
-					paths.utilsPath,
-					'require-loader.js'
-				),
+				'require-loader': path.resolve(__dirname, 'require-loader.js'),
 			},
 		},
 

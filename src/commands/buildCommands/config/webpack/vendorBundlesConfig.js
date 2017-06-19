@@ -52,7 +52,7 @@ const config = {
 			// modules included in a bundle and the internal IDs
 			// within that bundle
 			path: path.resolve(
-				paths.browserAppOutputPath,
+				paths.vendorBundlesPath,
 				'[name]-dll-manifest.json'
 			),
 			// The name of the global variable which the library's
