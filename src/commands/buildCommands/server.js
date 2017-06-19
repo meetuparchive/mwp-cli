@@ -5,11 +5,11 @@ const chalk = require('chalk');
 const webpack = require('webpack');
 const {
 	getServerAppConfig,
-	getRelativeBundlePathGetter,
+	getRelativeBundlePath,
 	paths,
 } = require('./config');
 
-const getRelativeBundlePath = getRelativeBundlePathGetter(
+const getBundlePath = getRelativeBundlePath(
 	'server-app',
 	paths.serverAppOutputPath
 );
@@ -21,7 +21,7 @@ const writeServerAppBundle = localeCode => {
 	// get the locale-specific config
 	const config = getServerAppConfig(localeCode);
 	webpack(config, (err, stats) => {
-		const relativeBundlePath = getRelativeBundlePath(stats, localeCode);
+		const relativeBundlePath = getBundlePath(stats, localeCode);
 		console.log(chalk.blue(`built ${relativeBundlePath}`));
 	});
 };

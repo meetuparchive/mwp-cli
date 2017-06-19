@@ -2,15 +2,15 @@
 
 The CLI for building apps with meetup-web-platform (internal).
 
-### Synopsis
+## Synopsis
 
 ```
 $ mope <command> [<args>]
 ```
 
-### Options
+## Options
 
-#### Supporting locales: `--locales=<localeCodes>`
+### Supporting locales: `--locales=<localeCodes>`
 
 Some commands build or run the application, and supporting multiple languages
 can make the build process slow, so only the default `en-US` locale will be
@@ -24,9 +24,9 @@ _Example_
 $ mope build browser --locales es fr-FR de-DR
 ```
 
-### Commands
+## Commands
 
-#### Build: `mope build`
+### Build: `mope build`
 
 We currently have 3 builds:
 
@@ -40,7 +40,7 @@ module reloading, and the prod build is minified.
 When building, the `/build` directory will be _completely removed_ before new
 files are created
 
-##### Synopsis
+#### Synopsis
 
 ```
 $ mope build [browser|server|node]
@@ -54,7 +54,7 @@ $ mope build [browser|server|node]
 4. App server target (`mope build node`): App server to
    `/build/app-server.js`
 
-#### Run: `mope run`
+### Run: `mope run`
 
 Only available in development.
 
@@ -62,7 +62,7 @@ This command spawns separate processes for the asset server (Webpack Dev Server)
 and app server (Node - Hapi), and watches the consumer repo for code changes
 that will hot-reload and restart the server as needed during development.
 
-### Dev vs Prod behavior
+## Dev vs Prod behavior
 
 The best way to manage the dev/prod distinction is with the `NODE_ENV`
 environment variable - most Node tools assume that it is the single source of
