@@ -2,6 +2,8 @@ const fs = require('fs');
 const convict = require('convict');
 const path = require('path');
 
+const { repoRoot } = require('./paths');
+
 /**
  * This module populates build time configuration data
  */
@@ -62,10 +64,7 @@ const schema = {
 };
 const config = convict(schema);
 
-const configPath = path.resolve(
-	process.cwd(),
-	`config.${config.get('env')}.json`
-);
+const configPath = path.resolve(repoRoot, `config.${config.get('env')}.json`);
 
 const { asset_server } = fs.existsSync(configPath) ? require(configPath) : {};
 if (asset_server) {

@@ -1,9 +1,10 @@
 const ManifestPlugin = require('webpack-manifest-plugin');
 const webpack = require('webpack');
 const path = require('path');
-const settings = require('./settings');
-const buildConfig = require('meetup-web-platform/lib/util/config/build')
-	.default;
+
+const paths = require('../paths');
+const env = require('../env');
+const prodPlugins = require('./prodPlugins');
 
 const dllName = '[name]_lib';
 
@@ -36,7 +37,7 @@ const config = {
 	},
 	output: {
 		filename: '[name].[chunkhash].js',
-		path: settings.browserAppOutputPath,
+		path: paths.browserAppOutputPath,
 		// The name of the global variable which the library's
 		// require() function will be assigned to
 		library: dllName,
@@ -51,7 +52,7 @@ const config = {
 			// modules included in a bundle and the internal IDs
 			// within that bundle
 			path: path.resolve(
-				settings.browserAppOutputPath,
+				paths.browserAppOutputPath,
 				'[name]-dll-manifest.json'
 			),
 			// The name of the global variable which the library's
@@ -63,8 +64,8 @@ const config = {
 	],
 };
 
-if (buildConfig.isProd) {
-	config.plugins = config.plugins.concat(settings.prodPlugins);
+if (env.properties.isProd) {
+	config.plugins = config.plugins.concat(prodPlugins);
 }
 
 module.exports = config;

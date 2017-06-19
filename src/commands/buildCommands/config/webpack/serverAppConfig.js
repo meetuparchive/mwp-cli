@@ -5,8 +5,9 @@ const webpack = require('webpack');
 const StatsPlugin = require('stats-webpack-plugin');
 
 // Build settings
-const env = require('./env').properties;
-const settings = require('./settings');
+const paths = require('../paths');
+const env = require('../env');
+const prodPlugins = require('./prodPlugins');
 
 /*
  * Webpack config object determined by passed-in localeCode. The language is
@@ -22,13 +23,13 @@ function getConfig(localeCode) {
 	const publicPath = `/${localeCode}/`;
 	const config = {
 		entry: {
-			'server-app': [settings.serverAppEntryPath],
+			'server-app': [paths.serverAppEntryPath],
 		},
 
 		// write a CommonJS module that can be imported into Node server scripts
 		output: {
 			libraryTarget: 'commonjs2',
-			path: path.join(settings.serverAppOutputPath, localeCode),
+			path: path.join(paths.serverAppOutputPath, localeCode),
 			filename: '[name].js',
 			publicPath,
 		},
@@ -39,7 +40,7 @@ function getConfig(localeCode) {
 			rules: [
 				{
 					test: /\.jsx?$/,
-					include: [settings.appPath, settings.webComponentsSrcPath],
+					include: [paths.appPath, paths.webComponentsSrcPath],
 					loader: 'babel-loader',
 					options: {
 						cacheDirectory: true,
@@ -48,7 +49,7 @@ function getConfig(localeCode) {
 				},
 				{
 					test: /\.css$/,
-					include: [settings.cssPath],
+					include: [paths.cssPath],
 					use: ['style-loader', 'css-loader'],
 				},
 			],
@@ -66,11 +67,11 @@ function getConfig(localeCode) {
 				),
 				WEBPACK_ASSET_PUBLIC_PATH: JSON.stringify(publicPath),
 				VENDOR_MANIFEST_PATH: JSON.stringify(
-					path.resolve(settings.browserAppOutputPath, 'manifest.json')
+					path.resolve(paths.browserAppOutputPath, 'manifest.json')
 				),
 				BROWSER_MANIFEST_PATH: JSON.stringify(
 					path.resolve(
-						settings.browserAppOutputPath,
+						paths.browserAppOutputPath,
 						localeCode,
 						'manifest.json'
 					)
@@ -94,7 +95,7 @@ function getConfig(localeCode) {
 		resolveLoader: {
 			alias: {
 				'require-loader': path.resolve(
-					settings.utilsPath,
+					paths.utilsPath,
 					'require-loader.js'
 				),
 			},
@@ -102,15 +103,15 @@ function getConfig(localeCode) {
 
 		resolve: {
 			alias: {
-				src: settings.appPath,
-				trns: path.resolve(settings.trnsPath, 'modules', localeCode),
+				src: paths.appPath,
+				trns: path.resolve(paths.trnsPath, 'modules', localeCode),
 			},
 			// module name extensions that Webpack will try if no extension provided
 			extensions: ['.js', '.jsx', '.json'],
 		},
 	};
-	if (env.isProd) {
-		config.plugins = config.plugins.concat(settings.prodPlugins);
+	if (env.properties.isProd) {
+		config.plugins = config.plugins.concat(prodPlugins);
 	}
 
 	return config;

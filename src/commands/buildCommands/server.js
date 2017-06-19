@@ -6,12 +6,12 @@ const webpack = require('webpack');
 const {
 	getServerAppConfig,
 	getRelativeBundlePathGetter,
-	settings,
-} = require('./config/buildUtils');
+	paths,
+} = require('./config');
 
 const getRelativeBundlePath = getRelativeBundlePathGetter(
 	'server-app',
-	settings.serverAppOutputPath
+	paths.serverAppOutputPath
 );
 
 const writeServerAppBundle = localeCode => {
@@ -33,7 +33,7 @@ function writeServerAppMap(localeCodes) {
 	// in the form ['<localeCode>: require(<bundlePath>).default', ...]
 	const codeBundlePairStrings = localeCodes.reduce((acc, localeCode) => {
 		const serverAppPath = path.resolve(
-			settings.serverAppOutputPath,
+			paths.serverAppOutputPath,
 			localeCode,
 			'server-app'
 		);
@@ -48,7 +48,7 @@ function writeServerAppMap(localeCodes) {
 
 	// finally, write the module that exports the map
 	fs.writeFileSync(
-		settings.serverAppModulePath,
+		paths.serverAppModulePath,
 		`module.exports = ${serverAppMapString};`
 	);
 }

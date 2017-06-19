@@ -5,13 +5,15 @@ const webpack = require('webpack');
 const {
 	getBrowserAppConfig,
 	getRelativeBundlePathGetter,
-	settings,
-} = require('./config/buildUtils');
+	paths,
+} = require('./config');
 
+// set up function for getting the built bundle filename
 const getRelativeBundlePath = getRelativeBundlePathGetter(
 	'app',
-	settings.browserAppOutputPath
+	paths.browserAppOutputPath
 );
+
 const buildBrowserApp = localeCode => {
 	console.log(
 		chalk.blue(`building browser app (${chalk.yellow(localeCode)})...`)

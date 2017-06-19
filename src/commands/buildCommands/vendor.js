@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const webpack = require('webpack');
 
-const { vendorBundlesConfig } = require('./config/buildUtils');
+const { vendorBundlesConfig } = require('./config');
 
 module.exports = {
 	command: 'vendor',

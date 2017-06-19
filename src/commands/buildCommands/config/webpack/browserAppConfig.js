@@ -3,10 +3,9 @@ const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
 
-const settings = require('./settings');
-
-const buildConfig = require('meetup-web-platform/lib/util/config/build')
-	.default;
+const paths = require('../paths');
+const env = require('../env');
+const prodPlugins = require('./prodPlugins');
 
 /**
  * When in dev, we need to manually inject some configuration to enable HMR
@@ -17,8 +16,8 @@ const buildConfig = require('meetup-web-platform/lib/util/config/build')
 function injectHotReloadConfig(config) {
 	config.entry.app.unshift(
 		'react-hot-loader/patch', // logic for hot-reloading react components
-		`webpack-dev-server/client?http://${buildConfig.asset_server
-			.host}:${buildConfig.asset_server.port}/`, // connect to HMR websocket
+		`webpack-dev-server/client?http://${env.properties.asset_server
+			.host}:${env.properties.asset_server.port}/`, // connect to HMR websocket
 		'webpack/hot/dev-server' // run the dev server
 	);
 
@@ -44,12 +43,12 @@ function injectHotReloadConfig(config) {
 function getConfig(localeCode) {
 	const config = {
 		entry: {
-			app: [settings.browserAppEntryPath],
+			app: [paths.browserAppEntryPath],
 		},
 
 		output: {
-			path: path.resolve(settings.browserAppOutputPath, localeCode),
-			filename: buildConfig.isDev
+			path: path.resolve(paths.browserAppOutputPath, localeCode),
+			filename: env.properties.isDev
 				? '[name].js' // in dev, keep the filename consistent to make reloading easier
 				: '[name].[chunkhash].js', // in prod, add hash to enable long-term caching
 			// publicPath is set at **runtime** using __webpack_public_path__
@@ -59,7 +58,7 @@ function getConfig(localeCode) {
 		// source maps are slow to generate, so only create them in prod
 		// also, the `eval` output provides sufficient source map hooks
 		// this needs revision: https://meetup.atlassian.net/browse/MW-952
-		devtool: buildConfig.isDev ? 'eval' : 'source-map',
+		devtool: env.properties.isDev ? 'eval' : 'source-map',
 
 		module: {
 			rules: [
@@ -67,8 +66,8 @@ function getConfig(localeCode) {
 					// build-time eslint validation
 					test: /\.jsx?$/,
 					loader: 'eslint-loader',
-					include: [settings.appPath],
-					exclude: settings.assetPath,
+					include: [paths.appPath],
+					exclude: paths.assetPath,
 					enforce: 'pre',
 					options: {
 						cache: true,
@@ -77,7 +76,7 @@ function getConfig(localeCode) {
 				{
 					// standard ES5 transpile through Babel
 					test: /\.jsx?$/,
-					include: [settings.appPath, settings.webComponentsSrcPath],
+					include: [paths.appPath, paths.webComponentsSrcPath],
 					use: [
 						{
 							loader: 'babel-loader',
@@ -91,7 +90,7 @@ function getConfig(localeCode) {
 				{
 					// bundle CSS references into external files
 					test: /\.css$/,
-					include: [settings.cssPath],
+					include: [paths.cssPath],
 					use: ['style-loader', 'css-loader'],
 				},
 			],
@@ -100,7 +99,7 @@ function getConfig(localeCode) {
 		resolveLoader: {
 			alias: {
 				'require-loader': path.resolve(
-					settings.utilsPath,
+					paths.utilsPath,
 					'require-loader.js'
 				),
 			},
@@ -108,8 +107,8 @@ function getConfig(localeCode) {
 
 		resolve: {
 			alias: {
-				src: settings.appPath,
-				trns: path.resolve(settings.trnsPath, 'modules', localeCode),
+				src: paths.appPath,
+				trns: path.resolve(paths.trnsPath, 'modules', localeCode),
 			},
 			// module name extensions that Webpack will try if no extension provided
 			extensions: ['.js', '.jsx', '.json'],
@@ -121,7 +120,7 @@ function getConfig(localeCode) {
 			new webpack.DllReferencePlugin({
 				context: '.',
 				manifest: require(path.resolve(
-					settings.outPath,
+					paths.outPath,
 					'browser-app',
 					'react-dll-manifest.json'
 				)),
@@ -129,7 +128,7 @@ function getConfig(localeCode) {
 			new webpack.DllReferencePlugin({
 				context: '.',
 				manifest: require(path.resolve(
-					settings.outPath,
+					paths.outPath,
 					'browser-app',
 					'vendor-dll-manifest.json'
 				)),
@@ -139,11 +138,11 @@ function getConfig(localeCode) {
 		],
 	};
 
-	if (buildConfig.isDev && !buildConfig.disable_hmr) {
+	if (env.properties.isDev && !env.properties.disable_hmr) {
 		injectHotReloadConfig(config);
 	}
-	if (buildConfig.isProd) {
-		config.plugins = config.plugins.concat(settings.prodPlugins);
+	if (env.properties.isProd) {
+		config.plugins = config.plugins.concat(prodPlugins);
 	}
 	return config;
 }

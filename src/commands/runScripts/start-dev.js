@@ -7,11 +7,16 @@ const webpack = require('webpack');
 
 const {
 	getServerAppConfig,
-	settings,
-} = require('../buildCommands/config/buildUtils');
+	locales,
+	paths,
+} = require('../buildCommands/config');
 
-const serverAppLang = settings.localeCodes[0]; // top of the preferred lang list
-const serverAppPath = `${process.cwd()}/build/server-app/${serverAppLang}/server-app`;
+const serverAppLang = locales[0]; // top of the preferred lang list
+const serverAppPath = path.resolve(
+	paths.serverAppOutputPath,
+	serverAppLang,
+	'server-app'
+);
 const ready = {
 	browserApp: false,
 	serverApp: false,
@@ -48,7 +53,7 @@ const startServer = () => {
 	if (!appServerProcess) {
 		args.push('--cold-start');
 	}
-	appServerProcess = fork(path.resolve(__dirname, '_start-dev-server'), args);
+	appServerProcess = fork(path.resolve(__dirname, '_app-server'), args);
 	ready.appServer = true;
 };
 
@@ -59,7 +64,7 @@ function run() {
 	 */
 	log(chalk.blue('building browser assets to memory'));
 	const browserAppCompileLogger = getCompileLogger('browserApp');
-	const wdsProcess = fork(path.resolve(__dirname, 'webpackDevServer'), [
+	const wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'), [
 		'--locales',
 		serverAppLang,
 	]);
@@ -83,7 +88,7 @@ function run() {
 	 */
 	log(
 		chalk.blue(
-			`building server rendering bundle to ${settings.serverAppOutputPath}`
+			`building server rendering bundle to ${paths.serverAppOutputPath}`
 		)
 	);
 	const serverAppCompileLogger = getCompileLogger('serverApp');
