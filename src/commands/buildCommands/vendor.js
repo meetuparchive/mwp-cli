@@ -10,7 +10,8 @@ module.exports = {
 	handler: argv => {
 		console.log(chalk.blue('building vendor bundles...'));
 		webpack(vendorBundlesConfig, (err, stats) => {
-			const filemap = stats.toJson().assetsByChunkName; // filename determined by webpack output.filename
+			// get filename determined by webpack output.filename
+			const filemap = stats.toJson().assetsByChunkName;
 			console.log(
 				chalk.blue(
 					`built vendor bundles: ${chalk.yellow(

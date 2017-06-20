@@ -1,4 +1,4 @@
 const path = require('path');
-const { appPath } = require('./paths'); // expect CLI to be run from consumer repo root
+const { appPath } = require('./paths');
 
 module.exports = require(path.resolve(appPath, 'util', 'locales'));

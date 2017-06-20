@@ -13,7 +13,7 @@ module.exports = {
 			chalk.green(`NODE_ENV=${process.env.NODE_ENV || '(empty)'}`)
 		);
 		if (!NODE_ENV !== 'production') {
-			// check for prerequisites (e.g. up-to-date build/... files)
+			// TODO: check for prerequisites (e.g. up-to-date build/... files)
 			// execute the start-dev script
 			console.log(chalk.blue('Running the dev app server...'));
 			startDev();

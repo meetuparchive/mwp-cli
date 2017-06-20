@@ -1,4 +1,6 @@
 const path = require('path');
+
+// application-relative paths
 const paths = require('./paths');
 
 // webpack config getters

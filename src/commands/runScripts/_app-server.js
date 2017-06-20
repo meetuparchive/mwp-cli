@@ -50,6 +50,7 @@ startDevServer().then(server => {
 		return server;
 	}
 	const { protocol, port } = server.settings.app.app_server;
+	// TODO: make this URL target configurable - perhaps from server.settings?
 	openBrowser(`${protocol}://beta2.dev.meetup.com:${port}`);
 	return server;
 });

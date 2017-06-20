@@ -27,9 +27,13 @@ const writeServerAppBundle = localeCode => {
 	});
 };
 
+/*
+ * Write a file that maps supported localeCodes to their corresponding server
+ * rendering bundles. Note that this function doesn't care whether the bundles
+ * actually exist - it just assumes that when the created 'map' module is
+ * executed, the target bundles will be in place.
+ */
 function writeServerAppMap(localeCodes) {
-	// When the server apps are built, we write a file that exports all of the
-	// newly-built bundles.
 	// The first step is building an array of localeCode-bundlePath pairs
 	// in the form ['<localeCode>: require(<bundlePath>).default', ...]
 	const codeBundlePairStrings = localeCodes.reduce((acc, localeCode) => {
@@ -54,6 +58,7 @@ function writeServerAppMap(localeCodes) {
 		`module.exports = ${serverAppMapString};`
 	);
 }
+
 module.exports = {
 	command: 'server',
 	description: 'build the server-side renderer bundle',
@@ -64,7 +69,6 @@ module.exports = {
 		);
 		// TODO: make this run in parallel, not just concurrently
 		argv.locales.forEach(writeServerAppBundle);
-		// TODO: don't write app map until server app bundles complete
 		writeServerAppMap(argv.locales);
 	},
 };

@@ -42,7 +42,7 @@ Each build varies between dev and production, e.g. the dev build supports hot
 module reloading, while the prod build is minified.
 
 This script does not clean the target directories - that behavior must be
-managed by the consumer application.
+managed by the CLI consumer.
 
 #### Synopsis
 
