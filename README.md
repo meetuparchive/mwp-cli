@@ -8,25 +8,29 @@ The CLI for building apps with meetup-web-platform (internal).
 $ mope <command> [<args>]
 ```
 
-## Options
+## Shared options
+
+Some commands support the shared options described here.
 
 ### Supporting locales: `--locales <localeCode> [<localeCode>...]`
 
-Some commands build or run the application, and supporting multiple languages
-can make the build process slow, so only the default `en-US` locale will be
-loaded by default. To build/run more locales, there is a global `--locales` flag
-that can be used to specify additional supported locales. `en-US` will always
-be built because it is a hard-coded default and the application will behave in
-unexpected ways if it does not exist.
+You can override the default locale(s) that will be built/run by passing a
+`locales` option to `mope build` or `mope run`.
 
 _Example_
 ```
 $ mope build browser --locales es fr-FR de-DR
 ```
 
+#### Defaults
+
+`mope build` uses `NODE_ENV` to determine the default locales to build. In dev,
+it will default to building only `en-US`. In production, it will build all the
+locales with declared support in the application's `src/util/locales.js` module.
+
 ## Commands
 
-### Build: `mope build`
+### Build: `mope build <target>`
 
 We currently have 3 builds:
 
@@ -35,10 +39,10 @@ We currently have 3 builds:
 3. Server renderer (React)
 
 Each build varies between dev and production, e.g. the dev build supports hot
-module reloading, and the prod build is minified.
+module reloading, while the prod build is minified.
 
-This script does not clean the target directories - that must be managed by the
-consumer application.
+This script does not clean the target directories - that behavior must be
+managed by the consumer application.
 
 #### Synopsis
 
