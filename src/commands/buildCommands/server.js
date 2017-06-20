@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const chalk = require('chalk');
+const mkdirp = require('mkdirp');
 const webpack = require('webpack');
 const {
 	getServerAppConfig,
@@ -47,6 +48,7 @@ function writeServerAppMap(localeCodes) {
 	const serverAppMapString = `{${codeBundlePairStrings.join(',')}}`;
 
 	// finally, write the module that exports the map
+	mkdirp.sync(path.dirname(paths.serverAppModulePath)); // ensure dir exists
 	fs.writeFileSync(
 		paths.serverAppModulePath,
 		`module.exports = ${serverAppMapString};`
