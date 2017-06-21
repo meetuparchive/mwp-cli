@@ -10,17 +10,26 @@
   },
   "dependencies": {
     "@alrra/travis-scripts": "3.0.1",
-    "chalk": "^1.1.3",
-    "convict": "^3.0.0",
-    "meetup-web-platform": "3.3.1465",
+    "babel-loader": "7.1.0",
+    "chalk": "1.1.3",
+    "convict": "3.0.0",
+    "css-loader": "0.28.4",
+    "eslint-loader": "1.8.0",
     "mkdirp": "0.5.1",
-    "react-dev-utils": "^3.0.0",
+    "react-dev-utils": "3.0.0",
     "stats-webpack-plugin": "0.6.0",
+    "style-loader": "0.18.2",
     "sw-precache-webpack-plugin": "0.11.3",
-    "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5",
+    "webpack": "2.6.1",
+    "webpack-dev-server": "2.4.5",
     "webpack-manifest-plugin": "1.1.0",
-    "webpack-node-externals": "^1.6.0",
-    "yargs": "^8.0.2"
+    "webpack-node-externals": "1.6.0",
+    "yargs": "8.0.2"
+  },
+  "peerDependencies": {
+    "meetup-web-platform": "^3.3"
+  },
+  "devDependencies": {
+    "meetup-web-platform": "3.3.1471"
   }
 }
