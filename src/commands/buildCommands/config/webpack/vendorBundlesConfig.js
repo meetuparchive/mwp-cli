@@ -36,8 +36,9 @@ const config = {
 		],
 	},
 	output: {
-		filename: '[name].[chunkhash].js',
 		path: paths.browserAppOutputPath,
+		filename: '[name].[chunkhash].js',
+		hashDigestLength: 8,
 		// The name of the global variable which the library's
 		// require() function will be assigned to
 		library: dllName,

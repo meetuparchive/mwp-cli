@@ -52,6 +52,7 @@ function getConfig(localeCode) {
 			filename: env.properties.isDev
 				? '[name].js' // in dev, keep the filename consistent to make reloading easier
 				: '[name].[chunkhash].js', // in prod, add hash to enable long-term caching
+			hashDigestLength: 8,
 			publicPath: `/static/${localeCode}/`,
 		},
 
@@ -141,10 +142,13 @@ function getConfig(localeCode) {
 			prodPlugins,
 			new SWPrecacheWebpackPlugin({
 				cacheId: 'mwp',
-				dontCacheBustUrlsMatching: /\.\w{8}\./,
+				dontCacheBustUrlsMatching: /\.\w{8}\./, // no need for cache-busting querystring on hashed filenames
 				filename: `asset-service-worker.js`,
 				minify: true,
-				staticFileGlobsIgnorePatterns: [/\.map$/, /.json$/],
+				staticFileGlobsIgnorePatterns: [ // don't cache these files
+					/\.map$/, // source-maps
+					/.json$/, // manifest files
+				],
 			})
 		);
 	}
