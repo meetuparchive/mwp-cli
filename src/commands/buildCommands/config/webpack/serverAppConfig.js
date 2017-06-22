@@ -67,7 +67,7 @@ function getConfig(localeCode) {
 				),
 				WEBPACK_ASSET_PUBLIC_PATH: JSON.stringify(publicPath),
 				VENDOR_MANIFEST_PATH: JSON.stringify(
-					path.resolve(paths.browserAppOutputPath, 'manifest.json')
+					path.resolve(paths.vendorBundlesPath, 'manifest.json')
 				),
 				BROWSER_MANIFEST_PATH: JSON.stringify(
 					path.resolve(
