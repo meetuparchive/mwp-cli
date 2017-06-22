@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 const paths = require('../paths');
 const env = require('../env');
@@ -51,8 +52,7 @@ function getConfig(localeCode) {
 			filename: env.properties.isDev
 				? '[name].js' // in dev, keep the filename consistent to make reloading easier
 				: '[name].[chunkhash].js', // in prod, add hash to enable long-term caching
-			// publicPath is set at **runtime** using __webpack_public_path__
-			// in the browser entry script
+			publicPath: `/static/${localeCode}/`,
 		},
 
 		// source maps are slow to generate, so only create them in prod
@@ -137,7 +137,16 @@ function getConfig(localeCode) {
 		injectHotReloadConfig(config);
 	}
 	if (env.properties.isProd) {
-		config.plugins = config.plugins.concat(prodPlugins);
+		config.plugins = config.plugins.concat(
+			prodPlugins,
+			new SWPrecacheWebpackPlugin({
+				cacheId: 'mwp',
+				dontCacheBustUrlsMatching: /\.\w{8}\./,
+				filename: `asset-service-worker.js`,
+				minify: true,
+				staticFileGlobsIgnorePatterns: [/\.map$/, /.json$/],
+			})
+		);
 	}
 	return config;
 }
