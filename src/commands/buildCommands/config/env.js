@@ -1,6 +1,9 @@
 const fs = require('fs');
-const convict = require('convict');
+const os = require('os');
 const path = require('path');
+
+const chalk = require('chalk');
+const convict = require('convict');
 
 const { repoRoot } = require('./paths');
 
@@ -29,17 +32,19 @@ const schema = {
 		},
 		protocol: {
 			format: String,
-			default: 'http',
+			default: process.env.NODE_ENV === 'production'
+				? 'http' // SSL handled by load balancer
+				: 'https',
 			env: 'ASSET_SERVER_PROTOCOL',
 		},
 		key_file: {
 			format: String,
-			default: '',
+			default: path.resolve(os.homedir(), '.certs', 'star.dev.meetup.com.key'),
 			env: 'ASSET_KEY_FILE',
 		},
 		crt_file: {
 			format: String,
-			default: '',
+			default: path.resolve(os.homedir(), '.certs', 'star.dev.meetup.com.crt'),
 			env: 'ASSET_CRT_FILE',
 		},
 	},
@@ -80,7 +85,18 @@ if (
 	assetConf.protocol === 'https' &&
 	(!fs.existsSync(assetConf.key_file) || !fs.existsSync(assetConf.crt_file))
 ) {
-	throw new Error('Missing HTTPS cert or key!');
+	const message = 'Missing HTTPS cert or key for asset server!';
+	if (config.isProd) {
+		throw new Error(message);
+	}
+	console.error(chalk.red(message));
+	console.warn(
+		chalk.yellow(
+			'Re-setting protocol to HTTP - some features may not work as expected'
+		)
+	);
+	console.warn(chalk.yellow('See MWP config docs to configure HTTPS'));
+	config.set('asset_server.protocol', 'http');
 }
 
 config.validate();
