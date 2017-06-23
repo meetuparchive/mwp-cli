@@ -72,14 +72,8 @@ function getConfig(localeCode) {
 							loader: 'babel-loader',
 							options: {
 								cacheDirectory: true,
-								plugins: [
-									...babelrc.plugins.core,
-									...babelrc.plugins.browser,
-								],
-								presets: [
-									...babelrc.presets.core,
-									...babelrc.presets.browser,
-								],
+								plugins: babelrc.plugins.browser,
+								presets: babelrc.presets.browser,
 							},
 						},
 						{ loader: 'eslint-loader' },

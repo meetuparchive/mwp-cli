@@ -45,14 +45,8 @@ function getConfig(localeCode) {
 					loader: 'babel-loader',
 					options: {
 						cacheDirectory: true,
-						plugins: [
-							...babelrc.plugins.core,
-							...babelrc.plugins.server,
-						],
-						presets: [
-							...babelrc.presets.core,
-							...babelrc.presets.server,
-						],
+						plugins: babelrc.plugins.server,
+						presets: babelrc.presets.server,
 					},
 				},
 				{

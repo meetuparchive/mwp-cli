@@ -1,7 +1,11 @@
+const core = {
+	presets: ['flow', 'react', 'stage-2'];
+	plugins: [['react-intl', { extractSourceLocation: true }]];
+};
 module.exports = {
 	presets: {
-		core: ['flow', 'react', 'stage-2'],
 		browser: [
+			...core.presets,
 			[
 				'env',
 				{
@@ -15,11 +19,10 @@ module.exports = {
 				},
 			],
 		],
-		server: [['env', { targets: { node: 'current' } }]],
+		server: [...core.presets, ['env', { targets: { node: 'current' } }]],
 	},
 	plugins: {
-		core: [['react-intl', { extractSourceLocation: true }]],
-		browser: [],
-		server: [],
+		browser: [...core.presets],
+		server: [...core.presets],
 	},
 };
