@@ -8,6 +8,7 @@ const StatsPlugin = require('stats-webpack-plugin');
 const paths = require('../paths');
 const env = require('../env');
 const prodPlugins = require('./prodPlugins');
+const babelrc = require('./_babelrc');
 
 /*
  * Webpack config object determined by passed-in localeCode. The language is
@@ -44,7 +45,14 @@ function getConfig(localeCode) {
 					loader: 'babel-loader',
 					options: {
 						cacheDirectory: true,
-						presets: [['env', { targets: { node: 'current' } }]],
+						plugins: [
+							...babelrc.plugins.core,
+							...babelrc.plugins.server,
+						],
+						presets: [
+							...babelrc.presets.core,
+							...babelrc.presets.server,
+						],
 					},
 				},
 				{

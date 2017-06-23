@@ -63,28 +63,26 @@ function getConfig(localeCode) {
 		module: {
 			rules: [
 				{
-					// build-time eslint validation
-					test: /\.jsx?$/,
-					loader: 'eslint-loader',
-					include: [paths.appPath],
-					exclude: paths.assetPath,
-					enforce: 'pre',
-					options: {
-						cache: true,
-					},
-				},
-				{
 					// standard ES5 transpile through Babel
 					test: /\.jsx?$/,
 					include: [paths.appPath, paths.webComponentsSrcPath],
+					exclude: paths.assetPath,
 					use: [
 						{
 							loader: 'babel-loader',
 							options: {
 								cacheDirectory: true,
-								presets: [['es2015', { modules: false }]],
+								plugins: [
+									...babelrc.plugins.core,
+									...babelrc.plugins.browser,
+								],
+								presets: [
+									...babelrc.presets.core,
+									...babelrc.presets.browser,
+								],
 							},
 						},
+						{ loader: 'eslint-loader' },
 					],
 				},
 				{
