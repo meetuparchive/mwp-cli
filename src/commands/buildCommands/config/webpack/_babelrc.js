@@ -1,6 +1,9 @@
 const core = {
 	presets: ['flow', 'react', 'stage-2'],
-	plugins: [['react-intl', { extractSourceLocation: true }]],
+	plugins: [
+		'transform-class-properties',
+		['react-intl', { extractSourceLocation: true }],
+	],
 };
 
 module.exports = {
