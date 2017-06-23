@@ -1,7 +1,8 @@
 const core = {
-	presets: ['flow', 'react', 'stage-2'];
-	plugins: [['react-intl', { extractSourceLocation: true }]];
+	presets: ['flow', 'react', 'stage-2'],
+	plugins: [['react-intl', { extractSourceLocation: true }]],
 };
+
 module.exports = {
 	presets: {
 		browser: [

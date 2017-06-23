@@ -6,6 +6,7 @@ const StatsPlugin = require('stats-webpack-plugin');
 const paths = require('../paths');
 const env = require('../env');
 const prodPlugins = require('./prodPlugins');
+const babelrc = require('./_babelrc');
 
 /**
  * When in dev, we need to manually inject some configuration to enable HMR
