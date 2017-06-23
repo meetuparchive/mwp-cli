@@ -23,7 +23,7 @@ module.exports = {
 		server: [...core.presets, ['env', { targets: { node: 'current' } }]],
 	},
 	plugins: {
-		browser: [...core.presets],
-		server: [...core.presets],
+		browser: [...core.plugins],
+		server: [...core.plugins],
 	},
 };
