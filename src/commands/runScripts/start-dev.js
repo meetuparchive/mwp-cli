@@ -64,7 +64,7 @@ const startServer = () => {
 	const args = [`--${serverAppLang}=${serverAppPath}`];
 	if (!appServerProcess) {
 		args.push('--cold-start');
-		args.push(`--host=${getSubdomain}.dev.meetup.com`);
+		args.push(`--host=${getSubdomain()}.dev.meetup.com`);
 	}
 	appServerProcess = fork(path.resolve(__dirname, '_app-server'), args);
 	ready.appServer = true;

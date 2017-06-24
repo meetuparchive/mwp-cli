@@ -18,8 +18,10 @@ const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move 
 
 /*
  * Parse the CLI args to return a map of { [localeCode]: string<import path> }
+ * in addition to the 'cold start' config args
  */
-const { argv } = yargs;
+const { argv } = yargs.implies('cold-start', 'host');
+
 const getServerAppMap = () => {
 	return Object.keys(argv)
 		.filter(a => supportedLocales.includes(a))
