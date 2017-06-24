@@ -1,6 +1,5 @@
 const yargs = require('yargs');
 
-const runConfig = require('./config');
 const supportedLocales = require('../../util/supportedLocales');
 const openBrowser = require('react-dev-utils/openBrowser');
 const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move this script into CLI - currently requires MWP dependency :/
@@ -49,7 +48,7 @@ startDevServer().then(server => {
 	// if this is a cold start, open the browser
 	if (argv.coldStart) {
 		const { protocol, port } = server.settings.app.app_server;
-		openBrowser(`${protocol}://${runConfig.properties.host}:${port}`);
+		openBrowser(`${protocol}://${argv.host}:${port}`);
 	}
 	return server;
 });

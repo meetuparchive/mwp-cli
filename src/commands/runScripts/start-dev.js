@@ -33,6 +33,18 @@ const getCompileLogger = type => (err, stats) => {
 	log(message);
 };
 
+function getSubdomain() {
+	const appPackageConfig =
+		require(path.resolve(paths.repoRoot, 'package.json')).config || {};
+	const { subdomain } = appPackageConfig;
+	if (!subdomain) {
+		throw new Error(
+			chalk.red('You must supply config.subdomain in package.json')
+		);
+	}
+	return subdomain;
+}
+
 /*
  * Start a new server child process
  *
@@ -52,6 +64,7 @@ const startServer = () => {
 	const args = [`--${serverAppLang}=${serverAppPath}`];
 	if (!appServerProcess) {
 		args.push('--cold-start');
+		args.push(`--host=${getSubdomain}.dev.meetup.com`);
 	}
 	appServerProcess = fork(path.resolve(__dirname, '_app-server'), args);
 	ready.appServer = true;
