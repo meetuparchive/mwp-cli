@@ -7,6 +7,7 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../paths');
 const env = require('../env');
 const prodPlugins = require('./prodPlugins');
+const babelrc = require('./_babelrc');
 
 /**
  * When in dev, we need to manually inject some configuration to enable HMR
@@ -64,28 +65,20 @@ function getConfig(localeCode) {
 		module: {
 			rules: [
 				{
-					// build-time eslint validation
-					test: /\.jsx?$/,
-					loader: 'eslint-loader',
-					include: [paths.appPath],
-					exclude: paths.assetPath,
-					enforce: 'pre',
-					options: {
-						cache: true,
-					},
-				},
-				{
 					// standard ES5 transpile through Babel
 					test: /\.jsx?$/,
 					include: [paths.appPath, paths.webComponentsSrcPath],
+					exclude: paths.assetPath,
 					use: [
 						{
 							loader: 'babel-loader',
 							options: {
 								cacheDirectory: true,
-								presets: [['es2015', { modules: false }]],
+								plugins: babelrc.plugins.browser,
+								presets: babelrc.presets.browser,
 							},
 						},
+						{ loader: 'eslint-loader' },
 					],
 				},
 				{
