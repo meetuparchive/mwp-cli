@@ -8,6 +8,7 @@ const StatsPlugin = require('stats-webpack-plugin');
 const paths = require('../paths');
 const env = require('../env');
 const prodPlugins = require('./prodPlugins');
+const babelrc = require('./_babelrc');
 
 /*
  * Webpack config object determined by passed-in localeCode. The language is
@@ -91,13 +92,26 @@ function getConfig(localeCode) {
 
 		resolve: {
 			alias: {
-				src: paths.transpiled.server,
+				src: paths.appPath,
 				trns: path.resolve(paths.trnsPath, 'modules', localeCode),
 			},
 			// module name extensions that Webpack will try if no extension provided
 			extensions: ['.js', '.jsx', '.json'],
 		},
 	};
+	if (env.properties.isDev) {
+		// transpile in webpack
+		config.module.rules.push({
+			test: /\.jsx?$/,
+			include: [paths.appPath, paths.webComponentsSrcPath],
+			loader: 'babel-loader',
+			options: {
+				cacheDirectory: true,
+				plugins: babelrc.plugins.server,
+				presets: babelrc.presets.server,
+			},
+		}),
+	}
 	if (env.properties.isProd) {
 		config.plugins = config.plugins.concat(prodPlugins);
 	}

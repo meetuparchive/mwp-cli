@@ -6,14 +6,16 @@ const StatsPlugin = require('stats-webpack-plugin');
 const paths = require('../paths');
 const env = require('../env');
 const prodPlugins = require('./prodPlugins');
+const babelrc = require('./_babelrc');
 
 /**
- * When in dev, we need to manually inject some configuration to enable HMR
+ * When in dev, we need to manually inject some configuration to transpile the
+ * source and enable HMR
  *
  * @param {Object} config webpack config object
  * @returns {Object} HMR-ified config
  */
-function injectHotReloadConfig(config) {
+function injectTranspileLoader(config) {
 	config.entry.app.unshift(
 		'react-hot-loader/patch', // logic for hot-reloading react components
 		`webpack-dev-server/client?http://${env.properties.asset_server
@@ -31,8 +33,20 @@ function injectHotReloadConfig(config) {
 	);
 	config.module.rules.push({
 		test: /\.jsx?$/,
-		include: [paths.transpiled.browser, paths.webComponentsSrcPath],
-		use: ['react-hot-loader/webpack'],
+		include: [paths.appPath, paths.webComponentsSrcPath],
+		exclude: paths.assetPath,
+		use: [
+			'react-hot-loader/webpack',
+			{
+				loader: 'babel-loader', // standard ES5 transpile through Babel
+				options: {
+					cacheDirectory: true,
+					plugins: babelrc.plugins.browser,
+					presets: babelrc.presets.browser,
+				},
+			},
+			{ loader: 'eslint-loader' },
+		],
 	});
 
 	return config;
@@ -83,7 +97,7 @@ function getConfig(localeCode) {
 
 		resolve: {
 			alias: {
-				src: paths.transpiled.browser,
+				src: paths.browserSrc,
 				trns: path.resolve(paths.trnsPath, 'modules', localeCode),
 			},
 			// module name extensions that Webpack will try if no extension provided
@@ -112,8 +126,8 @@ function getConfig(localeCode) {
 		],
 	};
 
-	if (env.properties.isDev && !env.properties.disable_hmr) {
-		injectHotReloadConfig(config);
+	if (env.properties.isDev) {
+		injectTranspileLoader(config);
 	}
 	if (env.properties.isProd) {
 		config.plugins = config.plugins.concat(prodPlugins);

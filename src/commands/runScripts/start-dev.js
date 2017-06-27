@@ -3,7 +3,6 @@ const fork = require('child_process').fork;
 const path = require('path');
 
 const chalk = require('chalk');
-const chokidar = require('chokidar')
 const webpack = require('webpack');
 
 const {
@@ -11,7 +10,6 @@ const {
 	locales,
 	paths,
 } = require('../buildCommands/config');
-const transpile = require('../buildCommands/util/transpile');
 
 const serverAppLang = locales[0]; // top of the preferred lang list
 const serverAppPath = path.resolve(
@@ -61,15 +59,9 @@ const startServer = () => {
 
 function run() {
 	log(chalk.blue('building app, using existing vendor bundle'));
-	transpile('browser');
-	transpile('server');
 	/*
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
 	 */
-	const transpileBrowser = transpile.file('browser');
-	chokidar.watch(`${paths.appPath}/**/*.js?(x)`)
-		.on('add', transpileBrowser)
-		.on('change', transpileBrowser);
 	log(chalk.blue('building browser assets to memory'));
 	const browserAppCompileLogger = getCompileLogger('browserApp');
 	const wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'), [
@@ -94,11 +86,6 @@ function run() {
 	 * parallels the one done in the Webpack Dev Server, and WDS will print
 	 * error messages whenever there is something wrong.
 	 */
-	const transpileServer = transpile.file('server');
-	chokidar.watch(`${paths.appPath}/**/*.js?(x)`)
-		.on('add', transpileServer)
-		.on('change', transpileServer)
-
 	log(
 		chalk.blue(
 			`building server rendering bundle to ${paths.serverAppOutputPath}`

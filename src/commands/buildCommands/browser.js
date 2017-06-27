@@ -1,6 +1,4 @@
-const babel = require('babel-core');
 const chalk = require('chalk');
-const glob = require('glob');
 const path = require('path');
 const webpack = require('webpack');
 
