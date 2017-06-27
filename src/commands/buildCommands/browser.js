@@ -4,6 +4,7 @@ const webpack = require('webpack');
 
 const transpile = require('./util/transpile');
 const {
+	env,
 	getBrowserAppConfig,
 	getRelativeBundlePath,
 	paths,
@@ -29,6 +30,9 @@ module.exports = {
 	description: 'build the client-side renderer bundle',
 	builder: yargs => yargs,
 	handler: argv => {
+		if (!env.properties.isProd) {
+			throw new Error('Local build only supported in NODE_ENV=production')
+		}
 		console.log(
 			chalk.blue('building browser bundle using current vendor bundles')
 		);

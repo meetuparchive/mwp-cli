@@ -12,7 +12,7 @@ const transpile = target => filename => {
 	const options = {
 		presets: babelrc.presets[target],
 		plugins: babelrc.plugins[target],
-		only: /.*?.jsx?$/,
+		only: /\.jsx?$/,
 	};
 	const newFile = babel.transformFileSync(filename, options).code;
 	const relativeFilename = path.relative(paths.appPath, filename);

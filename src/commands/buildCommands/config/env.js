@@ -4,8 +4,7 @@ const path = require('path');
 
 const chalk = require('chalk');
 const convict = require('convict');
-
-const { repoRoot } = require('./paths');
+const { argv } = require('yargs');
 
 /**
  * This module populates build time configuration data
@@ -39,12 +38,20 @@ const schema = {
 		},
 		key_file: {
 			format: String,
-			default: path.resolve(os.homedir(), '.certs', 'star.dev.meetup.com.key'),
+			default: path.resolve(
+				os.homedir(),
+				'.certs',
+				'star.dev.meetup.com.key'
+			),
 			env: 'ASSET_KEY_FILE',
 		},
 		crt_file: {
 			format: String,
-			default: path.resolve(os.homedir(), '.certs', 'star.dev.meetup.com.crt'),
+			default: path.resolve(
+				os.homedir(),
+				'.certs',
+				'star.dev.meetup.com.crt'
+			),
 			env: 'ASSET_CRT_FILE',
 		},
 	},
@@ -69,7 +76,10 @@ const schema = {
 };
 const config = convict(schema);
 
-const configPath = path.resolve(repoRoot, `config.${config.get('env')}.json`);
+const configPath = path.resolve(
+	process.cwd(),
+	`config.${config.get('env')}.json`
+);
 
 const { asset_server } = fs.existsSync(configPath) ? require(configPath) : {};
 if (asset_server) {

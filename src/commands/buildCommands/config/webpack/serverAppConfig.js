@@ -1,10 +1,8 @@
-// Require modules
 const path = require('path');
-const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 const StatsPlugin = require('stats-webpack-plugin');
 
-// Build settings
 const paths = require('../paths');
 const env = require('../env');
 const prodPlugins = require('./prodPlugins');
@@ -100,7 +98,7 @@ function getConfig(localeCode) {
 		},
 	};
 	if (env.properties.isDev) {
-		// transpile in webpack
+		// transpile in webpack for 'run' command
 		config.module.rules.push({
 			test: /\.jsx?$/,
 			include: [paths.appPath, paths.webComponentsSrcPath],
@@ -110,7 +108,7 @@ function getConfig(localeCode) {
 				plugins: babelrc.plugins.server,
 				presets: babelrc.presets.server,
 			},
-		}),
+		});
 	}
 	if (env.properties.isProd) {
 		config.plugins = config.plugins.concat(prodPlugins);
