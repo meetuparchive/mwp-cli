@@ -10,6 +10,7 @@ const localeCodes = yargs
 	.option('locales')
 	.demandOption('locales').argv.locales;
 const configs = localeCodes.map(getBrowserAppConfig);
+console.log(JSON.stringify(configs.map(c => c.module), null, 2));
 const compiler = webpack(configs);
 if (process.send) {
 	// we are in a child process. communicate with parent through `process.send`

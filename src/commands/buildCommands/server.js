@@ -4,6 +4,8 @@ const path = require('path');
 const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 const webpack = require('webpack');
+
+const transpile = require('./util/transpile');
 const {
 	getServerAppConfig,
 	getRelativeBundlePath,
@@ -68,6 +70,8 @@ module.exports = {
 			chalk.blue('building server bundle using current vendor bundles')
 		);
 		// TODO: make this run in parallel, not just concurrently
+		// transpile
+		transpile('server');
 		argv.locales.forEach(writeServerAppBundle);
 		writeServerAppMap(argv.locales);
 	},

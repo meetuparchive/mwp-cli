@@ -6,7 +6,6 @@ const StatsPlugin = require('stats-webpack-plugin');
 const paths = require('../paths');
 const env = require('../env');
 const prodPlugins = require('./prodPlugins');
-const babelrc = require('./_babelrc');
 
 /**
  * When in dev, we need to manually inject some configuration to enable HMR
@@ -30,7 +29,11 @@ function injectHotReloadConfig(config) {
 	const jsRule = config.module.rules.find(rule =>
 		(rule.use || []).find(use => use.loader === 'babel-loader')
 	);
-	jsRule.use.unshift('react-hot-loader/webpack');
+	config.module.rules.push({
+		test: /\.jsx?$/,
+		include: [paths.transpiled.browser, paths.webComponentsSrcPath],
+		use: ['react-hot-loader/webpack'],
+	});
 
 	return config;
 }
@@ -64,23 +67,6 @@ function getConfig(localeCode) {
 		module: {
 			rules: [
 				{
-					// standard ES5 transpile through Babel
-					test: /\.jsx?$/,
-					include: [paths.appPath, paths.webComponentsSrcPath],
-					exclude: paths.assetPath,
-					use: [
-						{
-							loader: 'babel-loader',
-							options: {
-								cacheDirectory: true,
-								plugins: babelrc.plugins.browser,
-								presets: babelrc.presets.browser,
-							},
-						},
-						{ loader: 'eslint-loader' },
-					],
-				},
-				{
 					// bundle CSS references into external files
 					test: /\.css$/,
 					include: [paths.cssPath],
@@ -97,7 +83,7 @@ function getConfig(localeCode) {
 
 		resolve: {
 			alias: {
-				src: paths.appPath,
+				src: paths.transpiled.browser,
 				trns: path.resolve(paths.trnsPath, 'modules', localeCode),
 			},
 			// module name extensions that Webpack will try if no extension provided

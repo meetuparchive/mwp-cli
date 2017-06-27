@@ -1,7 +1,10 @@
+const babel = require('babel-core');
 const chalk = require('chalk');
+const glob = require('glob');
 const path = require('path');
 const webpack = require('webpack');
 
+const transpile = require('./util/transpile');
 const {
 	getBrowserAppConfig,
 	getRelativeBundlePath,
@@ -31,7 +34,9 @@ module.exports = {
 		console.log(
 			chalk.blue('building browser bundle using current vendor bundles')
 		);
-		// TODO : fork a new child process?
+		// transpile
+		transpile('browser');
+		// then build browserApp
 		argv.locales.forEach(buildBrowserApp);
 	},
 };

@@ -5,6 +5,7 @@ const paths = require('./paths');
 
 // webpack config getters
 const {
+	babelrc,
 	getBrowserAppConfig,
 	getServerAppConfig,
 	vendorBundlesConfig,
@@ -23,6 +24,7 @@ const getRelativeBundlePath = (entry, output) => (stats, localeCode = '') => {
 };
 
 module.exports = {
+	babelrc,
 	getBrowserAppConfig,
 	getServerAppConfig,
 	vendorBundlesConfig,
