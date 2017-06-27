@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const Rx = require('rxjs');
 const txlib = require('./lib');
 
