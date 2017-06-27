@@ -8,7 +8,7 @@ const mkdirp = require('mkdirp');
 
 const { babelrc, paths } = require('../config');
 
-const transpile = target => filename => {
+const file = target => filename => {
 	const options = {
 		presets: babelrc.presets[target],
 		plugins: babelrc.plugins[target],
@@ -23,7 +23,7 @@ const transpile = target => filename => {
 
 const src = `${paths.appPath}/**/*.!(test.)*`;
 
-const transpileTarget = function(target) {
+const target = function(target) {
 	if (!['server', 'browser'].includes(target)) {
 		throw new Error(`${target} must be 'server' or 'browser'`);
 	}
@@ -32,7 +32,8 @@ const transpileTarget = function(target) {
 	jsSrcFiles.forEach(transpile(target));
 };
 
-transpileTarget.src = src;
-transpileTarget.file = transpile;
-
-module.exports = transpileTarget;
+module.exports = {
+	target,
+	src,
+	file,
+}

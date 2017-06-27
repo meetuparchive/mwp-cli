@@ -74,7 +74,7 @@ module.exports = {
 		);
 		// TODO: make this run in parallel, not just concurrently
 		// transpile
-		transpile('server');
+		transpile.target('server');
 		argv.locales.forEach(writeServerAppBundle);
 		writeServerAppMap(argv.locales);
 	},

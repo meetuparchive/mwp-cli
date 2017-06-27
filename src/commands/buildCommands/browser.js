@@ -37,7 +37,7 @@ module.exports = {
 			chalk.blue('building browser bundle using current vendor bundles')
 		);
 		// transpile
-		transpile('browser');
+		transpile.target('browser');
 		// then build browserApp
 		argv.locales.forEach(buildBrowserApp);
 	},
