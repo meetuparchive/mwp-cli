@@ -26,7 +26,6 @@ module.exports = {
 	command: 'browser',
 	aliases: 'client',
 	description: 'build the client-side renderer bundle',
-	builder: yargs => yargs,
 	handler: argv => {
 		console.log(
 			chalk.blue('building browser bundle using current vendor bundles')

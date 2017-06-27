@@ -62,7 +62,6 @@ function writeServerAppMap(localeCodes) {
 module.exports = {
 	command: 'server',
 	description: 'build the server-side renderer bundle',
-	builder: yargs => yargs,
 	handler: argv => {
 		console.log(
 			chalk.blue('building server bundle using current vendor bundles')

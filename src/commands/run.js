@@ -6,7 +6,6 @@ const startDev = require('./runScripts/start-dev');
 module.exports = {
 	command: 'run',
 	description: 'run the application server',
-	builder: yargs => yargs,
 	handler: argv => {
 		const { NODE_ENV } = process.env;
 		console.log(
