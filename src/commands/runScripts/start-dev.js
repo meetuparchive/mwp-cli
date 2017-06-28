@@ -33,10 +33,8 @@ const getCompileLogger = type => (err, stats) => {
 	log(message);
 };
 
-function getSubdomain() {
-	const appPackageConfig =
-		require(path.resolve(paths.repoRoot, 'package.json')).config || {};
-	const { subdomain } = appPackageConfig;
+function getSubdomain(config) {
+	const subdomain = config.subdomain;
 	if (!subdomain) {
 		throw new Error(
 			chalk.red('You must supply config.subdomain in package.json')
@@ -52,7 +50,7 @@ function getSubdomain() {
  * serverAppLang will be available at serverAppPath when
  * `reader.serverApp` is true
  */
-const startServer = () => {
+const startServer = config  => {
 	if (appServerProcess) {
 		appServerProcess.kill();
 		ready.appServer = false;
@@ -64,13 +62,13 @@ const startServer = () => {
 	const args = [`--${serverAppLang}=${serverAppPath}`];
 	if (!appServerProcess) {
 		args.push('--cold-start');
-		args.push(`--host=${getSubdomain()}.dev.meetup.com`);
+		args.push(`--host=${getSubdomain(config)}.dev.meetup.com`);
 	}
 	appServerProcess = fork(path.resolve(__dirname, '_app-server'), args);
 	ready.appServer = true;
 };
 
-function run() {
+function run(config) {
 	log(chalk.blue('building app, using existing vendor bundle'));
 	/*
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
@@ -88,7 +86,7 @@ function run() {
 			// this is the first build - we can attempt to start the app server.
 			// no need to restart the server otherwise
 			ready.browserApp = true;
-			startServer();
+			startServer(config);
 		}
 	});
 

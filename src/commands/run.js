@@ -16,7 +16,7 @@ module.exports = {
 			// TODO: check for prerequisites (e.g. up-to-date build/... files)
 			// execute the start-dev script
 			console.log(chalk.blue('Running the dev app server...'));
-			startDev();
+			startDev(argv.config);
 		}
 	},
 };

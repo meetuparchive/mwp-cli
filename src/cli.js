@@ -1,4 +1,6 @@
 const yargs = require('yargs');
+const path = require('path');
+const paths = require('./commands/buildCommands/config').paths;
 const supportedLocales = require('./util/supportedLocales');
 const defaultLocales = process.env.NODE_ENV === 'production'
 	? supportedLocales
@@ -8,6 +10,10 @@ const run = () => {
 	const argv = yargs
 		.commandDir('commands') // commands are in the './commands/' dir
 		.demandCommand() // require a command to be used - no default behavior
+		.option('config', {
+			description: 'provided by project package.json',
+			default : require(path.resolve(paths.repoRoot, 'package.json')).config
+		})
 		.array('locales') // treat locales as array, always
 		.option('locales', {
 			default: defaultLocales,
