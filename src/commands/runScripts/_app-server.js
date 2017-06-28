@@ -1,4 +1,5 @@
 const yargs = require('yargs');
+
 const supportedLocales = require('../../util/supportedLocales');
 const openBrowser = require('react-dev-utils/openBrowser');
 const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move this script into CLI - currently requires MWP dependency :/
@@ -17,8 +18,10 @@ const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move 
 
 /*
  * Parse the CLI args to return a map of { [localeCode]: string<import path> }
+ * in addition to the 'cold start' config args
  */
-const { argv } = yargs;
+const { argv } = yargs.implies('cold-start', 'host');
+
 const getServerAppMap = () => {
 	return Object.keys(argv)
 		.filter(a => supportedLocales.includes(a))
@@ -45,13 +48,10 @@ function startDevServer() {
  */
 startDevServer().then(server => {
 	// if this is a cold start, open the browser
-	if (!process.argv.includes('--cold-start')) {
-		// TODO: use yargs to parse this arg
-		return server;
+	if (argv.coldStart) {
+		const { protocol, port } = server.settings.app.app_server;
+		openBrowser(`${protocol}://${argv.host}:${port}`);
 	}
-	const { protocol, port } = server.settings.app.app_server;
-	// TODO: make this URL target configurable - perhaps from server.settings?
-	openBrowser(`${protocol}://beta2.dev.meetup.com:${port}`);
 	return server;
 });
 
