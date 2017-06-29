@@ -8,14 +8,19 @@ module.exports = {
 	description: 'run the application server',
 	handler: argv => {
 		const { NODE_ENV } = process.env;
+		const envString = NODE_ENV || 'development';
 		console.log(
-			chalk.green(`NODE_ENV=${process.env.NODE_ENV || '(empty)'}`)
+			chalk.green(`NODE_ENV=${envString}`)
 		);
-		if (!NODE_ENV !== 'production') {
-			// TODO: check for prerequisites (e.g. up-to-date build/... files)
-			// execute the start-dev script
-			console.log(chalk.blue('Running the dev app server...'));
-			startDev();
+		if (envString !== 'development') {
+			console.log(chalk.red(`Cannot run dev server with NODE_ENV=${envString}`))
+			console.log(chalk.red(`Set NODE_ENV=development`))
+			process.exit(1);
 		}
+		// TODO: check for prerequisites (e.g. up-to-date build/... files)
+		// execute the start-dev script
+		console.log(chalk.blue('Preparing the dev app server...'));
+		startDev();
+		return;
 	},
 };
