@@ -4,6 +4,8 @@ const path = require('path');
 const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 const webpack = require('webpack');
+
+const addLocalesOption = require('../../util/addLocalesOption');
 const {
 	getServerAppConfig,
 	getRelativeBundlePath,
@@ -62,6 +64,7 @@ function writeServerAppMap(localeCodes) {
 module.exports = {
 	command: 'server',
 	description: 'build the server-side renderer bundle',
+	builder: yargs => addLocalesOption(yargs),
 	handler: argv => {
 		console.log(
 			chalk.blue('building server bundle using current vendor bundles')
