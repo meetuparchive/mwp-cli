@@ -6,7 +6,6 @@ const { vendorBundlesConfig } = require('./config');
 module.exports = {
 	command: 'vendor',
 	description: 'build the vendor (DLL) bundles',
-	builder: yargs => yargs,
 	handler: argv => {
 		console.log(chalk.blue('building vendor bundles...'));
 		webpack(vendorBundlesConfig, (err, stats) => {
