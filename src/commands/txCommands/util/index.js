@@ -9,8 +9,8 @@ const Transifex = require('transifex');
 
 const TX_USER = process.env.TRANSIFEX_USER;
 const TX_PW = process.env.TRANSIFEX_PW;
-const PROJECT = 'mup-web';
-const PROJECT_MASTER = 'mup-web-master'; // separate project so translators don't confuse with branch content
+const PROJECT = require('../../../util/packageConfig');
+const PROJECT_MASTER = `${PROJECT}-master`; // separate project so translators don't confuse with branch content
 const MASTER_RESOURCE = 'master';
 
 const tx = new Transifex({
@@ -54,7 +54,7 @@ const parsePluckTrns = fileContent =>
 
 // returns main.po trn content in po format
 const localPoTrns$ = filename =>
-	readFile$(`src/trns/po/${filename}.po`).flatMap(parsePluckTrns);
+	readFile$(path.resolve(paths.repoRoot,`src/trns/po/${filename}.po`)).flatMap(parsePluckTrns);
 
 // adds necessary header info to po formatted trn content
 const wrapPoTrns = trnObjs => ({
@@ -203,8 +203,10 @@ const uploadTrnsMaster$ = ([lang_tag, content]) =>
 		resourceContent(MASTER_RESOURCE, content)
 	);
 
+const poPath = path.resolve(paths.repoRoot,'src/trns/po/');
+
 const allLocalPoTrns$ = Rx.Observable
-	.bindNodeCallback(glob)('src/trns/po/!(en-US).po')
+	.bindNodeCallback(glob)(poPath + '!(en-US).po')
 	.flatMap(Rx.Observable.from)
 	.flatMap(filename => {
 		const lang_tag = path.basename(filename, '.po');
@@ -212,7 +214,7 @@ const allLocalPoTrns$ = Rx.Observable
 	});
 
 const allLocalPoTrnsWithFallbacks$ = Rx.Observable
-	.bindNodeCallback(glob)('src/trns/po/*.po')
+	.bindNodeCallback(glob)(poPath + '*.po')
 	.flatMap(Rx.Observable.from)
 	// read and parse all po files
 	.flatMap(filename => {
