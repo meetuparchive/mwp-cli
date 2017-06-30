@@ -53,10 +53,10 @@ module.exports = {
 	command: 'pull',
 	description: 'pull resource content from transifex',
 	builder : yarg => yarg.option({'resource': {
-			alias:'r',
-			demandOption: true,
-			type: 'array',
-		}}),
+		alias:'r',
+		demandOption: true,
+		type: 'array',
+	}}),
 	handler: argv => {
 		txlib.checkEnvVars();
 		console.log(
