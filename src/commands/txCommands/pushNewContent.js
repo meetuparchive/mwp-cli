@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const child_process = require('child_process');
 const Rx = require('rxjs');
-const txlib = require('./lib');
+const txlib = require('./util/index');
 
 const tx = txlib.tx;
 
@@ -116,7 +116,7 @@ const pushContent$ = Rx.Observable
 	.flatMap(pushResource$)
 
 module.exports = {
-	command: 'push',
+	command: 'pushNewContent',
 	description: 'push content to transifex',
 	handler: argv => {
 		txlib.checkEnvVars();

@@ -1,4 +1,4 @@
-const txlib = require('./lib');
+const txlib = require('./index');
 
 describe('trn utils', () => {
 	it('compares two objects, returning an object composed of new keys or existing keys with changed msgstr values', () => {

@@ -4,5 +4,5 @@ const chalk = require('chalk');
 module.exports = {
 	command: 'tx',
 	description: 'transifex lifecycle integration commands',
-	builder: yargs => yargs.commandDir('txCommands', { exclude: /test\.js$/} ).demandCommand(),
+	builder: yargs => yargs.commandDir('txCommands').demandCommand(),
 };

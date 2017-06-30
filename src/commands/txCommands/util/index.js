@@ -3,6 +3,7 @@ const fs = require('fs');
 const gettextParser = require('gettext-parser');
 const glob = require('glob');
 const path = require('path');
+const paths = require('../../../util/paths');
 const Rx = require('rxjs');
 const Transifex = require('transifex');
 
@@ -137,9 +138,11 @@ const reactIntlToPo = reactIntl =>
 
 // returns observable of extracted trn data in react-intl format. one value per file-with-content
 const localTrns$ = Rx.Observable
-	.bindNodeCallback(glob)('src/+(components|app)/**/!(*.test|*.story).jsx')
+	.bindNodeCallback(glob)(paths.repoRoot + '/src/+(components|app)/**/!(*.test|*.story).jsx')
 	.flatMap(Rx.Observable.from)
-	.map(file => babel.transformFileSync(file))
+	.map(file => babel.transformFileSync(file, {
+			plugins: [['react-intl', { extractSourceLocation: true }]],
+	}))
 	.pluck('metadata', 'react-intl', 'messages')
 	.filter(trns => trns.length);
 

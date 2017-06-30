@@ -1,7 +1,9 @@
 const chalk = require('chalk');
 const fs = require('fs');
 const Rx = require('rxjs');
-const txlib = require('./lib');
+const path = require('path');
+const paths = require('../../util/paths');
+const txlib = require('./util/index');
 
 const tx = txlib.tx;
 
@@ -41,7 +43,8 @@ const pullResourceContent$ = branch => txlib.allLocalPoTrns$
 			.wrapCompilePo$(mergedContent)
 			.do(poContent => {
 				// 5. save to PO files that can be transpiled to importable JSON
-				fs.writeFileSync(`src/trns/po/${lang_tag}.po`, poContent);
+				const filepath = path.resolve(paths.repoRoot, `src/trns/po/${lang_tag}.po`)
+				fs.writeFileSync(filepath, poContent);
 			})
 			.do(() => console.log(`${lang_tag} complete`))
 	);

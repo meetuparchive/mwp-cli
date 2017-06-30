@@ -1,12 +1,13 @@
 const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const paths = require('./config/paths');
 const mkdirp = require('mkdirp');
 
-const { allLocalPoTrnsWithFallbacks$, localTrns$ } = require('../txCommands/lib');
+const { allLocalPoTrnsWithFallbacks$, localTrns$ } = require('../txCommands/util/index');
 const localeCodes = require('./config/locales');
 
-const MODULES_PATH = path.resolve('./src/trns/modules/');
+const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
 
 const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 	localeCodes.forEach(localeCode => {

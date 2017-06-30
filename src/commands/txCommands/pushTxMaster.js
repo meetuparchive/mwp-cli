@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 const Rx = require('rxjs');
-const txlib = require('./lib');
+const txlib = require('./util/index');
 
 const updateMasterContent$ = txlib.localTrnsMerged$
 	.flatMap(poContent =>
