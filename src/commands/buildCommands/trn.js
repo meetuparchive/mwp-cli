@@ -36,7 +36,7 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 };
 
 const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
-	filename: path.resolve(`./${trnsFromFile[0].file.replace(/\.jsx?$/, '')}`),
+	filename: path.resolve(paths.repoRoot, `./${trnsFromFile[0].file.replace(/\.jsx?$/, '')}`),
 	msgids: trnsFromFile.map(({ id }) => id),
 }));
 
@@ -51,7 +51,8 @@ const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
 const buildTrnModules = localeCodes =>
 	allLocalPoTrnsWithFallbacks$.mergeMap(
 		messagesByLocale =>
-			componentTrnDefinitions$.do(writeTrnModules(messagesByLocale)) // loop over components that define TRNs // write the files
+			componentTrnDefinitions$.do(console.log).do(writeTrnModules(messagesByLocale)) // loop over components that define TRNs // write the files
+
 	);
 
 function main() {
