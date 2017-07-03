@@ -4,7 +4,7 @@ const path = require('path');
 const paths = require('./config/paths');
 const mkdirp = require('mkdirp');
 
-const { allLocalPoTrnsWithFallbacks$, localTrns$ } = require('../txCommands/util/index');
+const { allLocalPoTrnsWithFallbacks$, localTrns$ } = require('../txCommands/util');
 const localeCodes = require('./config/locales');
 
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
@@ -20,7 +20,7 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 			return trns;
 		}, {});
 		// write the object to a file
-		const relPath = path.relative('./src/', filename);
+		const relPath = path.relative(paths.appPath, filename);
 		const destFilename = path.resolve(
 			MODULES_PATH,
 			localeCode,
@@ -36,7 +36,7 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 };
 
 const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
-	filename: path.resolve(paths.repoRoot, `./${trnsFromFile[0].file.replace(/\.jsx?$/, '')}`),
+	filename: path.resolve(paths.repoRoot, trnsFromFile[0].file.replace(/\.jsx?$/, '')),
 	msgids: trnsFromFile.map(({ id }) => id),
 }));
 

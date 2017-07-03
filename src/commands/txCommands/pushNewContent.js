@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const child_process = require('child_process');
 const Rx = require('rxjs');
-const txlib = require('./util/index');
+const txlib = require('./util');
 
 const tx = txlib.tx;
 

@@ -3,7 +3,7 @@ const fs = require('fs');
 const Rx = require('rxjs');
 const path = require('path');
 const paths = require('../../util/paths');
-const txlib = require('./util/index');
+const txlib = require('./util');
 
 const tx = txlib.tx;
 

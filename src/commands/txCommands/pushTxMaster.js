@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 const Rx = require('rxjs');
-const txlib = require('./util/index');
+const txlib = require('./util');
 
 const updateMasterContent$ = txlib.localTrnsMerged$
 	.flatMap(poContent =>
@@ -16,7 +16,6 @@ const updateTranslations$ = txlib.allLocalPoTrns$
 	.flatMap(txlib.uploadTrnsMaster$)
 	.do(console.log);
 
-	
 module.exports = {
 	command: 'pushTxMaster',
 	description: 'push content to transifex master',
