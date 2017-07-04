@@ -9,7 +9,7 @@ const Transifex = require('transifex');
 
 const TX_USER = process.env.TRANSIFEX_USER;
 const TX_PW = process.env.TRANSIFEX_PW;
-const PROJECT = require('../../../util/packageConfig');
+const PROJECT = require('../../../util/packageConfig').txProject;
 const PROJECT_MASTER = `${PROJECT}-master`; // separate project so translators don't confuse with branch content
 const MASTER_RESOURCE = 'master';
 

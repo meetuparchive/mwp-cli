@@ -92,7 +92,7 @@ const masterAndResourceTrns$ = Rx.Observable
 	);
 
 // don't run against master! will delete trn content on transifex
-gitBranch$.subscribe(branchName => {
+const branchCheck$ = gitBranch$.do(branchName => {
 	if (branchName === 'master') {
 		console.log(
 			'do not run this script on master. it will kill the master resource on Transifex.'
@@ -120,6 +120,8 @@ module.exports = {
 	description: 'push content to transifex',
 	handler: argv => {
 		txlib.checkEnvVars();
+		branchCheck$.subscribe();
+
 		console.log(
 			chalk.blue('pushing content to transifex')
 		);
