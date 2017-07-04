@@ -3,7 +3,7 @@ const fs = require('fs');
 const gettextParser = require('gettext-parser');
 const glob = require('glob');
 const path = require('path');
-const paths = require('../../../util/paths');
+const paths = require('../../buildCommands/config/paths');
 const Rx = require('rxjs');
 const Transifex = require('transifex');
 
