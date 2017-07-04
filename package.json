@@ -5,6 +5,9 @@
   "repository": "git@github.com:meetup/mwp-cli.git",
   "author": "Michael McGahan <mike.mcgahan@gmail.com>",
   "license": "MIT",
+  "config" : {
+      "txProject":"test"
+  },
   "bin": {
     "mope": "bin/mope.js"
   },
