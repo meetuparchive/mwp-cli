@@ -5,8 +5,14 @@
   "repository": "git@github.com:meetup/mwp-cli.git",
   "author": "Michael McGahan <mike.mcgahan@gmail.com>",
   "license": "MIT",
+  "config" : {
+      "txProject":"test"
+  },
   "bin": {
     "mope": "bin/mope.js"
+  },
+  "scripts": {
+    "test": "jest"
   },
   "dependencies": {
     "@alrra/travis-scripts": "3.0.1",
@@ -24,11 +30,16 @@
     "css-loader": "0.28.4",
     "eslint": "4.0.0",
     "eslint-loader": "1.8.0",
+    "gettext-parser": "1.2.2",
+    "glob": "7.1.2",
+    "jest": "20.0.4",
     "mkdirp": "0.5.1",
     "react-dev-utils": "3.0.0",
+    "rxjs": "5.4.1",
     "stats-webpack-plugin": "0.6.0",
     "style-loader": "0.18.2",
     "sw-precache-webpack-plugin": "0.11.3",
+    "transifex": "1.4.6",
     "webpack": "2.6.1",
     "webpack-dev-server": "2.4.5",
     "webpack-manifest-plugin": "1.1.0",

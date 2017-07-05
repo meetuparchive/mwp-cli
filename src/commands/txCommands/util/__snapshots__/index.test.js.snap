@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`trn utils convert react-intl style objects into po style objects 1`] = `
+Object {
+  "id1": Object {
+    "comments": Object {
+      "extracted": "text for test",
+      "reference": "text.txt:2:5",
+      "translator": "MW-001",
+    },
+    "msgid": "id1",
+    "msgstr": Array [
+      "id1 text",
+    ],
+  },
+  "id2": Object {
+    "comments": Object {
+      "extracted": "text for test v2",
+      "reference": "text2.txt:10:10",
+      "translator": "MW-002",
+    },
+    "msgid": "id2",
+    "msgstr": Array [
+      "id2 text",
+    ],
+  },
+}
+`;
+
+exports[`trn utils merge objects, throw error if dupe key 1`] = `
+Object {
+  "id1": Object {
+    "comments": Object {
+      "extracted": "text for test",
+      "reference": "text.txt:2:5",
+    },
+    "msgid": "id1",
+    "msgstr": Array [
+      "id1 text",
+    ],
+  },
+  "id2": Object {
+    "comments": Object {
+      "extracted": "text for test v2",
+      "reference": "text2.txt:10:10",
+    },
+    "msgid": "id2",
+    "msgstr": Array [
+      "id2 text",
+    ],
+  },
+}
+`;
+
+exports[`trn utils wraps Po objects 1`] = `
+Object {
+  "charset": "utf-8",
+  "headers": Object {
+    "content-type": "text/plain; charset=utf-8",
+  },
+  "translations": Object {
+    "": Array [
+      Object {},
+      Object {},
+    ],
+  },
+}
+`;
