@@ -1,4 +1,5 @@
 const core = {
+	compact: true,
 	presets: ['flow', 'react', 'stage-2'],
 	plugins: [
 		'transform-class-properties',
