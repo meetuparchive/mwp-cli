@@ -47,6 +47,6 @@
     "yargs": "8.0.2"
   },
   "peerDependencies": {
-    "meetup-web-platform": "^3.3"
+    "meetup-web-platform": ">3"
   }
 }
