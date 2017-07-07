@@ -11,12 +11,6 @@ const {
 	paths,
 } = require('../buildCommands/config');
 
-const serverAppLang = locales[0]; // top of the preferred lang list
-const serverAppPath = path.resolve(
-	paths.serverAppOutputPath,
-	serverAppLang,
-	'server-app'
-);
 const ready = {
 	browserApp: false,
 	serverApp: false,
@@ -33,16 +27,26 @@ const getCompileLogger = type => (err, stats) => {
 	log(message);
 };
 
-function getSubdomain(config) {
-	const subdomain = config.subdomain;
+function getSubdomain(packageConfig) {
+	const { subdomain } = packageConfig;
 	if (!subdomain) {
 		throw new Error(
-			chalk.red('You must supply config.subdomain in package.json')
+			chalk.red('You must supply packageConfig.subdomain in package.json')
 		);
 	}
 	return subdomain;
 }
 
+const getServerAppArgs = locales => {
+	return locales.map(locale => {
+		const serverAppPath = path.resolve(
+			paths.serverAppOutputPath,
+			locale,
+			'server-app'
+		);
+		return `--${locale}=${serverAppPath}`;
+	});
+};
 /*
  * Start a new server child process
  *
@@ -50,7 +54,7 @@ function getSubdomain(config) {
  * serverAppLang will be available at serverAppPath when
  * `reader.serverApp` is true
  */
-const startServer = config  => {
+const startServer = (packageConfig, locales) => {
 	if (appServerProcess) {
 		appServerProcess.kill();
 		ready.appServer = false;
@@ -59,16 +63,16 @@ const startServer = config  => {
 	if (!ready.serverApp || !ready.browserApp) {
 		return;
 	}
-	const args = [`--${serverAppLang}=${serverAppPath}`];
+	const args = getServerAppArgs(locales);
 	if (!appServerProcess) {
 		args.push('--cold-start');
-		args.push(`--host=${getSubdomain(config)}.dev.meetup.com`);
+		args.push(`--host=${getSubdomain(packageConfig)}.dev.meetup.com`);
 	}
 	appServerProcess = fork(path.resolve(__dirname, '_app-server'), args);
 	ready.appServer = true;
 };
 
-function run(config) {
+function run(packageConfig, locales) {
 	log(chalk.blue('building app, using existing vendor bundle'));
 	/*
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
@@ -77,7 +81,7 @@ function run(config) {
 	const browserAppCompileLogger = getCompileLogger('browserApp');
 	const wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'), [
 		'--locales',
-		serverAppLang,
+		...locales,
 	]);
 	// the dev server compiler will send a message each time it completes a build
 	wdsProcess.on('message', message => {
@@ -86,7 +90,7 @@ function run(config) {
 			// this is the first build - we can attempt to start the app server.
 			// no need to restart the server otherwise
 			ready.browserApp = true;
-			startServer(config);
+			startServer(packageConfig, locales);
 		}
 	});
 
@@ -103,21 +107,16 @@ function run(config) {
 		)
 	);
 	const serverAppCompileLogger = getCompileLogger('serverApp');
-	const serverAppCompiler = webpack(getServerAppConfig('en-US'));
+	const serverAppCompiler = webpack(locales.map(getServerAppConfig));
 	serverAppCompiler.watch(
 		{
 			aggregateTimeout: 100,
 			ignored: /build/,
 		}, // watch options
 		(err, stats) => {
-			if (
-				stats.hasErrors() &&
-				stats.toJson().errors[0].includes('trns/app/')
-			) {
+			if (stats.hasErrors() && stats.toJson().errors[0].includes('trns/app/')) {
 				console.error(chalk.red('Missing translated TRN modules'));
-				console.warn(
-					chalk.yellow('Try running `yarn build:trnModules` first')
-				);
+				console.warn(chalk.yellow('Try running `yarn build:trnModules` first'));
 				wdsProcess.kill();
 				if (appServerProcess) {
 					appServerProcess.kill();
@@ -131,17 +130,19 @@ function run(config) {
 			}
 			ready.serverApp = true;
 			// 4. (Re)start the Node app server when Server application is (re)-built
-			startServer();
+			startServer(packageConfig, locales);
 		}
 	);
 
 	/*
 	 * 3. watch for server dep changes in order to restart
 	 */
-	fs.watchFile(`${process.cwd()}/scripts/app-server.js`, startServer);
+	fs.watchFile(`${process.cwd()}/scripts/app-server.js`, () =>
+		startServer(packageConfig, locales)
+	);
 	fs.watchFile(
 		`${process.cwd()}/node_modules/meetup-web-platform/lib/index.js`,
-		startServer
+		() => startServer(packageConfig, locales)
 	);
 }
 
