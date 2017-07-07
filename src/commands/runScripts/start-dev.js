@@ -31,7 +31,7 @@ function getSubdomain(packageConfig) {
 	const { subdomain } = packageConfig;
 	if (!subdomain) {
 		throw new Error(
-			chalk.red('You must supply packageConfig.subdomain in package.json')
+			chalk.red('You must supply config.subdomain in package.json')
 		);
 	}
 	return subdomain;
