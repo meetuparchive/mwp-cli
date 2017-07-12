@@ -53,7 +53,7 @@ const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
  * @return {Observable} an observable that emits a single array of the
  *   react-intl babel plugin output for each component that calls `defineMessages`
  */
-const buildTrnModules = locales =>
+const buildTrnModules = () =>
 	allLocalPoTrnsWithFallbacks$.mergeMap(
 		messagesByLocale =>
 			componentTrnDefinitions$.do(writeTrnModules(messagesByLocale)) // loop over components that define TRNs // write the files
@@ -64,7 +64,7 @@ function main() {
 	child_process.execSync(`rm -rf ${MODULES_PATH}`);
 
 	console.log('Transpiling TRN source to JSON');
-	buildTrnModules(locales).toPromise().catch(err => console.error(err));
+	buildTrnModules().toPromise().catch(err => console.error(err));
 }
 
 module.exports = {
