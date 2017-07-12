@@ -1,4 +1,4 @@
 const path = require('path');
-const { appPath } = require('./paths');
+const { srcPath } = require('./paths');
 
-module.exports = require(path.resolve(appPath, 'util', 'locales'));
+module.exports = require(path.resolve(srcPath, 'util', 'locales'));

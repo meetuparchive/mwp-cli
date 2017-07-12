@@ -2,22 +2,39 @@ const path = require('path');
 const webpack = require('webpack');
 
 const repoRoot = process.cwd(); // expect CLI to be run from consumer repo root
-const appPath = path.resolve(repoRoot, 'src');
-const outPath = path.resolve(repoRoot, 'build');
+const srcPath = path.resolve(repoRoot, 'src');
+const buildPath = path.resolve(repoRoot, 'build');
+
+const output = {
+	browser: path.resolve(buildPath, 'browser-app'),
+	server: path.resolve(buildPath, 'server-app'),
+	serverMap: path.resolve(buildPath, 'server-app', 'serverAppMap.js'), // map server app builds to a single module
+	vendor: path.resolve(buildPath, 'vendor'),
+};
+
+const src = {
+	trns: path.resolve(srcPath, 'trns'),
+	asset: path.resolve(srcPath, 'assets'), // pre-made static assets
+	browser: {
+		app: srcPath,
+		entry: path.resolve(srcPath, 'browser-app-entry.js'),
+	},
+	server: {
+		app: srcPath,
+		entry: path.resolve(srcPath, 'server-app-entry.js'),
+	},
+};
 
 module.exports = {
 	repoRoot,
-	appPath,
-	assetPath: path.resolve(appPath, 'assets'), // pre-made static assets
-	browserAppEntryPath: path.resolve(appPath, 'browser-app-entry.js'),
-	browserAppOutputPath: path.resolve(outPath, 'browser-app'),
-	cssPath: path.resolve(appPath, 'assets', 'css'),
-	outPath,
-	serverAppModulePath: path.resolve(outPath, 'server-app', 'serverAppMap.js'),
-	serverAppEntryPath: path.resolve(appPath, 'server-app-entry.js'),
-	serverAppOutputPath: path.resolve(outPath, 'server-app'),
-	trnsPath: path.resolve(appPath, 'trns'),
-	vendorBundlesPath: path.resolve(outPath, 'vendor'),
-	webComponentsSrcPath: /node_modules\/meetup-web-components\/src/,
-	webComponentsIconsPath: /node_modules\/meetup-web-components\/icons/,
+	srcPath,
+	buildPath,
+	output,
+	src,
+	packages: {
+		webComponents: {
+			src: /node_modules\/meetup-web-components\/src/,
+			icons: /node_modules\/meetup-web-components\/icons/,
+		},
+	},
 };

@@ -7,15 +7,12 @@ const webpack = require('webpack');
 
 const addLocalesOption = require('../../util/addLocalesOption');
 const {
-	getServerAppConfig,
-	getRelativeBundlePath,
 	paths,
+	getRelativeBundlePath,
+	webpack: { getServerAppConfig },
 } = require('./config');
 
-const getBundlePath = getRelativeBundlePath(
-	'server-app',
-	paths.serverAppOutputPath
-);
+const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 
 const writeServerAppBundle = localeCode => {
 	console.log(
@@ -40,7 +37,7 @@ function writeServerAppMap(localeCodes) {
 	// in the form ['<localeCode>: require(<bundlePath>).default', ...]
 	const codeBundlePairStrings = localeCodes.reduce((acc, localeCode) => {
 		const serverAppPath = path.resolve(
-			paths.serverAppOutputPath,
+			paths.output.server,
 			localeCode,
 			'server-app'
 		);
@@ -54,9 +51,9 @@ function writeServerAppMap(localeCodes) {
 	const serverAppMapString = `{${codeBundlePairStrings.join(',')}}`;
 
 	// finally, write the module that exports the map
-	mkdirp.sync(path.dirname(paths.serverAppModulePath)); // ensure dir exists
+	mkdirp.sync(path.dirname(paths.output.serverMap)); // ensure dir exists
 	fs.writeFileSync(
-		paths.serverAppModulePath,
+		paths.output.serverMap,
 		`module.exports = ${serverAppMapString};`
 	);
 }

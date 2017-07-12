@@ -4,13 +4,13 @@ const webpack = require('webpack');
 const addLocalesOption = require('../../util/addLocalesOption');
 
 const {
-	getBrowserAppConfig,
-	getRelativeBundlePath,
 	paths,
+	getRelativeBundlePath,
+	webpack: { getBrowserAppConfig },
 } = require('./config');
 
 // set up function for getting the built bundle filename
-const getBundlePath = getRelativeBundlePath('app', paths.browserAppOutputPath);
+const getBundlePath = getRelativeBundlePath('app', paths.output.browser);
 
 const buildBrowserApp = localeCode => {
 	console.log(

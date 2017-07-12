@@ -6,9 +6,9 @@ const chalk = require('chalk');
 const webpack = require('webpack');
 
 const {
-	getServerAppConfig,
 	locales,
 	paths,
+	webpack: { getServerAppConfig },
 } = require('../buildCommands/config');
 
 const ready = {
@@ -40,7 +40,7 @@ function getSubdomain(packageConfig) {
 const getServerAppArgs = locales => {
 	return locales.map(locale => {
 		const serverAppPath = path.resolve(
-			paths.serverAppOutputPath,
+			paths.output.server,
 			locale,
 			'server-app'
 		);
@@ -101,11 +101,7 @@ function run(packageConfig, locales) {
 	 * parallels the one done in the Webpack Dev Server, and WDS will print
 	 * error messages whenever there is something wrong.
 	 */
-	log(
-		chalk.blue(
-			`building server rendering bundle to ${paths.serverAppOutputPath}`
-		)
-	);
+	log(chalk.blue(`building server rendering bundle to ${paths.output.server}`));
 	const serverAppCompileLogger = getCompileLogger('serverApp');
 	const serverAppCompiler = webpack(locales.map(getServerAppConfig));
 	serverAppCompiler.watch(

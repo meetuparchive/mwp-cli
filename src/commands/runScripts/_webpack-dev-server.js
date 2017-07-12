@@ -2,7 +2,10 @@ const fs = require('fs');
 const webpack = require('webpack');
 const yargs = require('yargs');
 const WebpackDevServer = require('webpack-dev-server');
-const { getBrowserAppConfig, env } = require('../buildCommands/config');
+const {
+	env,
+	webpack: { getBrowserAppConfig },
+} = require('../buildCommands/config');
 
 // Set up webpack multicompiler - one for each localeCode specified in CLI args
 const localeCodes = yargs
@@ -37,8 +40,7 @@ if (options.https) {
 if (configs.length === 1) {
 	// WDS won't respect config's publicPath when only 1 config is set
 	// so we need to force it in the `options`
-	options.publicPath = `${env.properties.asset_server
-		.path}/${localeCodes[0]}/`;
+	options.publicPath = `${env.properties.asset_server.path}/${localeCodes[0]}/`;
 }
 
 const server = new WebpackDevServer(compiler, options);

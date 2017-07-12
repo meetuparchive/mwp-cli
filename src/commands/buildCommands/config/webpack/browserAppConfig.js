@@ -7,7 +7,7 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../paths');
 const env = require('../env');
 const prodPlugins = require('./prodPlugins');
-const babelrc = require('./_babelrc');
+const rules = require('./rules');
 
 /**
  * When in dev, we need to manually inject some configuration to enable HMR
@@ -18,20 +18,15 @@ const babelrc = require('./_babelrc');
 function injectHotReloadConfig(config) {
 	config.entry.app.unshift(
 		'react-hot-loader/patch', // logic for hot-reloading react components
-		`webpack-dev-server/client?http://${env.properties.asset_server
-			.host}:${env.properties.asset_server.port}/`, // connect to HMR websocket
+		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${env
+			.properties.asset_server.port}/`, // connect to HMR websocket
 		'webpack/hot/dev-server' // run the dev server
 	);
 
 	// plugins
 	config.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable module.hot
 	config.plugins.push(new webpack.NamedModulesPlugin()); // show HMR module filenames
-
-	// inject code hooks into react-hot-loader/patch
-	const jsRule = config.module.rules.find(rule =>
-		(rule.use || []).find(use => use.loader === 'babel-loader')
-	);
-	jsRule.use.unshift('react-hot-loader/webpack');
+	config.module.rules.unshift(rules.js.hot);
 
 	return config;
 }
@@ -45,11 +40,11 @@ function injectHotReloadConfig(config) {
 function getConfig(localeCode) {
 	const config = {
 		entry: {
-			app: [paths.browserAppEntryPath],
+			app: [paths.src.browser.entry],
 		},
 
 		output: {
-			path: path.resolve(paths.browserAppOutputPath, localeCode),
+			path: path.resolve(paths.output.browser, localeCode),
 			filename: env.properties.isDev
 				? '[name].js' // in dev, keep the filename consistent to make reloading easier
 				: '[name].[chunkhash].js', // in prod, add hash to enable long-term caching
@@ -62,33 +57,7 @@ function getConfig(localeCode) {
 		// this needs revision: https://meetup.atlassian.net/browse/MW-952
 		devtool: env.properties.isDev ? 'eval' : 'source-map',
 
-		module: {
-			rules: [
-				{
-					// standard ES5 transpile through Babel
-					test: /\.jsx?$/,
-					include: [paths.appPath, paths.webComponentsSrcPath],
-					exclude: paths.assetPath,
-					use: [
-						{
-							loader: 'babel-loader',
-							options: {
-								cacheDirectory: true,
-								plugins: babelrc.plugins.browser,
-								presets: babelrc.presets.browser,
-							},
-						},
-						{ loader: 'eslint-loader' },
-					],
-				},
-				{
-					// bundle CSS references into external files
-					test: /\.css$/,
-					include: [paths.cssPath],
-					use: ['style-loader', 'css-loader'],
-				},
-			],
-		},
+		module: { rules: [rules.css, rules.js.browser] },
 
 		resolveLoader: {
 			alias: {
@@ -98,8 +67,8 @@ function getConfig(localeCode) {
 
 		resolve: {
 			alias: {
-				src: paths.appPath,
-				trns: path.resolve(paths.trnsPath, 'modules', localeCode),
+				src: paths.src.browser.app,
+				trns: path.resolve(paths.src.trns, 'modules', localeCode),
 			},
 			// module name extensions that Webpack will try if no extension provided
 			extensions: ['.js', '.jsx', '.json'],
@@ -111,14 +80,14 @@ function getConfig(localeCode) {
 			new webpack.DllReferencePlugin({
 				context: '.',
 				manifest: require(path.resolve(
-					paths.vendorBundlesPath,
+					paths.output.vendor,
 					'react-dll-manifest.json'
 				)),
 			}),
 			new webpack.DllReferencePlugin({
 				context: '.',
 				manifest: require(path.resolve(
-					paths.vendorBundlesPath,
+					paths.output.vendor,
 					'vendor-dll-manifest.json'
 				)),
 			}),
@@ -138,7 +107,8 @@ function getConfig(localeCode) {
 				dontCacheBustUrlsMatching: /\.\w{8}\./, // no need for cache-busting querystring on hashed filenames
 				filename: `asset-service-worker.js`,
 				minify: true,
-				staticFileGlobsIgnorePatterns: [ // don't cache these files
+				staticFileGlobsIgnorePatterns: [
+					// don't cache these files
 					/\.map$/, // source-maps
 					/.json$/, // manifest files
 				],
