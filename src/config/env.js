@@ -32,9 +32,10 @@ const schema = {
 		},
 		protocol: {
 			format: String,
-			default: process.env.NODE_ENV === 'production'
-				? 'http' // SSL handled by load balancer
-				: 'https',
+			default:
+				process.env.NODE_ENV === 'production'
+					? 'http' // SSL handled by load balancer
+					: 'https',
 			env: 'ASSET_SERVER_PROTOCOL',
 		},
 		key_file: {
