@@ -18,8 +18,8 @@ const babelrc = require('./_babelrc');
 function injectHotReloadConfig(config) {
 	config.entry.app.unshift(
 		'react-hot-loader/patch', // logic for hot-reloading react components
-		`webpack-dev-server/client?http://${env.properties.asset_server
-			.host}:${env.properties.asset_server.port}/`, // connect to HMR websocket
+		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${env
+			.properties.asset_server.port}/`, // connect to HMR websocket
 		'webpack/hot/dev-server' // run the dev server
 	);
 
@@ -138,7 +138,8 @@ function getConfig(localeCode) {
 				dontCacheBustUrlsMatching: /\.\w{8}\./, // no need for cache-busting querystring on hashed filenames
 				filename: `asset-service-worker.js`,
 				minify: true,
-				staticFileGlobsIgnorePatterns: [ // don't cache these files
+				staticFileGlobsIgnorePatterns: [
+					// don't cache these files
 					/\.map$/, // source-maps
 					/.json$/, // manifest files
 				],

@@ -72,11 +72,7 @@ function getConfig(localeCode) {
 					path.resolve(paths.browserAppOutputPath, 'manifest.json')
 				),
 				BROWSER_MANIFEST_PATH: JSON.stringify(
-					path.resolve(
-						paths.browserAppOutputPath,
-						localeCode,
-						'manifest.json'
-					)
+					path.resolve(paths.browserAppOutputPath, localeCode, 'manifest.json')
 				),
 			}),
 			new StatsPlugin('stats.json', 'verbose'),
@@ -86,9 +82,7 @@ function getConfig(localeCode) {
 
 		externals: [
 			nodeExternals({
-				modulesDir: process.env.NODE_PATH
-					? process.env.NODE_PATH
-					: null,
+				modulesDir: process.env.NODE_PATH ? process.env.NODE_PATH : null,
 				whitelist: [/^meetup-web-components/],
 			}),
 			/.*?build\//,

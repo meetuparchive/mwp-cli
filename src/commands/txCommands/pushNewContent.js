@@ -27,8 +27,9 @@ const resources$ = projectInfo$(txlib.PROJECT)
 const readParseResource$ = slug =>
 	txlib.readResource$(slug).flatMap(txlib.parsePluckTrns);
 
-const devGitBranch$ = Rx.Observable
-	.bindNodeCallback(child_process.exec)('git rev-parse --abbrev-ref HEAD')
+const devGitBranch$ = Rx.Observable.bindNodeCallback(child_process.exec)(
+	'git rev-parse --abbrev-ref HEAD'
+)
 	.pluck(0)
 	.map(str => str.slice(0, -1));
 
@@ -113,7 +114,7 @@ const pushContent$ = Rx.Observable
 	)
 	.map(txlib.diff) // return local content that is new or updated
 	.do(diff => console.log('trns added / updated:', Object.keys(diff).length))
-	.flatMap(pushResource$)
+	.flatMap(pushResource$);
 
 module.exports = {
 	command: 'pushNewContent',
@@ -122,11 +123,8 @@ module.exports = {
 		txlib.checkEnvVars();
 		branchCheck$.subscribe();
 
-		console.log(
-			chalk.blue('pushing content to transifex')
-		);
+		console.log(chalk.blue('pushing content to transifex'));
 
-		pushContent$
-			.subscribe(null, null, () => console.log(`content pushed`));
+		pushContent$.subscribe(null, null, () => console.log(`content pushed`));
 	},
 };

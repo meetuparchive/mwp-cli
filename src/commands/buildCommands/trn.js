@@ -4,7 +4,10 @@ const path = require('path');
 const paths = require('./config/paths');
 const mkdirp = require('mkdirp');
 
-const { allLocalPoTrnsWithFallbacks$, localTrns$ } = require('../txCommands/util');
+const {
+	allLocalPoTrnsWithFallbacks$,
+	localTrns$,
+} = require('../txCommands/util');
 const localeCodes = require('./config/locales');
 
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
@@ -36,7 +39,10 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 };
 
 const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
-	filename: path.resolve(paths.repoRoot, trnsFromFile[0].file.replace(/\.jsx?$/, '')),
+	filename: path.resolve(
+		paths.repoRoot,
+		trnsFromFile[0].file.replace(/\.jsx?$/, '')
+	),
 	msgids: trnsFromFile.map(({ id }) => id),
 }));
 
@@ -52,7 +58,6 @@ const buildTrnModules = localeCodes =>
 	allLocalPoTrnsWithFallbacks$.mergeMap(
 		messagesByLocale =>
 			componentTrnDefinitions$.do(writeTrnModules(messagesByLocale)) // loop over components that define TRNs // write the files
-
 	);
 
 function main() {

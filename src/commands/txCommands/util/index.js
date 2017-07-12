@@ -29,9 +29,9 @@ const checkEnvVars = () => {
 
 // local streams
 const readFile$ = filepath =>
-	Rx.Observable
-		.bindNodeCallback(fs.readFile)(filepath)
-		.map(buffer => buffer.toString());
+	Rx.Observable.bindNodeCallback(fs.readFile)(filepath).map(buffer =>
+		buffer.toString()
+	);
 
 const parsePluckTrns = fileContent =>
 	Rx.Observable
@@ -54,7 +54,9 @@ const parsePluckTrns = fileContent =>
 
 // returns main.po trn content in po format
 const localPoTrns$ = filename =>
-	readFile$(path.resolve(paths.repoRoot,`src/trns/po/${filename}.po`)).flatMap(parsePluckTrns);
+	readFile$(path.resolve(paths.repoRoot, `src/trns/po/${filename}.po`)).flatMap(
+		parsePluckTrns
+	);
 
 // adds necessary header info to po formatted trn content
 const wrapPoTrns = trnObjs => ({
@@ -137,12 +139,15 @@ const reactIntlToPo = reactIntl =>
 	}, {});
 
 // returns observable of extracted trn data in react-intl format. one value per file-with-content
-const localTrns$ = Rx.Observable
-	.bindNodeCallback(glob)(paths.repoRoot + '/src/+(components|app)/**/!(*.test|*.story).jsx')
+const localTrns$ = Rx.Observable.bindNodeCallback(glob)(
+	paths.repoRoot + '/src/+(components|app)/**/!(*.test|*.story).jsx'
+)
 	.flatMap(Rx.Observable.from)
-	.map(file => babel.transformFileSync(file, {
+	.map(file =>
+		babel.transformFileSync(file, {
 			plugins: [['react-intl', { extractSourceLocation: true }]],
-	}))
+		})
+	)
 	.pluck('metadata', 'react-intl', 'messages')
 	.filter(trns => trns.length);
 
@@ -191,9 +196,10 @@ const updateResource$ = (slug, content, project = PROJECT) => {
 };
 
 const deleteResource$ = slug =>
-	Rx.Observable
-		.bindNodeCallback(tx.resourceDeleteMethod.bind(tx))(PROJECT, slug)
-		.do(() => console.log('delete', slug));
+	Rx.Observable.bindNodeCallback(tx.resourceDeleteMethod.bind(tx))(
+		PROJECT,
+		slug
+	).do(() => console.log('delete', slug));
 
 const uploadTrnsMaster$ = ([lang_tag, content]) =>
 	Rx.Observable.bindNodeCallback(tx.uploadTranslationInstanceMethod.bind(tx))(
@@ -203,18 +209,20 @@ const uploadTrnsMaster$ = ([lang_tag, content]) =>
 		resourceContent(MASTER_RESOURCE, content)
 	);
 
-const poPath = path.resolve(paths.repoRoot,'src/trns/po/');
+const poPath = path.resolve(paths.repoRoot, 'src/trns/po/');
 
-const allLocalPoTrns$ = Rx.Observable
-	.bindNodeCallback(glob)(poPath + '!(en-US).po')
+const allLocalPoTrns$ = Rx.Observable.bindNodeCallback(glob)(
+	poPath + '!(en-US).po'
+)
 	.flatMap(Rx.Observable.from)
 	.flatMap(filename => {
 		const lang_tag = path.basename(filename, '.po');
 		return readFile$(filename).map(content => [lang_tag, content]);
 	});
 
-const allLocalPoTrnsWithFallbacks$ = Rx.Observable
-	.bindNodeCallback(glob)(poPath + '*.po')
+const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
+	poPath + '*.po'
+)
 	.flatMap(Rx.Observable.from)
 	// read and parse all po files
 	.flatMap(filename => {
