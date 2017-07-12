@@ -10,6 +10,7 @@ const {
 	paths,
 	webpack: { getServerAppConfig, getRelativeBundlePath },
 } = require('../../config');
+const transpile = require('./util/transpile');
 
 const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 
@@ -18,7 +19,7 @@ const writeServerAppBundle = localeCode => {
 		chalk.blue(`building server app (${chalk.yellow(localeCode)})...`)
 	);
 	// get the locale-specific config
-	const config = getServerAppConfig(localeCode);
+	const config = getServerAppConfig(localeCode, true);
 	webpack(config, (err, stats) => {
 		const relativeBundlePath = getBundlePath(stats, localeCode);
 		console.log(chalk.blue(`built ${relativeBundlePath}`));
@@ -66,6 +67,7 @@ module.exports = {
 			chalk.blue('building server bundle using current vendor bundles')
 		);
 		// TODO: make this run in parallel, not just concurrently
+		transpile('server');
 		argv.locales.forEach(writeServerAppBundle);
 		writeServerAppMap(argv.locales);
 	},
