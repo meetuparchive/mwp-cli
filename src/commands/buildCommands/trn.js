@@ -1,16 +1,18 @@
 const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const paths = require('./config/paths');
 const mkdirp = require('mkdirp');
 
-const { allLocalPoTrnsWithFallbacks$, localTrns$ } = require('../txCommands/util');
-const localeCodes = require('./config/locales');
+const { paths, locales } = require('../../config');
+const {
+	allLocalPoTrnsWithFallbacks$,
+	localTrns$,
+} = require('../txCommands/util');
 
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
 
 const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
-	localeCodes.forEach(localeCode => {
+	locales.forEach(localeCode => {
 		if (!messagesByLocale[localeCode]) {
 			messagesByLocale[localeCode] = {};
 		}
@@ -36,7 +38,10 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 };
 
 const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
-	filename: path.resolve(paths.repoRoot, trnsFromFile[0].file.replace(/\.jsx?$/, '')),
+	filename: path.resolve(
+		paths.repoRoot,
+		trnsFromFile[0].file.replace(/\.jsx?$/, '')
+	),
 	msgids: trnsFromFile.map(({ id }) => id),
 }));
 
@@ -44,15 +49,14 @@ const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
  * Write JSON modules for each component that defines TRN messages. Missing
  * translations will result in an empty JSON object
  *
- * @param {Array} localeCodes the array of supported locale code strings
+ * @param {Array} locales the array of supported locale code strings
  * @return {Observable} an observable that emits a single array of the
  *   react-intl babel plugin output for each component that calls `defineMessages`
  */
-const buildTrnModules = localeCodes =>
+const buildTrnModules = locales =>
 	allLocalPoTrnsWithFallbacks$.mergeMap(
 		messagesByLocale =>
 			componentTrnDefinitions$.do(writeTrnModules(messagesByLocale)) // loop over components that define TRNs // write the files
-
 	);
 
 function main() {
@@ -60,7 +64,7 @@ function main() {
 	child_process.execSync(`rm -rf ${MODULES_PATH}`);
 
 	console.log('Transpiling TRN source to JSON');
-	buildTrnModules(localeCodes).toPromise().catch(err => console.error(err));
+	buildTrnModules(locales).toPromise().catch(err => console.error(err));
 }
 
 module.exports = {

@@ -1,9 +1,6 @@
 const path = require('path');
+const paths = require('../paths');
 
-// application-relative paths
-const paths = require('./paths');
-
-// app-specific config
 /*
  * A function to determine the build-directory-relative path to a bundle based
  * on webpack config values and build stats
@@ -16,9 +13,8 @@ const getRelativeBundlePath = (entry, output) => (stats, localeCode = '') => {
 };
 
 module.exports = {
-	env: require('./env'),
-	locales: require('./locales'),
-	webpack: require('./webpack'),
-	paths,
 	getRelativeBundlePath,
+	getBrowserAppConfig: require('./browserAppConfig'),
+	getServerAppConfig: require('./serverAppConfig'),
+	vendorBundlesConfig: require('./vendorBundlesConfig'),
 };

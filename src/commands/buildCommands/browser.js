@@ -5,9 +5,8 @@ const addLocalesOption = require('../../util/addLocalesOption');
 
 const {
 	paths,
-	getRelativeBundlePath,
-	webpack: { getBrowserAppConfig },
-} = require('./config');
+	webpack: { getBrowserAppConfig, getRelativeBundlePath },
+} = require('../../config');
 
 // set up function for getting the built bundle filename
 const getBundlePath = getRelativeBundlePath('app', paths.output.browser);

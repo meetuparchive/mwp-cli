@@ -8,9 +8,8 @@ const webpack = require('webpack');
 const addLocalesOption = require('../../util/addLocalesOption');
 const {
 	paths,
-	getRelativeBundlePath,
-	webpack: { getServerAppConfig },
-} = require('./config');
+	webpack: { getServerAppConfig, getRelativeBundlePath },
+} = require('../../config');
 
 const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 

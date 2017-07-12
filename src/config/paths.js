@@ -13,8 +13,8 @@ const output = {
 };
 
 const src = {
-	trns: path.resolve(srcPath, 'trns'),
 	asset: path.resolve(srcPath, 'assets'), // pre-made static assets
+	trns: path.resolve(srcPath, 'trns'),
 	browser: {
 		app: srcPath,
 		entry: path.resolve(srcPath, 'browser-app-entry.js'),

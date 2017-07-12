@@ -8,8 +8,9 @@ const webpack = require('webpack');
 const {
 	locales,
 	paths,
+	package: packageConfig,
 	webpack: { getServerAppConfig },
-} = require('../buildCommands/config');
+} = require('../../config');
 
 const ready = {
 	browserApp: false,
@@ -54,7 +55,7 @@ const getServerAppArgs = locales => {
  * serverAppLang will be available at serverAppPath when
  * `reader.serverApp` is true
  */
-const startServer = (packageConfig, locales) => {
+const startServer = locales => {
 	if (appServerProcess) {
 		appServerProcess.kill();
 		ready.appServer = false;
@@ -72,7 +73,7 @@ const startServer = (packageConfig, locales) => {
 	ready.appServer = true;
 };
 
-function run(packageConfig, locales) {
+function run(locales) {
 	log(chalk.blue('building app, using existing vendor bundle'));
 	/*
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
@@ -90,7 +91,7 @@ function run(packageConfig, locales) {
 			// this is the first build - we can attempt to start the app server.
 			// no need to restart the server otherwise
 			ready.browserApp = true;
-			startServer(packageConfig, locales);
+			startServer(locales);
 		}
 	});
 
@@ -126,7 +127,7 @@ function run(packageConfig, locales) {
 			}
 			ready.serverApp = true;
 			// 4. (Re)start the Node app server when Server application is (re)-built
-			startServer(packageConfig, locales);
+			startServer(locales);
 		}
 	);
 
@@ -134,11 +135,11 @@ function run(packageConfig, locales) {
 	 * 3. watch for server dep changes in order to restart
 	 */
 	fs.watchFile(`${process.cwd()}/scripts/app-server.js`, () =>
-		startServer(packageConfig, locales)
+		startServer(locales)
 	);
 	fs.watchFile(
 		`${process.cwd()}/node_modules/meetup-web-platform/lib/index.js`,
-		() => startServer(packageConfig, locales)
+		() => startServer(locales)
 	);
 }
 

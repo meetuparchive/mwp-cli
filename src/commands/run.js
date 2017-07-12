@@ -2,7 +2,6 @@ const path = require('path');
 const chalk = require('chalk');
 
 const addLocalesOption = require('../util/addLocalesOption');
-const packageConfig = require('../util/packageConfig');
 const startDev = require('./runScripts/start-dev');
 
 module.exports = {
@@ -23,7 +22,7 @@ module.exports = {
 		// TODO: check for prerequisites (e.g. up-to-date build/... files)
 		// execute the start-dev script
 		console.log(chalk.blue('Preparing the dev app server...'));
-		startDev(packageConfig, argv.locales);
+		startDev(argv.locales);
 		return;
 	},
 };

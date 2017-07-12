@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 const webpack = require('webpack');
-const config = require('./config');
+const config = require('../../config');
 
 const { vendorBundlesConfig } = config.webpack;
 
