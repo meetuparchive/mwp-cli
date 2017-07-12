@@ -21,9 +21,7 @@ module.exports = {
 	description: 'push content to transifex master',
 	handler: argv => {
 		txlib.checkEnvVars();
-		console.log(
-			chalk.blue('pushing content to transifex master')
-		);
+		console.log(chalk.blue('pushing content to transifex master'));
 
 		Rx.Observable
 			.concat(updateMasterContent$, updateTranslations$) // update master content before pushing translations

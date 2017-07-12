@@ -34,7 +34,9 @@
     "gettext-parser": "1.2.2",
     "glob": "7.1.2",
     "jest": "20.0.4",
+    "lint-staged": "4.0.1",
     "mkdirp": "0.5.1",
+    "prettier": "1.5.2",
     "react-dev-utils": "3.0.0",
     "rxjs": "5.4.1",
     "stats-webpack-plugin": "0.6.0",
@@ -49,5 +51,12 @@
   },
   "peerDependencies": {
     "meetup-web-platform": ">3"
+  },
+  "lint-staged": {
+    "{src,tests,__mocks__}/**/*.{js,jsx}": [
+      "prettier --write --single-quote --use-tabs --trailing-comma es5",
+      "eslint",
+      "git add"
+    ]
   }
 }
