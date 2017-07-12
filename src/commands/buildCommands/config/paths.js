@@ -25,16 +25,18 @@ const src = {
 	},
 };
 
+const packages = {
+	webComponents: {
+		src: /node_modules\/meetup-web-components\/src/,
+		icons: /node_modules\/meetup-web-components\/icons/,
+	},
+};
+
 module.exports = {
 	repoRoot,
 	srcPath,
 	buildPath,
 	output,
 	src,
-	packages: {
-		webComponents: {
-			src: /node_modules\/meetup-web-components\/src/,
-			icons: /node_modules\/meetup-web-components\/icons/,
-		},
-	},
+	packages,
 };

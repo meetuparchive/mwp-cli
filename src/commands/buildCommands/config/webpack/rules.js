@@ -16,7 +16,7 @@ module.exports = {
 			exclude: paths.src.asset,
 		},
 		browser: {
-			// standard ES5 transpile through Babel
+			// standard ES5 transpile through Babel, with linting
 			test: /\.jsx?$/,
 			include: [paths.src.browser.app, paths.packages.webComponents.src],
 			exclude: paths.src.asset,
