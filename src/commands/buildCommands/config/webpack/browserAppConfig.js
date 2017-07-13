@@ -57,10 +57,7 @@ function getConfig(localeCode) {
 			publicPath: `/static/${localeCode}/`,
 		},
 
-		// source maps are slow to generate, so only create them in prod
-		// also, the `eval` output provides sufficient source map hooks
-		// this needs revision: https://meetup.atlassian.net/browse/MW-952
-		devtool: env.properties.isDev ? 'eval' : 'source-map',
+		devtool: 'cheap-module-source-map', // similar speed to 'eval', but with proper source maps
 
 		module: {
 			rules: [
