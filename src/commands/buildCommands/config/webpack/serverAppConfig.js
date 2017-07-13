@@ -35,6 +35,8 @@ function getConfig(localeCode) {
 			publicPath,
 		},
 
+		devtool: 'eval',
+
 		module: {
 			rules: [
 				{
