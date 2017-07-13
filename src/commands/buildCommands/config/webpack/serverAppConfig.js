@@ -2,7 +2,7 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
-const StatsPlugin = require('stats-webpack-plugin');
+const StatsPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 
 // Build settings
 const paths = require('../paths');
@@ -75,7 +75,7 @@ function getConfig(localeCode) {
 					path.resolve(paths.browserAppOutputPath, localeCode, 'manifest.json')
 				),
 			}),
-			new StatsPlugin('stats.json', 'verbose'),
+			new StatsPlugin({ fields: null }), // null means 'all fields in stats file'
 		],
 
 		target: 'node',
