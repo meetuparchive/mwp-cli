@@ -1,6 +1,6 @@
 const yargs = require('yargs');
 
-const supportedLocales = require('../../util/supportedLocales');
+const { locales } = require('../../config');
 const openBrowser = require('react-dev-utils/openBrowser');
 const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move this script into CLI - currently requires MWP dependency :/
 
@@ -24,7 +24,7 @@ const { argv } = yargs.implies('cold-start', 'host');
 
 const getServerAppMap = () => {
 	return Object.keys(argv)
-		.filter(a => supportedLocales.includes(a))
+		.filter(a => locales.includes(a))
 		.reduce((map, localeCode) => {
 			const importPath = argv[localeCode];
 			map[localeCode] = require(importPath).default;

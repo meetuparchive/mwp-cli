@@ -5,10 +5,11 @@ const webpack = require('webpack');
 const StatsPlugin = require('stats-webpack-plugin');
 
 // Build settings
+const babel = require('../babel');
 const paths = require('../paths');
 const env = require('../env');
 const prodPlugins = require('./prodPlugins');
-const babelrc = require('./_babelrc');
+const rules = require('./rules');
 
 /*
  * Webpack config object determined by passed-in localeCode. The language is
@@ -24,38 +25,20 @@ function getConfig(localeCode) {
 	const publicPath = `/${localeCode}/`;
 	const config = {
 		entry: {
-			'server-app': [paths.serverAppEntryPath],
+			'server-app': [paths.src.server.entry],
 		},
 
 		// write a CommonJS module that can be imported into Node server scripts
 		output: {
 			libraryTarget: 'commonjs2',
-			path: path.join(paths.serverAppOutputPath, localeCode),
+			path: path.join(paths.output.server, localeCode),
 			filename: '[name].js',
 			publicPath,
 		},
 
 		devtool: 'eval',
 
-		module: {
-			rules: [
-				{
-					test: /\.jsx?$/,
-					include: [paths.appPath, paths.webComponentsSrcPath],
-					loader: 'babel-loader',
-					options: {
-						cacheDirectory: true,
-						plugins: babelrc.plugins.server,
-						presets: babelrc.presets.server,
-					},
-				},
-				{
-					test: /\.css$/,
-					include: [paths.cssPath],
-					use: ['style-loader', 'css-loader'],
-				},
-			],
-		},
+		module: { rules: [rules.css, rules.js.server] },
 
 		plugins: [
 			new webpack.EnvironmentPlugin({
@@ -69,10 +52,10 @@ function getConfig(localeCode) {
 				),
 				WEBPACK_ASSET_PUBLIC_PATH: JSON.stringify(publicPath),
 				VENDOR_MANIFEST_PATH: JSON.stringify(
-					path.resolve(paths.browserAppOutputPath, 'manifest.json')
+					path.resolve(paths.output.browser, 'manifest.json')
 				),
 				BROWSER_MANIFEST_PATH: JSON.stringify(
-					path.resolve(paths.browserAppOutputPath, localeCode, 'manifest.json')
+					path.resolve(paths.output.browser, localeCode, 'manifest.json')
 				),
 			}),
 			new StatsPlugin('stats.json', 'verbose'),
@@ -96,8 +79,8 @@ function getConfig(localeCode) {
 
 		resolve: {
 			alias: {
-				src: paths.appPath,
-				trns: path.resolve(paths.trnsPath, 'modules', localeCode),
+				src: paths.src.server.app,
+				trns: path.resolve(paths.src.trns, 'modules', localeCode),
 			},
 			// module name extensions that Webpack will try if no extension provided
 			extensions: ['.js', '.jsx', '.json'],
