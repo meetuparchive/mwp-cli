@@ -1,7 +1,7 @@
-const allLocales = require('../commands/buildCommands/config/locales');
+const locales = require('../config').locales;
 
 const supportedLocales =
-	process.env.NODE_ENV === 'production' ? allLocales : allLocales.slice(0, 1); // default to top locale in dev
+	process.env.NODE_ENV === 'production' ? locales : locales.slice(0, 1); // default to top locale in dev
 
 const addLocalesOption = yargs =>
 	yargs.array('locales').option('locales', {

@@ -3,13 +3,13 @@ const fs = require('fs');
 const gettextParser = require('gettext-parser');
 const glob = require('glob');
 const path = require('path');
-const paths = require('../../buildCommands/config/paths');
+const { paths, package: packageConfig } = require('../../../config');
 const Rx = require('rxjs');
 const Transifex = require('transifex');
 
 const TX_USER = process.env.TRANSIFEX_USER;
 const TX_PW = process.env.TRANSIFEX_PW;
-const PROJECT = require('../../../util/packageConfig').txProject;
+const PROJECT = packageConfig.txProject;
 const PROJECT_MASTER = `${PROJECT}-master`; // separate project so translators don't confuse with branch content
 const MASTER_RESOURCE = 'master';
 

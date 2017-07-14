@@ -2,7 +2,7 @@ const fs = require('fs');
 const webpack = require('webpack');
 const yargs = require('yargs');
 const WebpackDevServer = require('webpack-dev-server');
-const { getBrowserAppConfig, env } = require('../buildCommands/config');
+const { env, webpack: { getBrowserAppConfig } } = require('../../config');
 
 // Set up webpack multicompiler - one for each localeCode specified in CLI args
 const localeCodes = yargs
