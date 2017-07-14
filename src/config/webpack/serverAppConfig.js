@@ -54,7 +54,7 @@ function getConfig(localeCode, fromTranspile) {
 				),
 				WEBPACK_ASSET_PUBLIC_PATH: JSON.stringify(publicPath),
 				VENDOR_MANIFEST_PATH: JSON.stringify(
-					path.resolve(paths.output.browser, 'manifest.json')
+					path.resolve(paths.output.vendor, 'manifest.json')
 				),
 				BROWSER_MANIFEST_PATH: JSON.stringify(
 					path.resolve(paths.output.browser, localeCode, 'manifest.json')
