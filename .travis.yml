@@ -22,6 +22,7 @@ before_install:
 
 before_script:
   - git diff --exit-code yarn.lock
+  - yarn check
 
 after_script:
   - git config --global user.email "builds@travis-ci.com"

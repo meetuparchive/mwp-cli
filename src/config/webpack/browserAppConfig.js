@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
-const StatsPlugin = require('stats-webpack-plugin');
+const StatsPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 const paths = require('../paths');
@@ -89,7 +89,7 @@ function getConfig(localeCode) {
 				)),
 			}),
 			new ManifestPlugin({ writeToFileEmit: true }), // emit manifest from dev-server build
-			new StatsPlugin('stats.json', 'verbose'),
+			new StatsPlugin({ fields: null }), // null means 'all fields in stats file'
 		],
 	};
 
