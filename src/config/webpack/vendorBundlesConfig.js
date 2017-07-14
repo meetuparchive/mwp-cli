@@ -36,7 +36,7 @@ const config = {
 		],
 	},
 	output: {
-		path: paths.output.vendor,
+		path: paths.output.browser,
 		filename: '[name].[chunkhash].js',
 		hashDigestLength: 8,
 		// The name of the global variable which the library's
