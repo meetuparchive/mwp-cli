@@ -209,7 +209,7 @@ const uploadTrnsMaster$ = ([lang_tag, content]) =>
 		resourceContent(MASTER_RESOURCE, content)
 	);
 
-const poPath = path.resolve(paths.repoRoot, 'src/trns/po/');
+const poPath = path.resolve(paths.repoRoot, 'src/trns/po/') + '/';
 
 const allLocalPoTrns$ = Rx.Observable.bindNodeCallback(glob)(
 	poPath + '!(en-US).po'
