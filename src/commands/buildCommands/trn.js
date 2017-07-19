@@ -22,7 +22,7 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 			return trns;
 		}, {});
 		// write the object to a file
-		const relPath = path.relative(paths.appPath, filename);
+		const relPath = path.relative(paths.srcPath, filename);
 		const destFilename = path.resolve(
 			MODULES_PATH,
 			localeCode,
