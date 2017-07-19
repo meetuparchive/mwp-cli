@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const Rx = require('rxjs');
 const path = require('path');
-const paths = require('../buildCommands/config/paths');
+const paths = require('../../config/paths');
 const txlib = require('./util');
 
 const tx = txlib.tx;
