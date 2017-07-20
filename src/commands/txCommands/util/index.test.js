@@ -1,5 +1,7 @@
 const txlib = require('./index');
 
+const request = require('request');
+
 describe('trn utils', () => {
 	it('compares two objects, returning an object composed of new keys or existing keys with changed msgstr values', () => {
 		const same = { msgstr: 'same' };
@@ -78,5 +80,51 @@ describe('trn utils', () => {
 		expect(txlib.mergeLocalTrns([msg1, msg2])).toMatchSnapshot();
 		// expected error from duplicate msgs
 		expect(() => txlib.mergeLocalTrns([msg1, msg1])).toThrow();
+	});
+
+	it('takes po file content, extract trn content', () => {
+		const fileContent =
+`msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+# MW-000
+#: src/components/EventCard.jsx:27:16
+msgid "event.oneMemberWent"
+msgstr "1 Mitglied ging"
+`;
+		txlib.parsePluckTrns(fileContent)
+			.subscribe( val => expect(val).toMatchSnapshot());
+	});
+
+	it('takes trn content, returns po file', () => {
+		const poObj = {
+			"event.oneMemberWent" : {
+				"comments": {
+					"reference": "src/components/EventCard.jsx:27:16",
+					"translator": "MW-000",
+				},
+				"msgid": "event.oneMemberWent",
+				"msgstr": [ "1 Mitglied ging" ],
+			}
+		};
+
+		txlib.wrapCompilePo$(poObj)
+			.subscribe( val => expect(val).toMatchSnapshot());
+	});
+console.log('testy test')
+	it('loads resource list and sorts by date modified', () => {
+		console.log('inside test');
+
+		request.__setMockResponse({
+					headers : {},
+					statusCode: 200
+			}, 'hi');
+
+		txlib.resources$
+			.subscribe( resources => {
+				console.log('xxxxxxx');
+				console.log(resources);
+				expect(resources).toBe(0);
+			}, err => console.log(err));
 	});
 });

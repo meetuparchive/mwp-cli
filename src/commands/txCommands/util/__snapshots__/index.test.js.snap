@@ -52,6 +52,32 @@ Object {
 }
 `;
 
+exports[`trn utils takes po file content, extract trn content 1`] = `
+Object {
+  "event.oneMemberWent": Object {
+    "comments": Object {
+      "reference": "src/components/EventCard.jsx:27:16",
+      "translator": "MW-000",
+    },
+    "msgid": "event.oneMemberWent",
+    "msgstr": Array [
+      "1 Mitglied ging",
+    ],
+  },
+}
+`;
+
+exports[`trn utils takes trn content, returns po file 1`] = `
+"msgid \\"\\"
+msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
+
+# MW-000
+#: src/components/EventCard.jsx:27:16
+msgid \\"event.oneMemberWent\\"
+msgstr \\"1 Mitglied ging\\"
+"
+`;
+
 exports[`trn utils wraps Po objects 1`] = `
 Object {
   "charset": "utf-8",
