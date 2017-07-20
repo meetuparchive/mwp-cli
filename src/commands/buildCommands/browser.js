@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const path = require('path');
 const webpack = require('webpack');
+const transpile = require('./util/transpile');
 const addLocalesOption = require('../../util/addLocalesOption');
 
 const {
@@ -15,7 +16,7 @@ const buildBrowserApp = localeCode => {
 	console.log(
 		chalk.blue(`building browser app (${chalk.yellow(localeCode)})...`)
 	);
-	const config = getBrowserAppConfig(localeCode);
+	const config = getBrowserAppConfig(localeCode, true);
 	webpack(config, (err, stats) => {
 		const relativeBundlePath = getBundlePath(stats, localeCode);
 		console.log(chalk.blue(`built ${relativeBundlePath}`));
@@ -32,6 +33,7 @@ module.exports = {
 			chalk.blue('building browser bundle using current vendor bundles')
 		);
 		// TODO : fork a new child process?
+		transpile('browser');
 		argv.locales.forEach(buildBrowserApp);
 	},
 };

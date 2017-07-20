@@ -1,6 +1,7 @@
 {
   "name": "mwp-cli",
   "description": "CLI for Meetup Web Platform apps",
+  "version": "0.0.0",
   "main": "index.js",
   "repository": "git@github.com:meetup/mwp-cli.git",
   "author": "Michael McGahan <mike.mcgahan@gmail.com>",

@@ -37,10 +37,14 @@ function injectHotReloadConfig(config) {
  * support translations (currently not supported by starter kit), but also
  * to determine the output path
  */
-function getConfig(localeCode) {
+function getConfig(localeCode, fromTranspile) {
 	const config = {
 		entry: {
-			app: [paths.src.browser.entry],
+			app: [
+				fromTranspile
+					? paths.transpiled.browser.entry
+					: paths.src.browser.entry,
+			],
 		},
 
 		output: {
@@ -54,7 +58,7 @@ function getConfig(localeCode) {
 
 		devtool: 'cheap-module-source-map', // similar speed to 'eval', but with proper source maps
 
-		module: { rules: [rules.css, rules.js.browser] },
+		module: { rules: [rules.css] },
 
 		resolveLoader: {
 			alias: {
@@ -64,7 +68,9 @@ function getConfig(localeCode) {
 
 		resolve: {
 			alias: {
-				src: paths.src.browser.app,
+				src: fromTranspile
+					? paths.transpiled.browser.app
+					: paths.src.browser.app,
 				trns: path.resolve(paths.src.trns, 'modules', localeCode),
 			},
 			// module name extensions that Webpack will try if no extension provided
@@ -93,6 +99,9 @@ function getConfig(localeCode) {
 		],
 	};
 
+	if (!fromTranspile) {
+		config.module.rules.push(rules.js.browser);
+	}
 	if (env.properties.isDev && !env.properties.disable_hmr) {
 		injectHotReloadConfig(config);
 	}

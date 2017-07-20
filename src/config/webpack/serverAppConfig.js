@@ -21,11 +21,13 @@ const rules = require('./rules');
  * The server app is a module that exports a rendering function that can be
  * imported by the server and used to render requests to the app route.
  */
-function getConfig(localeCode) {
+function getConfig(localeCode, fromTranspile) {
 	const publicPath = `/${localeCode}/`;
 	const config = {
 		entry: {
-			'server-app': [paths.src.server.entry],
+			'server-app': [
+				fromTranspile ? paths.transpiled.server.entry : paths.src.server.entry,
+			],
 		},
 
 		// write a CommonJS module that can be imported into Node server scripts
@@ -38,7 +40,7 @@ function getConfig(localeCode) {
 
 		devtool: 'eval',
 
-		module: { rules: [rules.css, rules.js.server] },
+		module: { rules: [rules.css] },
 
 		plugins: [
 			new webpack.EnvironmentPlugin({
@@ -79,13 +81,16 @@ function getConfig(localeCode) {
 
 		resolve: {
 			alias: {
-				src: paths.src.server.app,
+				src: fromTranspile ? paths.transpiled.server.app : paths.src.server.app,
 				trns: path.resolve(paths.src.trns, 'modules', localeCode),
 			},
 			// module name extensions that Webpack will try if no extension provided
 			extensions: ['.js', '.jsx', '.json'],
 		},
 	};
+	if (!fromTranspile) {
+		config.module.rules.push(rules.js.server);
+	}
 	if (env.properties.isProd) {
 		config.plugins = config.plugins.concat(prodPlugins);
 	}
