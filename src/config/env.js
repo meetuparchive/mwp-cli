@@ -21,7 +21,7 @@ const schema = {
 		},
 		path: {
 			format: String,
-			default: '/static',
+			default: '/mu_static',
 			env: 'ASSET_PATH',
 		},
 		port: {
