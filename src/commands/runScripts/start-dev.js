@@ -21,7 +21,24 @@ let appServerProcess;
 
 const log = message => console.log(chalk.yellow('>>'), message);
 
+// regex to find all instances of the current working directory as a string
+const cwd = new RegExp(`${process.cwd()}/`, 'g');
+const replaceCwd = s => s.replace(cwd, '');
+
+// the full error output is too verbose - lines 0, 1, 5, 6 are most interesting
+const errorLogLines = lines => [...lines.slice(0, 2), ...lines.slice(5, 7)];
+
 const getCompileLogger = type => (err, stats) => {
+	if (stats.hasErrors()) {
+		stats
+			.toJson()
+			.errors.map(x => x.split('\n'))
+			.map(errorLogLines)
+			.map(lines => lines.join('\n   '))
+			.map(replaceCwd)
+			.map(x => chalk.red(x))
+			.forEach(x => log(x));
+	}
 	const message = ready[type]
 		? chalk.blue(`${type} updated`)
 		: chalk.green(`${type} bundle built`);
@@ -111,16 +128,16 @@ function run(locales) {
 			ignored: /build/,
 		}, // watch options
 		(err, stats) => {
+			serverAppCompileLogger(err, stats);
+
 			if (stats.hasErrors() && stats.toJson().errors[0].includes('trns/app/')) {
-				console.error(chalk.red('Missing translated TRN modules'));
-				console.warn(chalk.yellow('Try running `yarn build:trnModules` first'));
+				console.warn(chalk.yellow('Try running `yarn start:full`'));
 				wdsProcess.kill();
 				if (appServerProcess) {
 					appServerProcess.kill();
 				}
 				process.exit(1);
 			}
-			serverAppCompileLogger(err, stats);
 
 			if (err) {
 				throw err;
