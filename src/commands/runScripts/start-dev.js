@@ -19,7 +19,7 @@ const ready = {
 };
 let appServerProcess;
 
-const log = message => console.log(chalk.yellow('>>'), message);
+const log = (...msgs) => console.log(chalk.yellow('>>'), ...msgs);
 
 // regex to find all instances of the current working directory as a string
 const cwd = new RegExp(`${process.cwd()}/`, 'g');
@@ -29,7 +29,7 @@ const replaceCwd = s => s.replace(cwd, '');
 const errorLogLines = lines => [...lines.slice(0, 2), ...lines.slice(5, 7)];
 
 const getCompileLogger = type => (err, stats) => {
-	if (stats.hasErrors()) {
+	if (stats && stats.hasErrors()) {
 		stats
 			.toJson()
 			.errors.map(x => x.split('\n'))
@@ -131,7 +131,10 @@ function run(locales) {
 			serverAppCompileLogger(err, stats);
 
 			if (stats.hasErrors() && stats.toJson().errors[0].includes('trns/app/')) {
-				console.warn(chalk.yellow('Try running `yarn start:full`'));
+				log(
+					`Try running '${chalk.yellow('yarn start:full')}'`,
+					'- if that fails, check error output for typos'
+				);
 				wdsProcess.kill();
 				if (appServerProcess) {
 					appServerProcess.kill();
