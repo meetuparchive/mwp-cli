@@ -21,9 +21,9 @@ let appServerProcess;
 
 const log = (...msgs) => console.log(chalk.yellow('>>'), ...msgs);
 
-// regex to find all instances of the current working directory as a string
-const cwd = new RegExp(`${process.cwd()}/`, 'g');
-const replaceCwd = s => s.replace(cwd, '');
+// string utility to clean up file paths in error output - it removes the
+// current working directory path, leaving just the project-root-relative path.
+const replaceCwd = s => s.replace(new RegExp(`${process.cwd()}/`, 'g'), '');
 
 // the full error output is too verbose - lines 0, 1, 5, 6 are most interesting
 const errorLogLines = lines => [...lines.slice(0, 2), ...lines.slice(5, 7)];
