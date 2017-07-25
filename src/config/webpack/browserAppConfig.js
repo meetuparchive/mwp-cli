@@ -49,7 +49,7 @@ function getConfig(localeCode) {
 				? '[name].js' // in dev, keep the filename consistent to make reloading easier
 				: '[name].[chunkhash].js', // in prod, add hash to enable long-term caching
 			hashDigestLength: 8,
-			publicPath: `/static/${localeCode}/`,
+			publicPath: `/mu_static/${localeCode}/`,
 		},
 
 		devtool: 'cheap-module-source-map', // similar speed to 'eval', but with proper source maps
