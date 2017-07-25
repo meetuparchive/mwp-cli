@@ -19,9 +19,26 @@ const ready = {
 };
 let appServerProcess;
 
-const log = message => console.log(chalk.yellow('>>'), message);
+const log = (...msgs) => console.log(chalk.yellow('>>'), ...msgs);
+
+// string utility to clean up file paths in error output - it removes the
+// current working directory path, leaving just the project-root-relative path.
+const replaceCwd = s => s.replace(new RegExp(`${process.cwd()}/`, 'g'), '');
+
+// the full error output is too verbose - lines 0, 1, 5, 6 are most interesting
+const errorLogLines = lines => [...lines.slice(0, 2), ...lines.slice(5, 7)];
 
 const getCompileLogger = type => (err, stats) => {
+	if (stats && stats.hasErrors()) {
+		stats
+			.toJson()
+			.errors.map(x => x.split('\n'))
+			.map(errorLogLines)
+			.map(lines => lines.join('\n   '))
+			.map(replaceCwd)
+			.map(x => chalk.red(x))
+			.forEach(x => log(x));
+	}
 	const message = ready[type]
 		? chalk.blue(`${type} updated`)
 		: chalk.green(`${type} bundle built`);
@@ -111,16 +128,19 @@ function run(locales) {
 			ignored: /build/,
 		}, // watch options
 		(err, stats) => {
+			serverAppCompileLogger(err, stats);
+
 			if (stats.hasErrors() && stats.toJson().errors[0].includes('trns/app/')) {
-				console.error(chalk.red('Missing translated TRN modules'));
-				console.warn(chalk.yellow('Try running `yarn build:trnModules` first'));
+				log(
+					`Try running '${chalk.yellow('yarn start:full')}'`,
+					'- if that fails, check error output for typos'
+				);
 				wdsProcess.kill();
 				if (appServerProcess) {
 					appServerProcess.kill();
 				}
 				process.exit(1);
 			}
-			serverAppCompileLogger(err, stats);
 
 			if (err) {
 				throw err;
