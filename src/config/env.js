@@ -12,7 +12,9 @@ const { repoRoot } = require('./paths');
  */
 
 const schema = {
-	// asset server is needed for dev build in order to set up HMR server
+	// asset server is needed for dev build in order to set up HMR server.
+	// Only the `path` is used in production - `host`, `port`, `protocol` are
+	// assumed to be the same as the app server
 	asset_server: {
 		host: {
 			format: String,
