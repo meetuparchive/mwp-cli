@@ -1,6 +1,8 @@
+jest.mock('transifex');
+
+const transifex = require('transifex');
 const txlib = require('./index');
 
-const request = require('request');
 
 describe('trn utils', () => {
 	it('compares two objects, returning an object composed of new keys or existing keys with changed msgstr values', () => {
@@ -111,20 +113,18 @@ msgstr "1 Mitglied ging"
 		txlib.wrapCompilePo$(poObj)
 			.subscribe( val => expect(val).toMatchSnapshot());
 	});
-console.log('testy test')
-	it('loads resource list and sorts by date modified', () => {
-		console.log('inside test');
 
-		request.__setMockResponse({
+	it('loads resource list and sorts by date modified', done => {
+/*
+		transifex.__setMockResponse({
 					headers : {},
 					statusCode: 200
 			}, 'hi');
-
+*/
 		txlib.resources$
 			.subscribe( resources => {
-				console.log('xxxxxxx');
-				console.log(resources);
-				expect(resources).toBe(0);
+				expect(resources).toMatchSnapshot();
+				done();
 			}, err => console.log(err));
 	});
 });

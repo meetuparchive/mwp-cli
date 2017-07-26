@@ -253,6 +253,28 @@ const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
 		return contentCompiled;
 	});
 
+const projectInfo$ = Rx.Observable.bindNodeCallback(
+	tx.projectInstanceMethods.bind(tx)
+);
+
+const resourceInfo$ = Rx.Observable.bindNodeCallback(
+	tx.resourcesInstanceMethods.bind(tx)
+);
+
+const lastUpdateComparator = (a, b) =>
+	new Date(a['last_update']) - new Date(b['last_update']);
+
+// resource slugs sorted by last modified date
+const resources$ =
+	projectInfo$(PROJECT)
+	.pluck('resources')
+	.flatMap(Rx.Observable.from)
+	.flatMap(resource => resourceInfo$(PROJECT, resource['slug']))
+	.toArray()
+	.map(resourceInfo =>
+		resourceInfo.sort(lastUpdateComparator).map(resource => resource['slug'])
+	);
+
 module.exports = {
 	allLocalPoTrns$,
 	allLocalPoTrnsWithFallbacks$,
@@ -271,6 +293,7 @@ module.exports = {
 	reactIntlToPo,
 	readFile$,
 	readResource$,
+	resources$,
 	tx,
 	updateResource$,
 	uploadTrnsMaster$,

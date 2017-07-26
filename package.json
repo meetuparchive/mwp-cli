@@ -6,13 +6,14 @@
   "author": "Michael McGahan <mike.mcgahan@gmail.com>",
   "license": "MIT",
   "config": {
-    "txProject": "test"
+    "txProject": "mup-web"
   },
   "bin": {
     "mope": "bin/mope.js"
   },
   "scripts": {
     "test": "jest --coverage",
+    "test:watch": "yarn test -- --watch --verbose",
     "coveralls": "cat coverage/lcov.info | coveralls"
   },
   "dependencies": {

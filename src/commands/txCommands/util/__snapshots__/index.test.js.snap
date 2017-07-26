@@ -27,6 +27,13 @@ Object {
 }
 `;
 
+exports[`trn utils loads resource list and sorts by date modified 1`] = `
+Array [
+  "MW-1168_gh_delete_discussion",
+  "MW-1454_memberSample",
+]
+`;
+
 exports[`trn utils merge objects, throw error if dupe key 1`] = `
 Object {
   "id1": Object {
