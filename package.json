@@ -6,7 +6,7 @@
   "author": "Michael McGahan <mike.mcgahan@gmail.com>",
   "license": "MIT",
   "config": {
-    "txProject": "mup-web"
+    "txProject": "test"
   },
   "bin": {
     "mope": "bin/mope.js"
