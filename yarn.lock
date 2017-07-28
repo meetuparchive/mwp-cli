@@ -5827,9 +5827,9 @@ tr46@~0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
 
-transifex@1.4.6:
-  version "1.4.6"
-  resolved "https://registry.yarnpkg.com/transifex/-/transifex-1.4.6.tgz#5a9e420ffc0a89b6a59f14f1e57049c500594eeb"
+"transifex@git://github.com/mattkime/node-transifex.git#d109c7c":
+  version "1.4.5"
+  resolved "git://github.com/mattkime/node-transifex.git#d109c7c"
   dependencies:
     commander "^2.9.0"
     lodash "^4.17.1"

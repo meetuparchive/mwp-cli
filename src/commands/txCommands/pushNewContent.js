@@ -102,18 +102,7 @@ const branchCheck$ = gitBranch$.do(branchName => {
 	}
 });
 
-const pushContent$ = Rx.Observable
-	.zip(masterAndResourceTrns$, txlib.localTrnsMerged$) // load main and local trn content
-	.do(([main, trns]) =>
-		console.log(
-			'master and resource trns',
-			Object.keys(main).length,
-			' / trns extracted:',
-			Object.keys(trns).length
-		)
-	)
-	.map(txlib.diff) // return local content that is new or updated
-	.do(diff => console.log('trns added / updated:', Object.keys(diff).length))
+const pushContent$ = txlib.newOrUpdatedContent$(masterAndResourceTrns$)
 	.flatMap(pushResource$);
 
 module.exports = {

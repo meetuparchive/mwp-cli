@@ -253,6 +253,20 @@ const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
 		return contentCompiled;
 	});
 
+	const newOrUpdatedContent$  = pointOfComparision => Rx.Observable
+	.zip(pointOfComparison, localTrnsMerged$) // load main and local trn content
+	//.zip(masterAndResourceTrns$, txlib.localTrnsMerged$) // load main and local trn content
+	.do(([main, trns]) =>
+		console.log(
+			'reference trns',
+			Object.keys(main).length,
+			' / trns extracted:',
+			Object.keys(trns).length
+		)
+	)
+	.map(diff) // return local content that is new or updated
+	.do(diff => console.log('trns added / updated:', Object.keys(diff).length))
+
 module.exports = {
 	allLocalPoTrns$,
 	allLocalPoTrnsWithFallbacks$,
@@ -265,6 +279,7 @@ module.exports = {
 	localTrnsMerged$,
 	MASTER_RESOURCE,
 	mergeLocalTrns,
+	newOrUpdatedContent$,
 	parsePluckTrns,
 	PROJECT,
 	PROJECT_MASTER,

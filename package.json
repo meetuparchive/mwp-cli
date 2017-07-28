@@ -43,7 +43,7 @@
     "rxjs": "5.4.2",
     "style-loader": "0.18.2",
     "sw-precache-webpack-plugin": "0.11.4",
-    "transifex": "1.4.6",
+    "transifex": "git://github.com/mattkime/node-transifex.git#d109c7c",
     "webpack": "3.2.0",
     "webpack-dev-server": "2.5.1",
     "webpack-manifest-plugin": "1.1.2",

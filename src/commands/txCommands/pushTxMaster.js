@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const Rx = require('rxjs');
 const txlib = require('./util');
 
+// grab all trns
 const updateMasterContent$ = txlib.localTrnsMerged$
 	.flatMap(poContent =>
 		txlib.updateResource$(
@@ -12,9 +13,14 @@ const updateMasterContent$ = txlib.localTrnsMerged$
 	) // update master resource
 	.map(updateResult => [txlib.MASTER_RESOURCE, updateResult]); // append 'master' for logging
 
+/*
 const updateTranslations$ = txlib.allLocalPoTrns$
 	.flatMap(txlib.uploadTrnsMaster$)
 	.do(console.log);
+*/
+txlib.newOrUpdatedContent$(txlib.txMasterTrns$)
+//todo - verify node-transifex 
+//todo iterate over po content, pull out only matching keys, push those strings
 
 module.exports = {
 	command: 'pushTxMaster',
