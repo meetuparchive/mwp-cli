@@ -1,3 +1,4 @@
+const transifex = require('transifex');
 const txlib = require('./index');
 
 describe('trn utils', () => {
@@ -78,5 +79,43 @@ describe('trn utils', () => {
 		expect(txlib.mergeLocalTrns([msg1, msg2])).toMatchSnapshot();
 		// expected error from duplicate msgs
 		expect(() => txlib.mergeLocalTrns([msg1, msg1])).toThrow();
+	});
+
+	it('takes po file content, extract trn content', () => {
+		const fileContent =
+`msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+# MW-000
+#: src/components/EventCard.jsx:27:16
+msgid "event.oneMemberWent"
+msgstr "1 Mitglied ging"
+`;
+		txlib.parsePluckTrns(fileContent)
+			.subscribe( val => expect(val).toMatchSnapshot());
+	});
+
+	it('takes trn content, returns po file', () => {
+		const poObj = {
+			"event.oneMemberWent" : {
+				"comments": {
+					"reference": "src/components/EventCard.jsx:27:16",
+					"translator": "MW-000",
+				},
+				"msgid": "event.oneMemberWent",
+				"msgstr": [ "1 Mitglied ging" ],
+			}
+		};
+
+		txlib.wrapCompilePo$(poObj)
+			.subscribe( val => expect(val).toMatchSnapshot());
+	});
+
+	it('loads resource list and sorts by date modified', done => {
+		txlib.resources$
+			.subscribe( resources => {
+				expect(resources).toMatchSnapshot();
+				done();
+			}, err => console.log(err));
 	});
 });
