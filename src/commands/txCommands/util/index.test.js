@@ -112,12 +112,6 @@ msgstr "1 Mitglied ging"
 	});
 
 	it('loads resource list and sorts by date modified', done => {
-/*
-		transifex.__setMockResponse({
-					headers : {},
-					statusCode: 200
-			}, 'hi');
-*/
 		txlib.resources$
 			.subscribe( resources => {
 				expect(resources).toMatchSnapshot();
