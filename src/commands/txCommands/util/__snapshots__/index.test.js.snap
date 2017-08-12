@@ -42,6 +42,13 @@ Object {
 }
 `;
 
+exports[`trn utils loads resource list and sorts by date modified 1`] = `
+Array [
+  "MW-1168_gh_delete_discussion",
+  "MW-1454_memberSample",
+]
+`;
+
 exports[`trn utils merge objects, throw error if dupe key 1`] = `
 Object {
   "id1": Object {
@@ -67,6 +74,21 @@ Object {
 }
 `;
 
+exports[`trn utils takes po file content, extract trn content 1`] = `
+Object {
+  "event.oneMemberWent": Object {
+    "comments": Object {
+      "reference": "src/components/EventCard.jsx:27:16",
+      "translator": "MW-000",
+    },
+    "msgid": "event.oneMemberWent",
+    "msgstr": Array [
+      "1 Mitglied ging",
+    ],
+  },
+}
+`;
+
 exports[`trn utils takes po objects and returns react intl format 1`] = `
 Object {
   "id1": "id1 text",
@@ -80,6 +102,17 @@ Array [
     "translation": "id1 text",
   },
 ]
+`;
+
+exports[`trn utils takes trn content, returns po file 1`] = `
+"msgid \\"\\"
+msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
+
+# MW-000
+#: src/components/EventCard.jsx:27:16
+msgid \\"event.oneMemberWent\\"
+msgstr \\"1 Mitglied ging\\"
+"
 `;
 
 exports[`trn utils wraps Po objects 1`] = `

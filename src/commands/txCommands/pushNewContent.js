@@ -5,25 +5,6 @@ const txlib = require('./util');
 
 const tx = txlib.tx;
 
-const projectInfo$ = Rx.Observable.bindNodeCallback(
-	tx.projectInstanceMethods.bind(tx)
-);
-const resourceInfo$ = Rx.Observable.bindNodeCallback(
-	tx.resourcesInstanceMethods.bind(tx)
-);
-const lastUpdateComparator = (a, b) =>
-	new Date(a['last_update']) - new Date(b['last_update']);
-
-// resource slugs sorted by last modified date
-const resources$ = projectInfo$(txlib.PROJECT)
-	.pluck('resources')
-	.flatMap(Rx.Observable.from)
-	.flatMap(resource => resourceInfo$(txlib.PROJECT, resource['slug']))
-	.toArray()
-	.map(resourceInfo =>
-		resourceInfo.sort(lastUpdateComparator).map(resource => resource['slug'])
-	);
-
 const readParseResource$ = slug =>
 	txlib.readResource$(slug).flatMap(txlib.parsePluckTrns);
 
@@ -45,7 +26,7 @@ const gitBranch$ = Rx.Observable
 	.map(branchname => branchname.replace(/\//g, '_'));
 
 const branchResourceExists$ = Rx.Observable
-	.zip(resources$, gitBranch$)
+	.zip(txlib.resources$, gitBranch$)
 	.map(([resources, branch]) => resources.indexOf(branch) > -1);
 
 // syncs content in po format to tx
@@ -72,7 +53,7 @@ const txMasterTrns$ = txlib
 	.flatMap(txlib.parsePluckTrns);
 
 const resourceTrns$ = Rx.Observable
-	.zip(gitBranch$, resources$)
+	.zip(gitBranch$, txlib.resources$)
 	// get resources but filter out my current resource
 	.map(([gitBranch, resources]) =>
 		resources.filter(resource => resource != gitBranch)
