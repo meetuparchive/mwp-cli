@@ -102,7 +102,7 @@ const branchCheck$ = gitBranch$.do(branchName => {
 	}
 });
 
-const pushContent$ = txlib.newOrUpdatedContent$(masterAndResourceTrns$)
+const pushContent$ = txlib.diffVerbose$(masterAndResourceTrns$,txlib.localTrnsMerged$)
 	.flatMap(pushResource$);
 
 module.exports = {

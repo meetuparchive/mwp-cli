@@ -13,14 +13,6 @@ const updateMasterContent$ = txlib.localTrnsMerged$
 	) // update master resource
 	.map(updateResult => [txlib.MASTER_RESOURCE, updateResult]); // append 'master' for logging
 
-/*
-const updateTranslations$ = txlib.allLocalPoTrns$
-	.flatMap(txlib.uploadTrnsMaster$)
-	.do(console.log);
-*/
-txlib.newOrUpdatedContent$(txlib.txMasterTrns$)
-//todo - verify node-transifex 
-//todo iterate over po content, pull out only matching keys, push those strings
 
 module.exports = {
 	command: 'pushTxMaster',
@@ -29,8 +21,13 @@ module.exports = {
 		txlib.checkEnvVars();
 		console.log(chalk.blue('pushing content to transifex master'));
 
-		Rx.Observable
-			.concat(updateMasterContent$, updateTranslations$) // update master content before pushing translations
-			.subscribe(null, null, () => console.log('done'));
+		txlib.diffVerbose$(txlib.txMasterTrns$, txlib.localTrnsMerged$)
+			.map(Object.keys)
+			.do(keys => console.log(`\nNew / Updated Keys: \n${keys.join('\n')}`))
+			// need to update master content _then_ push translations
+			.flatMap(keys => updateMasterContent$
+				.flatMap(() => txlib.uploadTranslationsForKeys$(keys))
+			)
+			.subscribe(() => console.log('done'));
 	},
 };

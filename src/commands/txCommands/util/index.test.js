@@ -1,6 +1,18 @@
+const Rx = require('rxjs');
 const txlib = require('./index');
 
 describe('trn utils', () => {
+	const msg1 = {
+		id1: {
+			msgid: 'id1',
+			msgstr: ['id1 text'],
+			comments: {
+				extracted: 'text for test',
+				reference: 'text.txt:2:5',
+			},
+		},
+	};
+
 	it('compares two objects, returning an object composed of new keys or existing keys with changed msgstr values', () => {
 		const same = { msgstr: 'same' };
 		const different = { msgstr: 'abc' };
@@ -53,16 +65,6 @@ describe('trn utils', () => {
 	});
 
 	it('merge objects, throw error if dupe key', () => {
-		const msg1 = {
-			id1: {
-				msgid: 'id1',
-				msgstr: ['id1 text'],
-				comments: {
-					extracted: 'text for test',
-					reference: 'text.txt:2:5',
-				},
-			},
-		};
 		const msg2 = {
 			id2: {
 				msgid: 'id2',
@@ -79,4 +81,18 @@ describe('trn utils', () => {
 		// expected error from duplicate msgs
 		expect(() => txlib.mergeLocalTrns([msg1, msg1])).toThrow();
 	});
+
+	it('takes po objects and returns tx upload format', () => {
+		expect(txlib.poToUploadFormat(msg1)).toMatchSnapshot();
+	});
+
+	it('takes po objects and returns react intl format', () => {
+		expect(txlib.poToReactIntlFormat(msg1)).toMatchSnapshot();
+	});
+
+	it('filters po content by keys', done => {
+		const keys = ['id1'];
+		txlib.filterPoContentByKeys$(keys,msg1)
+			.subscribe(val => expect(val).toMatchSnapshot(),null, done);
+	})
 });

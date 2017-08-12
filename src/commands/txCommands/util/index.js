@@ -2,6 +2,7 @@ const babel = require('babel-core');
 const fs = require('fs');
 const gettextParser = require('gettext-parser');
 const glob = require('glob');
+const _ = require('lodash');
 const path = require('path');
 const { paths, package: packageConfig } = require('../../../config');
 const Rx = require('rxjs');
@@ -209,6 +210,36 @@ const uploadTrnsMaster$ = ([lang_tag, content]) =>
 		resourceContent(MASTER_RESOURCE, content)
 	);
 
+const uploadTranslation$ = ([lang_tag, content]) =>
+	Rx.Observable.bindNodeCallback(tx.translationStringsPutMethod.bind(tx))(
+		PROJECT_MASTER,
+		MASTER_RESOURCE,
+		lang_tag,
+		content
+	);
+
+const uploadTranslationsForKeys$ = keys => allLocalPoTrns$
+	.flatMap(([lang_tag, content]) => filterPoContentByKeys$(keys,content)
+		.map(poToUploadFormat)
+		.map(filteredTrnObj => [lang_tag,filteredTrnObj])
+	)
+	.flatMap(uploadTranslation$)
+
+const poToUploadFormat = trnObj =>
+	Object.keys(trnObj)
+		.reduce((arr,key) => 
+			arr.concat({'key':key,'translation':trnObj[key].msgstr[0]}),[]) 
+
+const filterPoContentByKeys$ = (keys, poContent) => Rx.Observable.of(poContent)
+	.map(trnObj => _.pick(trnObj, keys)) // return object with specified keys only
+	.filter(obj => Object.keys(obj).length) // remove empty objects
+
+const poToReactIntlFormat = trns => Object.keys(trns)
+	.reduce((messages, trnKey) => {
+		messages[trnKey] = trns[trnKey].msgstr[0];
+		return messages;
+	}, {});
+
 const poPath = path.resolve(paths.repoRoot, 'src/trns/po/') + '/';
 
 const allLocalPoTrns$ = Rx.Observable.bindNodeCallback(glob)(
@@ -217,7 +248,9 @@ const allLocalPoTrns$ = Rx.Observable.bindNodeCallback(glob)(
 	.flatMap(Rx.Observable.from)
 	.flatMap(filename => {
 		const lang_tag = path.basename(filename, '.po');
-		return readFile$(filename).map(content => [lang_tag, content]);
+		return readFile$(filename)
+			.flatMap(parsePluckTrns)
+			.map(content => [lang_tag, content]);
 	});
 
 const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
@@ -231,12 +264,7 @@ const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
 			readFile$(filename)
 				.flatMap(content => parsePluckTrns(content))
 				// po obj format to key / value
-				.map(trns =>
-					Object.keys(trns).reduce((messages, trnKey) => {
-						messages[trnKey] = trns[trnKey].msgstr[0];
-						return messages;
-					}, {})
-				)
+				.map(poToReactIntlFormat)
 				.map(parsedContent => [lang_tag, parsedContent])
 		);
 	})
@@ -253,9 +281,11 @@ const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
 		return contentCompiled;
 	});
 
-	const newOrUpdatedContent$  = pointOfComparision => Rx.Observable
-	.zip(pointOfComparison, localTrnsMerged$) // load main and local trn content
-	//.zip(masterAndResourceTrns$, txlib.localTrnsMerged$) // load main and local trn content
+const txMasterTrns$ = readResource$(MASTER_RESOURCE, PROJECT_MASTER).flatMap(parsePluckTrns);
+
+// sometimes we want to compare against master, sometimes master plus existing resources
+const diffVerbose$  = (master$,content$)  => Rx.Observable
+	.zip(master$,content$)
 	.do(([main, trns]) =>
 		console.log(
 			'reference trns',
@@ -274,20 +304,26 @@ module.exports = {
 	createResource$,
 	deleteResource$,
 	diff,
+	diffVerbose$,
+	filterPoContentByKeys$,
 	localTrns$,
 	localPoTrns$,
 	localTrnsMerged$,
 	MASTER_RESOURCE,
 	mergeLocalTrns,
-	newOrUpdatedContent$,
 	parsePluckTrns,
+	poToReactIntlFormat,
+	poToUploadFormat,
 	PROJECT,
 	PROJECT_MASTER,
 	reactIntlToPo,
 	readFile$,
 	readResource$,
 	tx,
+	txMasterTrns$,
 	updateResource$,
+	uploadTranslation$,
+	uploadTranslationsForKeys$,
 	uploadTrnsMaster$,
 	wrapCompilePo$,
 	wrapPoTrns,

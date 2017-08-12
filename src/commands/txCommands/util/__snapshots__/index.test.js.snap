@@ -27,6 +27,21 @@ Object {
 }
 `;
 
+exports[`trn utils filters po content by keys 1`] = `
+Object {
+  "id1": Object {
+    "comments": Object {
+      "extracted": "text for test",
+      "reference": "text.txt:2:5",
+    },
+    "msgid": "id1",
+    "msgstr": Array [
+      "id1 text",
+    ],
+  },
+}
+`;
+
 exports[`trn utils merge objects, throw error if dupe key 1`] = `
 Object {
   "id1": Object {
@@ -50,6 +65,21 @@ Object {
     ],
   },
 }
+`;
+
+exports[`trn utils takes po objects and returns react intl format 1`] = `
+Object {
+  "id1": "id1 text",
+}
+`;
+
+exports[`trn utils takes po objects and returns tx upload format 1`] = `
+Array [
+  Object {
+    "key": "id1",
+    "translation": "id1 text",
+  },
+]
 `;
 
 exports[`trn utils wraps Po objects 1`] = `
