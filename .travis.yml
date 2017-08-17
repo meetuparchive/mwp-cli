@@ -14,10 +14,9 @@ branches:
 env:
   global:
     - CI_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER
-    - secure: "RjEHL7Nuz7ARYa5rMslXZGS23kanJw1+18zCNP7EUbMPfTnocpBP1PrnpYkMEk4220sSka90n+1DA89/hEOV6nLr7BQWbHaGg6EtmQJwgtQz9vQt5Gsv8bH/L3JlqgWJtfPg856WZy7JuB8dyjU91vCFLf0m4oXX8jOTESMYcDMg+bUx/48d7gYoL9nwRMiyvTQpzP+4dR7EuiiM13ubOMGthJrxXbdZ856a9Hrt9cg5zEEP9idHpQo/WNyKZK6VMJWPbOZ1kh6yWyyVcKrAp5uPEG3yb/LknOeWpIy/Ad6bsONgETaAd+e5R95sBzqs3rxw2Pu6oQRi2OZyM9GMoiNeowH2NbII31GEd5v6xUIXeZO7P85vdiCqa9fyUYjDBcPYIrgbsjaV7lbWI81clKLtajPZJ4vVPiOzFfgy8CwhuX6ymP21lJHGqhIeEvHlLvt4cEmD1G4QgApupDMi0skF4JBROWF51D4lStukNOmXQ2MAhUhy+b4L33T01yQs+NYU9EPnw5us3Rhm01q6V3wnnc6AUdfzbxQucyxMK+vm02hREZOkce4uk2GuWalevMZJhk4pOf99PhUUvS3fg2uvubELGqtYTd6p+B3uF8f1Z/sRCXEnYv+2jqb0ipyMOJ2W6uMjREoS2eqg5wEK/cVYpLNQzv+4HyUV0ij7QDY="
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_5cfbacc72aef_key -iv $encrypted_5cfbacc72aef_iv -in '.travis/github_deploy_key.enc' -out github_deploy_key -d
+  - openssl aes-256-cbc -K $encrypted_8360855577e2_key -iv $encrypted_8360855577e2_iv -in '.travis/github_deploy_key.enc' -out github_deploy_key -d
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
 
 before_script:
@@ -28,8 +27,8 @@ after_script:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
   - >
-    $(npm bin)/set-up-ssh --key "$encrypted_5cfbacc72aef_key" \
-                             --iv "$encrypted_5cfbacc72aef_iv" \
+    $(npm bin)/set-up-ssh --key "$encrypted_8360855577e2_key" \
+                             --iv "$encrypted_8360855577e2_iv" \
                              --path-encrypted-key ".travis/github_deploy_key.enc"
   - >
     [ "${TRAVIS_BRANCH}" = "master" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ] &&
@@ -42,7 +41,7 @@ after_script:
   - echo "GIT_TAG=$GIT_TAG"
   - echo "NPM_TAG=$NPM_TAG"
   - npm version $GIT_TAG -m "Version $GIT_TAG built by Travis CI - https://travis-ci.com/$TRAVIS_REPO_SLUG/builds/$TRAVIS_JOB_ID"
-  #- git push --tags git@github.com:$TRAVIS_REPO_SLUG.git
+  - git push --tags git@github.com:$TRAVIS_REPO_SLUG.git
   - npm publish --tag $NPM_TAG
 
 after_success:
