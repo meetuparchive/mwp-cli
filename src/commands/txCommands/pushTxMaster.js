@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const Rx = require('rxjs');
 const txlib = require('./util');
 
+// grab all trns
 const updateMasterContent$ = txlib.localTrnsMerged$
 	.flatMap(poContent =>
 		txlib.updateResource$(
@@ -12,9 +13,6 @@ const updateMasterContent$ = txlib.localTrnsMerged$
 	) // update master resource
 	.map(updateResult => [txlib.MASTER_RESOURCE, updateResult]); // append 'master' for logging
 
-const updateTranslations$ = txlib.allLocalPoTrns$
-	.flatMap(txlib.uploadTrnsMaster$)
-	.do(console.log);
 
 module.exports = {
 	command: 'pushTxMaster',
@@ -23,8 +21,13 @@ module.exports = {
 		txlib.checkEnvVars();
 		console.log(chalk.blue('pushing content to transifex master'));
 
-		Rx.Observable
-			.concat(updateMasterContent$, updateTranslations$) // update master content before pushing translations
-			.subscribe(null, null, () => console.log('done'));
+		txlib.diffVerbose$(txlib.txMasterTrns$, txlib.localTrnsMerged$)
+			.map(Object.keys)
+			.do(keys => console.log(`\nNew / Updated Keys: \n${keys.join('\n')}`))
+			// need to update master content _then_ push translations
+			.flatMap(keys => updateMasterContent$
+				.flatMap(() => txlib.uploadTranslationsForKeys$(keys))
+			)
+			.subscribe(() => console.log('done'));
 	},
 };

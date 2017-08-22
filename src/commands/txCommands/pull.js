@@ -24,8 +24,7 @@ const pullResourceContent$ = branch =>
 		// 2. parse local trn content and grab updates
 		.flatMap(([lang_tag, content]) =>
 			Rx.Observable.zip(
-				[lang_tag],
-				txlib.parsePluckTrns(content),
+				[lang_tag],content,
 				downloadTrnUpdates$(branch, lang_tag)
 			)
 		)

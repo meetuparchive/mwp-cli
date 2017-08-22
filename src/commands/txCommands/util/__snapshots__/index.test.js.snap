@@ -27,6 +27,21 @@ Object {
 }
 `;
 
+exports[`trn utils filters po content by keys 1`] = `
+Object {
+  "id1": Object {
+    "comments": Object {
+      "extracted": "text for test",
+      "reference": "text.txt:2:5",
+    },
+    "msgid": "id1",
+    "msgstr": Array [
+      "id1 text",
+    ],
+  },
+}
+`;
+
 exports[`trn utils loads resource list and sorts by date modified 1`] = `
 Array [
   "MW-1168_gh_delete_discussion",
@@ -72,6 +87,21 @@ Object {
     ],
   },
 }
+`;
+
+exports[`trn utils takes po objects and returns react intl format 1`] = `
+Object {
+  "id1": "id1 text",
+}
+`;
+
+exports[`trn utils takes po objects and returns tx upload format 1`] = `
+Array [
+  Object {
+    "key": "id1",
+    "translation": "id1 text",
+  },
+]
 `;
 
 exports[`trn utils takes trn content, returns po file 1`] = `
