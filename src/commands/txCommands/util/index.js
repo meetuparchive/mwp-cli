@@ -227,18 +227,14 @@ const uploadTranslationsForKeys$ = keys => allLocalPoTrns$
 
 const poToUploadFormat = trnObj =>
 	Object.keys(trnObj)
-		.reduce((arr,key) => 
-			arr.concat({'key':key,'translation':trnObj[key].msgstr[0]}),[]) 
+		.reduce((arr,key) =>
+			arr.concat({'key':key,'translation':trnObj[key].msgstr[0]}),[])
 
 const filterPoContentByKeys$ = (keys, poContent) => Rx.Observable.of(poContent)
 	.map(trnObj => _.pick(trnObj, keys)) // return object with specified keys only
-	.filter(obj => Object.keys(obj).length) // remove empty objects
+	.filter(obj => !_.isEmpty(obj)) // remove empty objects
 
-const poToReactIntlFormat = trns => Object.keys(trns)
-	.reduce((messages, trnKey) => {
-		messages[trnKey] = trns[trnKey].msgstr[0];
-		return messages;
-	}, {});
+const poToReactIntlFormat = trns => _.mapValues(trns, val => val.msgstr[0])
 
 const poPath = path.resolve(paths.repoRoot, 'src/trns/po/') + '/';
 
