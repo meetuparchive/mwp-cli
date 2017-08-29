@@ -121,20 +121,20 @@ const schema = Object.assign({}, envSchema, {
 		},
 		secret: {
 			format: validateOauthSecret,
-			default: null,
+			default: process.env.NODE_ENV === 'test' ? secretDefault : null,
 			env: 'MUPWEB_OAUTH_SECRET',
 			sensitive: true,
 		},
 		key: {
 			format: validateOauthKey,
-			default: null,
+			default: process.env.NODE_ENV === 'test' ? secretDefault : null,
 			env: 'MUPWEB_OAUTH_KEY',
 			sensitive: true,
 		},
 	},
 	photo_scaler_salt: {
 		format: validatePhotoScalerSalt,
-		default: null,
+		default: process.env.NODE_ENV === 'test' ? secretDefault : null,
 		env: 'PHOTO_SCALER_SALT',
 		sensitive: true,
 	},
