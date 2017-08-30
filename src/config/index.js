@@ -5,4 +5,5 @@ module.exports = {
 	package: require('./package'),
 	paths: require('./paths'),
 	webpack: require('./webpack'),
+	server: require('./server'),
 };
