@@ -5,5 +5,5 @@ module.exports = {
 	package: require('./package'),
 	paths: require('./paths'),
 	webpack: require('./webpack'),
-	server: require('./server'),
+	getServer: () => require('./server'), // this is a getter because it validates environment config at runtime
 };
