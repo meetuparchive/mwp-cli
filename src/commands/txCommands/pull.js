@@ -9,7 +9,7 @@ const tx = txlib.tx;
 
 const readTranslation$ = (branch, lang_tag) =>
 	Rx.Observable.bindNodeCallback(tx.translationInstanceMethod.bind(tx))(
-		txlib.PROJECT,
+		branch == 'master' ? txlib.PROJECT_MASTER : txlib.PROJECT,
 		branch,
 		lang_tag
 	).map(response => response[0]);
@@ -24,7 +24,7 @@ const pullResourceContent$ = branch =>
 		// 2. parse local trn content and grab updates
 		.flatMap(([lang_tag, content]) =>
 			Rx.Observable.zip(
-				[lang_tag],content,
+				[lang_tag], [content],
 				downloadTrnUpdates$(branch, lang_tag)
 			)
 		)
