@@ -52,7 +52,6 @@
     "yargs": "8.0.2"
   },
   "peerDependencies": {
-    "meetup-web-platform": ">3",
     "rxjs": "^5.4.2"
   },
   "lint-staged": {

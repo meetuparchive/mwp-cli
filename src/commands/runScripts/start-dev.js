@@ -158,7 +158,7 @@ function run(locales) {
 		startServer(locales)
 	);
 	fs.watchFile(
-		`${process.cwd()}/node_modules/meetup-web-platform/lib/index.js`,
+		`${process.cwd()}/node_modules/mwp-app-server/lib/index.js`,
 		() => startServer(locales)
 	);
 }
