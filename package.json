@@ -29,7 +29,7 @@
     "babel-preset-react": "6.24.1",
     "babel-preset-stage-2": "6.24.1",
     "chalk": "2.0.1",
-    "convict": "4.0.0",
+    "convict": "4.0.1",
     "coveralls": "2.13.1",
     "css-loader": "0.28.4",
     "eslint": "4.2.0",
