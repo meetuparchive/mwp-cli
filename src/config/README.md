@@ -36,3 +36,9 @@ module.
 The `/server` module defines the runtime configuration of the Node application
 server. It is essentially an extension of the `/env` config, but adds a few more
 host and authentication configuration values.
+
+## Known config keys
+
+| Key | Description |
+| ------------- | ------------- |
+| INTERCOM_APP_ID  | Intercom AppID associated with Meetup Intercom account that is used for this 3rd Party messaging/onboarding service/component. Available on client and server. |
