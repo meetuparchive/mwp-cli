@@ -36,3 +36,13 @@ module.
 The `/server` module defines the runtime configuration of the Node application
 server. It is essentially an extension of the `/env` config, but adds a few more
 host and authentication configuration values.
+
+## `process.env` keys supported in client code
+
+Although process.env is typically only available in server-side code, our bundling process can automatically inject certain environment values into the client bundle wherever it finds a supported process.env.YOUR_ENV_VAR expression.
+
+The following environment variables are supported - clients are responsible for populating them in the build environment:
+
+| Key | Description |
+| ------------- | ------------- |
+| INTERCOM_APP_ID  | Intercom AppID associated with Meetup Intercom account that is used for this 3rd Party messaging/onboarding service/component. Available on client and server. |
