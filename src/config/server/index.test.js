@@ -38,7 +38,7 @@ describe('validateServerHost', () => {
 		expect(() => validateServerHost(1234)).toThrow();
 		expect(() => validateServerHost({ foo: 'bar' })).toThrow();
 		expect(() => validateServerHost(['foo'])).toThrow();
-		expect(() => validateServerHost('foo')).not.toThrow();
+		expect(() => validateServerHost('foo.dev.')).not.toThrow();
 	});
 	it('throws error for dev in prod', () => {
 		const _env = process.env.NODE_ENV; // cache the 'real' value to restore later
