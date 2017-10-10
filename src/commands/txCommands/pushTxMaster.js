@@ -9,7 +9,7 @@ const updateMasterContent$ = txlib.localTrnsMerged$
 			txlib.MASTER_RESOURCE,
 			poContent,
 			txlib.PROJECT_MASTER
-		)
+		).do(() => console.log('update master success'), () => console.log('update master FAIL!'))
 	) // update master resource
 	.map(updateResult => [txlib.MASTER_RESOURCE, updateResult]); // append 'master' for logging
 

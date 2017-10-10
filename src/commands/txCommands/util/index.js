@@ -216,7 +216,7 @@ const uploadTranslation$ = ([lang_tag, content]) =>
 		MASTER_RESOURCE,
 		lang_tag,
 		content
-	).do(() => console.log(`translation upload complete - ${lang_tag}`));
+	).do(() => console.log(`translation upload complete - ${lang_tag}`), () => console.log(`translation upload FAIL - ${lang_tag}`));
 
 const uploadTranslationsForKeys$ = keys => allLocalPoTrns$
 	.flatMap(([lang_tag, content]) => filterPoContentByKeys$(keys,content)
@@ -278,7 +278,7 @@ const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
 	});
 
 const txMasterTrns$ = readResource$(MASTER_RESOURCE, PROJECT_MASTER)
-	.do(() => console.log('master resource read complete'))
+	.do(() => console.log('master resource read complete'), () => console.log('master resource read fail'))
 	.flatMap(parsePluckTrns);
 
 // sometimes we want to compare against master, sometimes master plus existing resources
