@@ -56,7 +56,7 @@ const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
 const buildTrnModules = () =>
 	allLocalPoTrnsWithFallbacks$.mergeMap(
 		messagesByLocale =>
-			componentTrnDefinitions$.do(writeTrnModules(messagesByLocale)) // loop over components that define TRNs // write the files
+			componentTrnDefinitions$.do(console.log).do(writeTrnModules(messagesByLocale)) // loop over components that define TRNs // write the files
 	);
 
 function main() {
