@@ -61,5 +61,6 @@
       "eslint",
       "git add"
     ]
-  }
+  },
+  "version": "1.1.209"
 }
