@@ -278,7 +278,7 @@ const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
 	});
 
 const txMasterTrns$ = readResource$(MASTER_RESOURCE, PROJECT_MASTER)
-	.do(() => console.log('reading master resource complete))
+	.do(() => console.log('reading master resource complete'))
 	.flatMap(parsePluckTrns);
 
 // sometimes we want to compare against master, sometimes master plus existing resources
