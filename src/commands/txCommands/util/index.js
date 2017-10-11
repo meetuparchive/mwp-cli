@@ -277,9 +277,12 @@ const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
 		return contentCompiled;
 	});
 
-const txMasterTrns$ = readResource$(MASTER_RESOURCE, PROJECT_MASTER)
-	.do(() => console.log('master resource read complete'), () => console.log('master resource read fail'))
-	.flatMap(parsePluckTrns);
+const txMasterTrns$ = () => {
+		console.log('top of txMasterTrns$');
+		return readResource$(MASTER_RESOURCE, PROJECT_MASTER)
+			.do(() => console.log('master resource read complete'), () => console.log('master resource read fail'))
+			.flatMap(parsePluckTrns);
+	}
 
 // sometimes we want to compare against master, sometimes master plus existing resources
 const diffVerbose$  = (master$,content$)  => Rx.Observable
