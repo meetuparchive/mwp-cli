@@ -73,7 +73,7 @@ function getConfig(localeCode) {
 		plugins: [
 			new webpack.EnvironmentPlugin({
 				NODE_ENV: 'development', // required for prod build of React (specify default)
-				INTERCOM_APP_ID: null,   // only needs to be overriden if application wants Intercom config available on client and server
+				INTERCOM_APP_ID: null, // only needs to be overriden if application wants Intercom config available on client and server
 			}),
 			new webpack.DllReferencePlugin({
 				context: '.',
