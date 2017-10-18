@@ -86,20 +86,10 @@ const assetConf = config.get('asset_server');
 
 if (
 	assetConf.protocol === 'https' &&
-	(!fs.existsSync(assetConf.key_file) || !fs.existsSync(assetConf.crt_file))
+	(!fs.existsSync(assetConf.key_file) || !fs.existsSync(assetConf.crt_file)) &&
+	config.isProd
 ) {
-	const message = 'Missing HTTPS cert or key for asset server!';
-	if (config.isProd) {
-		throw new Error(message);
-	}
-	console.error(chalk.red(message));
-	console.warn(
-		chalk.yellow(
-			'Re-setting protocol to HTTP - some features may not work as expected'
-		)
-	);
-	console.warn(chalk.yellow('See MWP config docs to configure HTTPS'));
-	config.set('asset_server.protocol', 'http');
+	throw new Error('Missing HTTPS cert or key for asset server!');
 }
 
 config.validate();
