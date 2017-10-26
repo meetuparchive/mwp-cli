@@ -8,34 +8,35 @@ module.exports = {
 	builder: yarg =>
 		yarg
 			.options({
-				value: {
+				state: {
 					alias: 's', // s for 'status'. -v is conventionally a 'version' alias
 					demandOption: true,
-					type: 'string',
-					describe: 'The status value',
+					describe: 'The status value/state',
 					choices: ['pending', 'failure', 'error', 'success'],
 				},
 				commit: {
 					alias: 'c',
 					demandOption: true,
-					type: 'string',
+					describe: 'Full SHA-1 hash for PR commit',
 				},
 				token: {
 					alias: 't',
-					type: 'string',
+					demandOption: true,
+					describe: 'GitHub user API token with `repo:status` permission',
 				},
 				repo: {
 					alias: 'r',
 					demandOption: true,
-					type: 'string',
+					describe: 'repo name/slug',
 				},
 				context: {
 					demandOption: true,
-					type: 'string',
+					describe:
+						'A string label to differentiate this status from the status of other systems',
 				},
 				description: {
 					alias: 'd',
-					type: 'string',
+					describe: 'A short description of the status',
 				},
 			})
 			.check((argv, opts) => {
@@ -46,7 +47,7 @@ module.exports = {
 				}
 				return true;
 			}),
-	handler: ({ value, commit, token, repo, context, description }) => {
+	handler: ({ state, commit, token, repo, context, description }) => {
 		github.authenticate({
 			type: 'token',
 			token,
@@ -56,13 +57,13 @@ module.exports = {
 				owner: 'meetup',
 				repo,
 				sha: commit,
-				state: value,
+				state,
 				description,
 				context,
 			})
 			.then(
-				resp => console.log(chalk.green(`PR status: ${value}`)),
-				err => console.error(chalk.red(`Failed to set PR status to ${value}`))
+				resp => console.log(chalk.green(`PR status: ${state}`)),
+				err => console.error(chalk.red(`Failed to set PR status to ${state}`))
 			);
 	},
 };
