@@ -10,7 +10,7 @@ module.exports = {
 		yarg
 			.options({
 				state: {
-					alias: 's', // s for 'status'. -v is conventionally a 'version' alias
+					alias: 's',
 					demandOption: true,
 					describe: 'The status value/state',
 					choices: ['pending', 'failure', 'error', 'success'],
