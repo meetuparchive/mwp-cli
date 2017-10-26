@@ -54,7 +54,7 @@ module.exports = {
 		github.repos
 			.createStatus({
 				owner: 'meetup',
-				repo: repo,
+				repo,
 				sha: commit,
 				state: value,
 				description,
