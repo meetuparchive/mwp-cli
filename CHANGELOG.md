@@ -1,3 +1,8 @@
+# [1.2]
+
+- **New feature** - `mope gh status` to set PR status. Run `mope gh status -h`
+  for more details.
+
 # [1.1]
 
 - **Potentially breaking change** - Default `asset_server.path` updated from
