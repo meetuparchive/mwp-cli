@@ -4,7 +4,8 @@ const github = GitHubApi();
 
 module.exports = {
 	command: 'status',
-	description: 'Set a PR status',
+	description:
+		'Set a PR status - https://developer.github.com/v3/repos/statuses/',
 	builder: yarg =>
 		yarg
 			.options({
