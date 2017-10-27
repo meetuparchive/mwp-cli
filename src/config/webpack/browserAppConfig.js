@@ -48,6 +48,7 @@ function getConfig(localeCode) {
 			filename: env.properties.isDev
 				? '[name].js' // in dev, keep the filename consistent to make reloading easier
 				: '[name].[chunkhash].js', // in prod, add hash to enable long-term caching
+			chunkFilename: '[name].[chunkhash].js',
 			hashDigestLength: 8,
 			publicPath: `/mu_static/${localeCode}/`,
 		},
