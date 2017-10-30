@@ -64,7 +64,13 @@ module.exports = {
 			})
 			.then(
 				resp => console.log(chalk.green(`PR status: ${state}`)),
-				err => console.error(chalk.red(`Failed to set PR status to ${state}`))
+				err => {
+					console.error(
+						chalk.red('ERROR:'),
+						`GH status not set: ${JSON.parse(err.message).message}`
+					);
+					console.error(chalk.red(`Failed to set PR status to ${state}`));
+				}
 			);
 	},
 };
