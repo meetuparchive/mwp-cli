@@ -39,6 +39,9 @@ module.exports = {
 					alias: 'd',
 					describe: 'A short description of the status',
 				},
+				target: {
+					describe: 'target URL to find out more details',
+				},
 			})
 			.check((argv, opts) => {
 				if (argv.commit.length < 40) {
@@ -48,7 +51,7 @@ module.exports = {
 				}
 				return true;
 			}),
-	handler: ({ state, commit, token, repo, context, description }) => {
+	handler: ({ state, commit, token, repo, context, description, target }) => {
 		github.authenticate({
 			type: 'token',
 			token,
@@ -61,6 +64,7 @@ module.exports = {
 				state,
 				description,
 				context,
+				target_url: target,
 			})
 			.then(
 				resp => console.log(chalk.green(`PR status: ${state}`)),
