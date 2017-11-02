@@ -181,7 +181,7 @@ const readResource$ = (slug, project = PROJECT) =>
 	Rx.Observable.bindNodeCallback(tx.sourceLanguageMethods.bind(tx))(
 		project,
 		slug
-	);
+	).retry(5);
 
 const updateResource$ = (slug, content, project = PROJECT) => {
 	// allow override for push to mup-web-master
