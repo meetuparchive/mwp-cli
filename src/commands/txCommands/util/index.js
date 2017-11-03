@@ -181,7 +181,7 @@ const readResource$ = (slug, project = PROJECT) =>
 	Rx.Observable.bindNodeCallback(tx.sourceLanguageMethods.bind(tx))(
 		project,
 		slug
-	);
+	).retry(5);
 
 const updateResource$ = (slug, content, project = PROJECT) => {
 	// allow override for push to mup-web-master
@@ -282,8 +282,8 @@ const txMasterTrns$ = readResource$(MASTER_RESOURCE, PROJECT_MASTER)
 	.flatMap(parsePluckTrns);
 
 // sometimes we want to compare against master, sometimes master plus existing resources
-const diffVerbose$  = (master$,content$)  => Rx.Observable
-	.zip(master$,content$)
+const diffVerbose$  = (master$,content$)  => 
+	master$.concat(content$).toArray() // resolves resource contention issue. equivalent to .zip
 	.do(([main, trns]) =>
 		console.log(
 			'reference trns',
