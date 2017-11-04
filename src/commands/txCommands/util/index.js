@@ -182,8 +182,8 @@ const readResource$ = (slug, project = PROJECT) =>
 		project,
 		slug
 	)
-	.do(null, () => console.log(`error readResource$ ${slug} ${project}`))
-	.retry(5);
+	.retry(5)
+	.do(null, () => console.log(`error readResource$ ${slug} ${project}`));
 
 const updateResource$ = (slug, content, project = PROJECT) => {
 	// allow override for push to mup-web-master
@@ -210,8 +210,8 @@ const uploadTrnsMaster$ = ([lang_tag, content]) =>
 		MASTER_RESOURCE,
 		lang_tag,
 		resourceContent(MASTER_RESOURCE, content)
-	).map(response => [lang_tag,response])
-	.do(([lang_tag,response]) => {
+	)
+	.do(response => {
 			console.log(lang_tag);
 			console.log(response);
 		},
