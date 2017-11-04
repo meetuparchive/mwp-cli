@@ -62,5 +62,6 @@
       "eslint",
       "git add"
     ]
-  }
+  },
+  "version": "1.2.284-beta"
 }
