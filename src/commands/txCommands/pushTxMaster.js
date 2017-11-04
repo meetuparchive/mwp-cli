@@ -3,15 +3,18 @@ const Rx = require('rxjs');
 const txlib = require('./util');
 
 // grab all trns
-const updateMasterContent$ = txlib.localTrnsMerged$
-	.flatMap(poContent =>
-		txlib.updateResource$(
-			txlib.MASTER_RESOURCE,
-			poContent,
-			txlib.PROJECT_MASTER
-		).do(() => console.log('update master success'), () => console.log('update master FAIL!'))
-	) // update master resource
-	.map(updateResult => [txlib.MASTER_RESOURCE, updateResult]); // append 'master' for logging
+const updateMasterContent$ = () => {
+	console.log('start updateMasterContent$');
+	return txlib.localTrnsMerged$
+		.flatMap(poContent =>
+			txlib.updateResource$(
+				txlib.MASTER_RESOURCE,
+				poContent,
+				txlib.PROJECT_MASTER
+			).do(() => console.log('update master success'), () => console.log('update master FAIL!'))
+		) // update master resource
+		.map(updateResult => [txlib.MASTER_RESOURCE, updateResult]); // append 'master' for logging
+};
 
 const updateTranslations$ = txlib.allLocalPoTrns$
 	.flatMap(([lang_tag, content]) =>
