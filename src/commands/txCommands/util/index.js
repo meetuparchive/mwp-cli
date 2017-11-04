@@ -181,7 +181,9 @@ const readResource$ = (slug, project = PROJECT) =>
 	Rx.Observable.bindNodeCallback(tx.sourceLanguageMethods.bind(tx))(
 		project,
 		slug
-	).retry(5);
+	)
+	.retry(5)
+	.do(null, () => console.log(`error readResource$ ${slug} ${project}`));
 
 const updateResource$ = (slug, content, project = PROJECT) => {
 	// allow override for push to mup-web-master
@@ -208,7 +210,13 @@ const uploadTrnsMaster$ = ([lang_tag, content]) =>
 		MASTER_RESOURCE,
 		lang_tag,
 		resourceContent(MASTER_RESOURCE, content)
-	);
+	)
+	.do(response => {
+			console.log(lang_tag);
+			console.log(response);
+		},
+		() => console.log(`error uploadTrnsMaster$ ${lang_tag}`)
+	)
 
 const uploadTranslation$ = ([lang_tag, content]) =>
 	Rx.Observable.bindNodeCallback(tx.translationStringsPutMethod.bind(tx))(
