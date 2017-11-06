@@ -1,7 +1,6 @@
 const Rx = require('rxjs');
 const txlib = require('./util');
 const chalk = require('chalk');
-const gettextParser = require('gettext-parser');
 
 module.exports = {
     command: 'keys',
