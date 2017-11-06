@@ -2,6 +2,7 @@ module.exports = {
 	babel: require('./babel'),
 	env: require('./env'),
 	locales: require('./locales'),
+	localesSecondary: require('./localesSecondary'),
 	package: require('./package'),
 	paths: require('./paths'),
 	webpack: require('./webpack'),
