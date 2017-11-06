@@ -4,7 +4,7 @@ const gettextParser = require('gettext-parser');
 const glob = require('glob');
 const _ = require('lodash');
 const path = require('path');
-const { paths, package: packageConfig } = require('../../../config');
+const { paths, package: packageConfig, localesSecondary } = require('../../../config');
 const Rx = require('rxjs');
 const Transifex = require('transifex');
 
@@ -317,13 +317,13 @@ const lastUpdateComparator = (a, b) =>
 // resource slugs sorted by last modified date
 const resources$ =
 	projectInfo$(PROJECT)
-	.pluck('resources')
-	.flatMap(Rx.Observable.from)
-	.flatMap(resource => resourceInfo$(PROJECT, resource['slug']))
-	.toArray()
-	.map(resourceInfo =>
-		resourceInfo.sort(lastUpdateComparator).map(resource => resource['slug'])
-	);
+		.pluck('resources')
+		.flatMap(Rx.Observable.from)
+		.flatMap(resource => resourceInfo$(PROJECT, resource['slug']))
+		.toArray()
+		.map(resourceInfo =>
+			resourceInfo.sort(lastUpdateComparator).map(resource => resource['slug'])
+		);
 
 const resourceStats$ = Rx.Observable.bindNodeCallback(
 	tx.statisticsMethods.bind(tx)
@@ -336,7 +336,7 @@ const resourceCompletion$ = resources$
 		// reduce the amount of data we're working with
 		.map(resourceStat => Object.keys(resourceStat)
 			// filter out secondary locale tags. they don't matter for completion
-			.filter(key => packageConfig.secondaryLocaleTags.indexOf(key) === -1)
+			.filter(key => localesSecondary.indexOf(key) === -1)
 			// reduce to object that only has incomplete languages
 			.reduce((localeCompletion, locale_tag) => {
 				resourceStat[locale_tag].completed !== '100%'
