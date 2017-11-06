@@ -21,7 +21,7 @@ module.exports = {
             .do(resources => {
                 if (resources.length) {
                     console.log('\nComplete Resources');
-                    resources.forEach(branchName => console.log(branchName));
+                    resources.forEach(console.log);
                 }
             })
             .subscribe();
