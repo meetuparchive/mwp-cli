@@ -352,7 +352,7 @@ const resourcesIncomplete$ = resourceCompletion$
 
 const resourcesComplete$ = resourceCompletion$
 	.filter(item => Object.keys(item[1]).length === 0)
-	.map(([resource, lang_completion]) => resource);
+	.map(([resource]) => resource);
 
 module.exports = {
 	allLocalPoTrns$,

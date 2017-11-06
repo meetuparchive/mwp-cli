@@ -1,4 +1,3 @@
-const Rx = require('rxjs');
 const txlib = require('./util');
 const chalk = require('chalk');
 
@@ -7,15 +6,24 @@ module.exports = {
     description: 'get translation status of resources (branches)',
     handler: argv => {
         txlib.checkEnvVars();
-        console.log(chalk.blue('checking resource status\n'));
+        console.log(chalk.blue('checking resource status'));
 
-        console.log('Incomplete Resources')
         txlib.resourcesIncomplete$
-            .do(resource => { console.log(resource[0], resource[1]) })
-            .toArray() // this is a hack to make resourcesIncomplete$ stop before resourcesComplete$
-            .do(() => console.log('\nCompleted Resources'))
+            .toArray()
+            .do(resources => {
+                if (resources.length) {
+                    console.log('\nIncomplete Resources');
+                    resources.forEach(([branchName, percentage]) => console.log(branchName, percentage));
+                }
+            })
             .flatMap(() => txlib.resourcesComplete$)
-            .do(console.log)
+            .toArray()
+            .do(resources => {
+                if (resources.length) {
+                    console.log('\nComplete Resources');
+                    resources.forEach(branchName => console.log(branchName));
+                }
+            })
             .subscribe();
     },
 };
