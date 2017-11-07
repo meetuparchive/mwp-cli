@@ -1,3 +1,7 @@
+# [1.4]
+
+- **New feature** - eslint-loader removed from webpack compile.
+
 # [1.3]
 
 - **New feature** - `mope tx status` to get list of transifex resources and
