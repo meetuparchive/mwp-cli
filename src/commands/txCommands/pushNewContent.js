@@ -36,8 +36,8 @@ const pushResource$ = poData =>
 		.flatMap(([gitBranch, branchResourceExists]) => {
 			if (Object.keys(poData).length) {
 				const pushed$ = branchResourceExists
-					? txlib.updateResource$.do(() => console.log(`new content - update ${gitBranch}`))
-					: txlib.createResource$.do(() => console.log(`new content - create ${gitBranch}`));
+					? txlib.updateResource$
+					: txlib.createResource$;
 				return pushed$(gitBranch, poData);
 			} else {
 				return Rx.Observable.if(
