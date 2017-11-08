@@ -16,7 +16,7 @@ module.exports = {
 			exclude: paths.src.asset,
 		},
 		browser: {
-			// standard ES5 transpile through Babel, with linting
+			// standard ES5 transpile through Babel
 			test: /\.jsx?$/,
 			include: [paths.src.browser.app, paths.packages.webComponents.src],
 			exclude: paths.src.asset,
@@ -29,8 +29,7 @@ module.exports = {
 						presets: babelrc.presets.browser,
 					},
 				},
-				{ loader: 'eslint-loader' },
-			],
+			]
 		},
 		server: {
 			test: /\.jsx?$/,

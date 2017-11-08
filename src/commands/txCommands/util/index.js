@@ -4,7 +4,7 @@ const gettextParser = require('gettext-parser');
 const glob = require('glob');
 const _ = require('lodash');
 const path = require('path');
-const { paths, package: packageConfig } = require('../../../config');
+const { paths, package: packageConfig, localesSecondary } = require('../../../config');
 const Rx = require('rxjs');
 const Transifex = require('transifex');
 
@@ -317,13 +317,42 @@ const lastUpdateComparator = (a, b) =>
 // resource slugs sorted by last modified date
 const resources$ =
 	projectInfo$(PROJECT)
-	.pluck('resources')
+		.pluck('resources')
+		.flatMap(Rx.Observable.from)
+		.flatMap(resource => resourceInfo$(PROJECT, resource['slug']))
+		.toArray()
+		.map(resourceInfo =>
+			resourceInfo.sort(lastUpdateComparator).map(resource => resource['slug'])
+		);
+
+const resourceStats$ = Rx.Observable.bindNodeCallback(
+	tx.statisticsMethods.bind(tx)
+);
+
+const resourceCompletion$ = resources$
 	.flatMap(Rx.Observable.from)
-	.flatMap(resource => resourceInfo$(PROJECT, resource['slug']))
-	.toArray()
-	.map(resourceInfo =>
-		resourceInfo.sort(lastUpdateComparator).map(resource => resource['slug'])
+	// get resource completion percentage
+	.flatMap(resource => resourceStats$(PROJECT, resource)
+		// reduce the amount of data we're working with
+		.map(resourceStat => Object.keys(resourceStat)
+			// filter out secondary locale tags. they don't matter for completion
+			.filter(key => localesSecondary.indexOf(key) === -1)
+			// reduce to object that only has incomplete languages
+			.reduce((localeCompletion, locale_tag) => {
+				resourceStat[locale_tag].completed !== '100%'
+					&& (localeCompletion[locale_tag] = resourceStat[locale_tag].completed);
+				return localeCompletion;
+			}, {})
+		)
+		.map(localeCompletion => [resource, localeCompletion])
 	);
+
+const resourcesIncomplete$ = resourceCompletion$
+	.filter(item => Object.keys(item[1]).length);
+
+const resourcesComplete$ = resourceCompletion$
+	.filter(item => Object.keys(item[1]).length === 0)
+	.map(([resource]) => resource);
 
 module.exports = {
 	allLocalPoTrns$,
