@@ -1,3 +1,7 @@
+# [1.5]
+
+- **New feature** - `mope tx keys` displays list of resources and their keys
+
 # [1.4]
 
 - **New feature** - eslint-loader removed from webpack compile.
