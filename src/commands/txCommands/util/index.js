@@ -82,7 +82,7 @@ const wrapCompilePo$ = poObj =>
 const diff = ([main, extracted]) =>
 	Object.keys(extracted)
 		.filter(
-		key => !main[key] || main[key].msgstr[0] != extracted[key].msgstr[0]
+			key => !main[key] || main[key].msgstr[0] != extracted[key].msgstr[0]
 		)
 		.reduce((obj, key) => {
 			obj[key] = extracted[key];
@@ -182,8 +182,8 @@ const readResource$ = (slug, project = PROJECT) =>
 		project,
 		slug
 	)
-		.retry(5)
-		.do(null, () => console.log(`error readResource$ ${slug} ${project}`));
+	.retry(5)
+	.do(null, () => console.log(`error readResource$ ${slug} ${project}`));
 
 const updateResource$ = (slug, content, project = PROJECT) => {
 	// allow override for push to mup-web-master
@@ -211,12 +211,12 @@ const uploadTrnsMaster$ = ([lang_tag, content]) =>
 		lang_tag,
 		resourceContent(MASTER_RESOURCE, content)
 	)
-		.do(response => {
+	.do(response => {
 			console.log(lang_tag);
 			console.log(response);
 		},
 		() => console.log(`error uploadTrnsMaster$ ${lang_tag}`)
-		)
+	)
 
 const uploadTranslation$ = ([lang_tag, content]) =>
 	Rx.Observable.bindNodeCallback(tx.translationStringsPutMethod.bind(tx))(
@@ -227,16 +227,16 @@ const uploadTranslation$ = ([lang_tag, content]) =>
 	).do(() => console.log(`translation upload complete - ${lang_tag}`), () => console.log(`translation upload FAIL - ${lang_tag}`));
 
 const uploadTranslationsForKeys$ = keys => allLocalPoTrns$
-	.flatMap(([lang_tag, content]) => filterPoContentByKeys$(keys, content)
+	.flatMap(([lang_tag, content]) => filterPoContentByKeys$(keys,content)
 		.map(poToUploadFormat)
-		.map(filteredTrnObj => [lang_tag, filteredTrnObj])
+		.map(filteredTrnObj => [lang_tag,filteredTrnObj])
 	)
 	.flatMap(uploadTranslation$)
 
 const poToUploadFormat = trnObj =>
 	Object.keys(trnObj)
-		.reduce((arr, key) =>
-			arr.concat({ 'key': key, 'translation': trnObj[key].msgstr[0] }), [])
+		.reduce((arr,key) =>
+			arr.concat({'key':key,'translation':trnObj[key].msgstr[0]}),[])
 
 const filterPoContentByKeys$ = (keys, poContent) => Rx.Observable.of(poContent)
 	.map(trnObj => _.pick(trnObj, keys)) // return object with specified keys only
@@ -290,18 +290,18 @@ const txMasterTrns$ = readResource$(MASTER_RESOURCE, PROJECT_MASTER)
 	.flatMap(parsePluckTrns);
 
 // sometimes we want to compare against master, sometimes master plus existing resources
-const diffVerbose$ = (master$, content$) =>
+const diffVerbose$  = (master$,content$)  => 
 	master$.concat(content$).toArray() // resolves resource contention issue. equivalent to .zip
-		.do(([main, trns]) =>
-			console.log(
-				'reference trns',
-				Object.keys(main).length,
-				' / trns extracted:',
-				Object.keys(trns).length
-			)
+	.do(([main, trns]) =>
+		console.log(
+			'reference trns',
+			Object.keys(main).length,
+			' / trns extracted:',
+			Object.keys(trns).length
 		)
-		.map(diff) // return local content that is new or updated
-		.do(diff => console.log('trns added / updated:', Object.keys(diff).length))
+	)
+	.map(diff) // return local content that is new or updated
+	.do(diff => console.log('trns added / updated:', Object.keys(diff).length))
 
 const projectInfo$ = Rx.Observable.bindNodeCallback(
 	tx.projectInstanceMethods.bind(tx)
@@ -377,9 +377,6 @@ module.exports = {
 	readFile$,
 	readResource$,
 	resources$,
-	resourcesComplete$,
-	resourcesIncomplete$,
-	resourceCompletion$,
 	tx,
 	txMasterTrns$,
 	updateResource$,
