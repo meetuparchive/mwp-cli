@@ -29,7 +29,7 @@ module.exports = {
 						presets: babelrc.presets.browser,
 					},
 				},
-			]
+			],
 		},
 		server: {
 			test: /\.jsx?$/,
@@ -41,5 +41,14 @@ module.exports = {
 				presets: babelrc.presets.server,
 			},
 		},
+	},
+	img: {
+		test: /\.(png|jpg|gif|svg)$/,
+		use: [
+			{
+				loader: 'file-loader',
+				options: {},
+			},
+		],
 	},
 };
