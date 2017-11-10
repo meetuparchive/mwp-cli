@@ -1,3 +1,8 @@
+# [1.6]
+
+- **Breaking change** - images will have their `file-loader!` from webpack 
+  directly
+
 # [1.5]
 
 - **New feature** - `mope tx keys` displays list of resources and their keys
