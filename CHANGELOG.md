@@ -1,3 +1,8 @@
+# [2.0]
+
+- **Breaking change** - `file-loader!` and `raw-loader!` will no longer work inline.
+  Webpack config will handle the them based on extension.
+
 # [1.5]
 
 - **New feature** - `mope tx keys` displays list of resources and their keys
