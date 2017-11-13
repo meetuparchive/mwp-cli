@@ -1,7 +1,7 @@
-# [1.6]
+# [2.0]
 
-- **Breaking change** - images will have their `file-loader!` from webpack 
-  directly
+- **Breaking change** - `file-loader!` and `raw-loader!` will no longer work inline.
+  Webpack config will handle the them based on extension.
 
 # [1.5]
 
