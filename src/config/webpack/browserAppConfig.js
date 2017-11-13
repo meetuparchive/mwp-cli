@@ -55,7 +55,7 @@ function getConfig(localeCode) {
 
 		devtool: 'cheap-module-source-map', // similar speed to 'eval', but with proper source maps
 
-		module: { rules: [rules.img, rules.css, rules.js.browser] },
+		module: { rules: [rules.file, rules.css, rules.js.browser, rules.raw] },
 
 		resolveLoader: {
 			alias: {
