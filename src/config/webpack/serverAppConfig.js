@@ -38,7 +38,7 @@ function getConfig(localeCode) {
 
 		devtool: 'eval',
 
-		module: { rules: [rules.css, rules.js.server] },
+		module: { rules: [rules.file, rules.css, rules.js.server, rules.raw] },
 
 		plugins: [
 			new webpack.EnvironmentPlugin({
@@ -66,7 +66,7 @@ function getConfig(localeCode) {
 		externals: [
 			nodeExternals({
 				modulesDir: process.env.NODE_PATH ? process.env.NODE_PATH : null,
-				whitelist: [/^meetup-web-components/],
+				whitelist: [/^meetup-web-components/, /^swarm-icons\/dist\/sprite\/sprite\.inc$/],
 			}),
 			/.*?build\//,
 		],
