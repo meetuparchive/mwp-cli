@@ -28,7 +28,7 @@ module.exports = {
 				repo: {
 					alias: 'r',
 					demandOption: true,
-					describe: 'repo name/slug',
+					describe: 'repo slug in the form :owner/:repo',
 				},
 				context: {
 					demandOption: true,
@@ -49,6 +49,13 @@ module.exports = {
 						`Full 40-character SHA-1 value must be provided - recieved ${argv.commit}`
 					);
 				}
+				if (argv.repo.split('/').length !== 2) {
+					console.warn(
+						chalk.yellow(
+							`'repo' should be in the form :owner/:repo - received ${repo}`
+						)
+					);
+				}
 				return true;
 			}),
 	handler: ({ state, commit, token, repo, context, description, target }) => {
@@ -56,10 +63,16 @@ module.exports = {
 			type: 'token',
 			token,
 		});
+		let [owner, repoName] = repo.split('/');
+		if (!repoName) {
+			// assume that just the repoName was supplied, owner is meetup
+			repoName = owner;
+			owner = 'meetup';
+		}
 		github.repos
 			.createStatus({
-				owner: 'meetup',
-				repo,
+				owner,
+				repo: repoName,
 				sha: commit,
 				state,
 				description,
