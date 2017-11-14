@@ -1,3 +1,8 @@
+# [2.1]
+
+- Support arbitrary repo owner for `gh status` command - enables status in PRs
+  from forked repos
+
 # [2.0]
 
 - **Breaking change** - `file-loader!` and `raw-loader!` will no longer work inline.
