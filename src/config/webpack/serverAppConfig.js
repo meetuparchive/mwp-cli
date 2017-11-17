@@ -58,7 +58,7 @@ function getConfig(localeCode) {
 					path.resolve(paths.output.browser, localeCode, 'manifest.json')
 				),
 			}),
-			new StatsPlugin({ fields: null }), // null means 'all fields in stats file'
+			// new StatsPlugin({ fields: null }), // null means 'all fields in stats file'
 		],
 
 		target: 'node',
