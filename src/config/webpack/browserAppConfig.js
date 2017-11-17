@@ -91,7 +91,7 @@ function getConfig(localeCode) {
 				)),
 			}),
 			new ManifestPlugin({ writeToFileEmit: true }), // emit manifest from dev-server build
-			new StatsPlugin({ fields: null }), // null means 'all fields in stats file'
+			// new StatsPlugin({ fields: null }), // null means 'all fields in stats file'
 		],
 	};
 
