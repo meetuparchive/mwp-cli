@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const StatsPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const HappyPack = require('happypack');
 
 const paths = require('../paths');
 const env = require('../env');
@@ -18,8 +19,9 @@ const rules = require('./rules');
 function injectHotReloadConfig(config) {
 	config.entry.app.unshift(
 		'react-hot-loader/patch', // logic for hot-reloading react components
-		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${env
-			.properties.asset_server.port}/`, // connect to HMR websocket
+		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${
+			env.properties.asset_server.port
+		}/`, // connect to HMR websocket
 		'webpack/hot/dev-server' // run the dev server
 	);
 
@@ -55,7 +57,9 @@ function getConfig(localeCode) {
 
 		devtool: 'cheap-module-source-map', // similar speed to 'eval', but with proper source maps
 
-		module: { rules: [rules.file, rules.css, rules.js.browser, rules.raw] },
+		module: {
+			rules: [rules.file, rules.css, rules.js.browser, rules.raw],
+		},
 
 		resolveLoader: {
 			alias: {
@@ -72,6 +76,10 @@ function getConfig(localeCode) {
 			extensions: ['.js', '.jsx', '.json'],
 		},
 		plugins: [
+			new HappyPack({
+				id: 'happypack-babel-browser',
+				loaders: ['babel-loader'],
+			}),
 			new webpack.EnvironmentPlugin({
 				NODE_ENV: 'development', // required for prod build of React (specify default)
 				INTERCOM_APP_ID: null, // only needs to be overriden if application wants Intercom config available on client and server

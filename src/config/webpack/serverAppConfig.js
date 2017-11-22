@@ -3,6 +3,7 @@ const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
 const StatsPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
+const HappyPack = require('happypack');
 
 // Build settings
 const babel = require('../babel');
@@ -38,9 +39,20 @@ function getConfig(localeCode) {
 
 		devtool: 'eval',
 
-		module: { rules: [rules.file, rules.css, rules.js.server, rules.raw] },
+		module: {
+			rules: [
+				rules.file,
+				rules.css,
+				{
+					...rules.js.server,
+					loader: 'happypack/loader?id=happypack-babel',
+				},
+				rules.raw,
+			],
+		},
 
 		plugins: [
+			new HappyPack({ id: 'happypack-babel', loaders: ['babel-loader'] }),
 			new webpack.EnvironmentPlugin({
 				NODE_ENV: 'development', // required for prod build of React
 			}),
@@ -66,7 +78,10 @@ function getConfig(localeCode) {
 		externals: [
 			nodeExternals({
 				modulesDir: process.env.NODE_PATH ? process.env.NODE_PATH : null,
-				whitelist: [/^meetup-web-components/, /^swarm-icons\/dist\/sprite\/sprite\.inc$/],
+				whitelist: [
+					/^meetup-web-components/,
+					/^swarm-icons\/dist\/sprite\/sprite\.inc$/,
+				],
 			}),
 			/.*?build\//,
 		],
