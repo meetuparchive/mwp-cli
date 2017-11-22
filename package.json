@@ -49,6 +49,7 @@
     "webpack-dev-server": "2.5.1",
     "webpack-manifest-plugin": "1.1.2",
     "webpack-node-externals": "1.6.0",
+    "webpack-parallel-uglify-plugin": "false1.0.0",
     "webpack-stats-plugin": "0.1.5",
     "yargs": "8.0.2"
   },

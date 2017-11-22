@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
 
 module.exports = [
 	// Tells loaders to optimize what they can since in minimize mode
@@ -8,13 +9,15 @@ module.exports = [
 		quiet: true,
 	}),
 
-	new webpack.optimize.UglifyJsPlugin({
-		compress: {
-			warnings: false,
+	new ParallelUglifyPlugin({
+		uglifyJS: {
+			compress: {
+				warnings: false,
+			},
+			output: {
+				comments: false,
+			},
 		},
-		output: {
-			comments: false,
-		},
-		sourceMap: true,
+		sourceMap: false,
 	}),
 ];
