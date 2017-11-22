@@ -22,7 +22,7 @@ module.exports = {
 			exclude: paths.src.asset,
 			use: [
 				{
-					loader: 'babel-loader',
+					loader: 'happypack/loader?id=happypack-babel-browser',
 					options: {
 						cacheDirectory: true,
 						plugins: babelrc.plugins.browser,
