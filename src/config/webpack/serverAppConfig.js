@@ -23,6 +23,10 @@ const rules = require('./rules');
  */
 function getConfig(localeCode) {
 	const publicPath = `/${localeCode}/`;
+	let trns = path.resolve(paths.src.trns, 'modules', localeCode);
+	if (trns === 'en-US') {
+		trns = path.resolve(paths.src.trns, 'empty.json');
+	}
 	const config = {
 		entry: {
 			'server-app': [paths.src.server.entry],
@@ -80,7 +84,7 @@ function getConfig(localeCode) {
 		resolve: {
 			alias: {
 				src: paths.src.server.app,
-				trns: path.resolve(paths.src.trns, 'modules', localeCode),
+				trns,
 			},
 			// module name extensions that Webpack will try if no extension provided
 			extensions: ['.js', '.jsx', '.json'],
