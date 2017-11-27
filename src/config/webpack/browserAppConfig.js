@@ -38,6 +38,10 @@ function injectHotReloadConfig(config) {
  * to determine the output path
  */
 function getConfig(localeCode) {
+	let trns = path.resolve(paths.src.trns, 'modules', localeCode);
+	if (trns === 'en-US') {
+		trns = path.resolve(paths.src.trns, 'empty.json');
+	}
 	const config = {
 		entry: {
 			app: [paths.src.browser.entry],
@@ -66,7 +70,7 @@ function getConfig(localeCode) {
 		resolve: {
 			alias: {
 				src: paths.src.browser.app,
-				trns: path.resolve(paths.src.trns, 'modules', localeCode),
+				trns,
 			},
 			// module name extensions that Webpack will try if no extension provided
 			extensions: ['.js', '.jsx', '.json'],
