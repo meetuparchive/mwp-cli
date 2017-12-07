@@ -38,6 +38,12 @@ function injectHotReloadConfig(config) {
  * to determine the output path
  */
 function getConfig(localeCode) {
+	const baseWebfontDir = path.resolve(paths.src.server.app, 'assets', 'fonts');
+	const webfontDir =
+		localeCode === 'ru-RU'
+			? path.resolve(baseWebfontDir, localeCode)
+			: baseWebfontDir;
+
 	const config = {
 		entry: {
 			app: [paths.src.browser.entry],
@@ -67,6 +73,7 @@ function getConfig(localeCode) {
 			alias: {
 				src: paths.src.browser.app,
 				trns: path.resolve(paths.src.trns, 'modules', localeCode),
+				webfont: webfontDir,
 			},
 			// module name extensions that Webpack will try if no extension provided
 			extensions: ['.js', '.jsx', '.json'],
