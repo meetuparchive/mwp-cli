@@ -22,6 +22,11 @@ const rules = require('./rules');
  * imported by the server and used to render requests to the app route.
  */
 function getConfig(localeCode) {
+	const baseWebfontDir = path.resolve(paths.src.server.app, 'assets', 'fonts');
+	const webfontDir =
+		localeCode === 'ru-RU'
+			? path.resolve(baseWebfontDir, localeCode)
+			: baseWebfontDir;
 	const publicPath = `/${localeCode}/`;
 	const config = {
 		entry: {
@@ -66,7 +71,10 @@ function getConfig(localeCode) {
 		externals: [
 			nodeExternals({
 				modulesDir: process.env.NODE_PATH ? process.env.NODE_PATH : null,
-				whitelist: [/^meetup-web-components/, /^swarm-icons\/dist\/sprite\/sprite\.inc$/],
+				whitelist: [
+					/^meetup-web-components/,
+					/^swarm-icons\/dist\/sprite\/sprite\.inc$/,
+				],
 			}),
 			/.*?build\//,
 		],
@@ -81,6 +89,7 @@ function getConfig(localeCode) {
 			alias: {
 				src: paths.src.server.app,
 				trns: path.resolve(paths.src.trns, 'modules', localeCode),
+				webfont: webfontDir,
 			},
 			// module name extensions that Webpack will try if no extension provided
 			extensions: ['.js', '.jsx', '.json'],

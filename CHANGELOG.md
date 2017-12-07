@@ -1,3 +1,9 @@
+# [2.2]
+
+- Support for `webfont` alias, which will resolve to `src/assets/fonts` for all
+  languages except Russian, which will resolve to `src/assets/fonts/ru-RU`. This
+  alias is useful for referencing a separate Cyrillic-supporting webfont.
+
 # [2.1]
 
 - Support arbitrary repo owner for `gh status` command - enables status in PRs
