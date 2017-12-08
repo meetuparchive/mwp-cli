@@ -2,15 +2,11 @@ const { properties: config } = require('./');
 const {
 	COOKIE_SECRET_ERROR,
 	CSRF_SECRET_ERROR,
-	OAUTH_SECRET_ERROR,
-	OAUTH_KEY_ERROR,
 	PROTOCOL_ERROR,
 	SALT_ERROR,
 	secretDefault,
 	validateCookieSecret,
 	validateCsrfSecret,
-	validateOauthSecret,
-	validateOauthKey,
 	validatePhotoScalerSalt,
 	validateProtocol,
 	validateServerHost,
@@ -75,11 +71,6 @@ describe('config', () => {
 		expect(config.app_server.protocol).toBeTruthy();
 		expect(config.isDev).toBeDefined();
 		expect(config.isProd).toBeDefined();
-		expect(config.oauth).toBeTruthy();
-		expect(config.oauth.auth_url).toBeTruthy();
-		expect(config.oauth.access_url).toBeTruthy();
-		expect(config.oauth.secret).toBeTruthy();
-		expect(config.oauth.key).toBeTruthy();
 		expect(config.photo_scaler_salt).toBeTruthy();
 	});
 });
@@ -107,30 +98,6 @@ describe('validateCsrfSecret', () => {
 	it('throws error when secret is missing or less than 32 characters', () => {
 		expect(() => validateCsrfSecret(null)).toThrowError(CSRF_SECRET_ERROR);
 		expect(() => validateCsrfSecret(string31)).toThrowError(CSRF_SECRET_ERROR);
-	});
-});
-
-describe('validateOauthSecret', () => {
-	it('does not error when secret is 1 char or more', () => {
-		expect(() => validateOauthSecret(string1)).not.toThrow();
-		expect(() => validateOauthSecret(string36)).not.toThrow();
-	});
-
-	it('throws error when secret is missing or empty', () => {
-		expect(() => validateOauthSecret(null)).toThrowError(OAUTH_SECRET_ERROR);
-		expect(() => validateOauthSecret('')).toThrowError(OAUTH_SECRET_ERROR);
-	});
-});
-
-describe('validateOauthKey', () => {
-	it('does not error when key is 1 char or more', () => {
-		expect(() => validateOauthKey(string1)).not.toThrow();
-		expect(() => validateOauthKey(string36)).not.toThrow();
-	});
-
-	it('throws error when key is missing or empty', () => {
-		expect(() => validateOauthKey(null)).toThrowError(OAUTH_KEY_ERROR);
-		expect(() => validateOauthKey('')).toThrowError(OAUTH_KEY_ERROR);
 	});
 });
 

@@ -9,15 +9,11 @@ const { schema: envSchema, properties: envProperties } = require('../env');
 
 const {
 	CSRF_SECRET_ERROR,
-	OAUTH_SECRET_ERROR,
-	OAUTH_KEY_ERROR,
 	COOKIE_SECRET_ERROR,
 	SALT_ERROR,
 	secretDefault,
 	validateCookieSecret,
 	validateCsrfSecret,
-	validateOauthKey,
-	validateOauthSecret,
 	validatePhotoScalerSalt,
 	validateProtocol,
 	validateServerHost,
@@ -41,8 +37,6 @@ const {
  * The only values that _must_ be in environment variables are the secrets that
  * are used to interact with external systems:
  *
- * - `MUPWEB_OAUTH_SECRET`
- * - `MUPWEB_OAUTH_KEY`
  * - `PHOTO_SCALER_SALT`
  *
  * @module config
@@ -107,30 +101,6 @@ const schema = Object.assign({}, envSchema, {
 		default: secretDefault,
 		env: 'CSRF_SECRET',
 		sensitive: true,
-	},
-	oauth: {
-		auth_url: {
-			format: 'url',
-			default: 'https://secure.dev.meetup.com/oauth2/authorize',
-			env: 'OAUTH_AUTH_URL',
-		},
-		access_url: {
-			format: 'url',
-			default: 'https://secure.dev.meetup.com/oauth2/access',
-			env: 'OAUTH_ACCESS_URL',
-		},
-		secret: {
-			format: validateOauthSecret,
-			default: process.env.NODE_ENV === 'test' ? secretDefault : null,
-			env: 'MUPWEB_OAUTH_SECRET',
-			sensitive: true,
-		},
-		key: {
-			format: validateOauthKey,
-			default: process.env.NODE_ENV === 'test' ? secretDefault : null,
-			env: 'MUPWEB_OAUTH_KEY',
-			sensitive: true,
-		},
 	},
 	photo_scaler_salt: {
 		format: validatePhotoScalerSalt,

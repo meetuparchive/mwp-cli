@@ -1,3 +1,7 @@
+# [3.0]
+
+- Oauth values are no longer part of config - they are not used in MWP v10.2+
+
 # [2.2]
 
 - Support for `webfont` alias, which will resolve to `src/assets/fonts` for all
