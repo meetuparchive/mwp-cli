@@ -13,5 +13,4 @@ module.exports = [
 	'pl-PL',
 	'th-TH',
 	'tr-TR',
-	'ru-RU',
 ];
