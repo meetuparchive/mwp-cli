@@ -61,5 +61,6 @@
       "eslint",
       "git add"
     ]
-  }
+  },
+  "version": "3.0.330-beta"
 }
