@@ -6,7 +6,15 @@ module.exports = {
 	css: {
 		test: /\.css$/,
 		include: [path.resolve(paths.src.asset, 'css')],
-		use: ['style-loader', 'css-loader'],
+		use: [
+			'style-loader',
+			{
+				loader: 'css-loader',
+				options: {
+					modules: true
+				}
+			}
+		],
 	},
 	js: {
 		hot: {
