@@ -3,25 +3,21 @@ const paths = require('../paths');
 const babelrc = require('../babel');
 
 module.exports = {
-	css: {
+	externalCSS: {
 		test: /\.css$/,
 		include: [path.resolve(paths.src.asset, 'css')],
+		use: ['style-loader', 'css-loader'],
+	},
+	css: {
+		test: /\.css$/,
+		include: [path.resolve(paths.srcPath, 'explore')],
 		use: [
 			'style-loader',
 			{
 				loader: 'css-loader',
 				options: {
 					modules: true,
-					importLoaders: 1,
 				}
-			},
-			{
-				loader: 'postcss-loader',
-				options: {
-					config: {
-						path: path.resolve(paths.src.config, 'webpack')
-					}
-				},
 			}
 		],
 	},
