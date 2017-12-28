@@ -15,7 +15,14 @@ module.exports = {
 					importLoaders: 1,
 				}
 			},
-			'postcss-loader'
+			{
+				loader: 'postcss-loader',
+				options: {
+					config: {
+						path: path.resolve(paths.src.config, 'webpack')
+					}
+				},
+			}
 		],
 	},
 	js: {
