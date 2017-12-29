@@ -8,9 +8,9 @@ const getApi = config => {
 	const { auth, appsId, servicesId } = config;
 
 	/*
-   * Get the traffic split among deployed versions
-   * https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services#TrafficSplit
-   */
+	* Get the traffic split among deployed versions
+	* https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services#TrafficSplit
+	*/
 	const allocations = () =>
 		cloudApi.services
 			.get({ auth, appsId, servicesId })
