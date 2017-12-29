@@ -43,7 +43,7 @@ function getConfig(localeCode) {
 
 		devtool: 'eval',
 
-		module: { rules: [rules.file, rules.css, rules.js.server, rules.raw] },
+		module: { rules: [rules.file, rules.css, rules.styles, rules.js.server, rules.raw] },
 
 		plugins: [
 			new webpack.EnvironmentPlugin({

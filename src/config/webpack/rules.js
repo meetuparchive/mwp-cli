@@ -8,10 +8,8 @@ module.exports = {
 		include: [path.resolve(paths.src.asset, 'css')],
 		use: ['style-loader', 'css-loader'],
 	},
-	mcss: {
-		test: /\.css$/,
-		include: [paths.srcPath],
-		exclude: [paths.src.asset], // avoid using this loader configuration for `util/cssLinks` in app
+	styles: {
+		test: /\.styles$/,
 		use: [
 			'style-loader',
 			{
