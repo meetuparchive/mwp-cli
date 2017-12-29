@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 
 const repoRoot = process.cwd(); // expect CLI to be run from consumer repo root
 const srcPath = path.resolve(repoRoot, 'src');

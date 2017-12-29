@@ -1,4 +1,4 @@
-### Run: `mope tx <target>`
+### TX: `mope tx <target>`
 
 #### Synopsis
 
