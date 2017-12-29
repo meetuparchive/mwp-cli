@@ -9,8 +9,9 @@ module.exports = {
 		use: ['style-loader', 'css-loader'],
 	},
 	mcss: {
-		test: /\.mcss$/,
-		include: [path.resolve(paths.srcPath, 'explore')], // our test component is in the "explore" feature
+		test: /\.css$/,
+		include: [paths.srcPath],
+		exclude: [paths.src.asset], // avoid using this loader configuration for `util/cssLinks` in app
 		use: [
 			'style-loader',
 			{
