@@ -16,8 +16,20 @@ module.exports = {
 				loader: 'css-loader',
 				options: {
 					modules: true,
-					localIdentName: 'path-[path]__name-[name]__local-[local]__hash-[hash:base64:5]',
-				}
+					localIdentName: '_[name]_[local]__[hash:base64:5]',
+					importLoaders: 1,
+				},
+			},
+			{
+				loader: 'postcss-loader',
+				options: {
+					ident: 'postcss',
+					plugins: (loader) => [
+						require('postcss-cssnext')({
+							browsers: ['last 2 versions', '> 5%'],
+						})
+					],
+				},
 			}
 		],
 	},

@@ -14,7 +14,6 @@ const output = {
 
 const src = {
 	asset: path.resolve(srcPath, 'assets'), // pre-made static assets
-	config: path.resolve(srcPath, 'config'),
 	trns: path.resolve(srcPath, 'trns'),
 	browser: {
 		app: srcPath,
