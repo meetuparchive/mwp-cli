@@ -1,13 +1,14 @@
 const path = require('path');
 const chalk = require('chalk');
 const { paths } = require('mwp-config');
-const baseConfig = require(path.resolve(paths.repoRoot, 'app.json'));
 const cloudApi = require('./cloudApi');
 
 const flattenArray = arrays => [].concat.apply([], arrays);
 class RedundantError extends Error {}
 
 module.exports = (config, { operations, allocations }) => {
+	// don't load config until this function is called
+	const baseConfig = require(path.resolve(paths.repoRoot, 'app.json'));
 	const {
 		auth,
 		appsId,
