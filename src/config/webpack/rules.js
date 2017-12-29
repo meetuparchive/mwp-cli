@@ -11,11 +11,12 @@ module.exports = {
 		],
 		exclude: paths.src.asset,
 		use: [
-			'style-loader',
+			'universal-style-loader',
 			{
 				loader: 'css-loader',
 				options: {
 					modules: true,
+					localIdentName: 'path-[path]__name-[name]__local-[local]__hash-[hash:base64:5]',
 				}
 			}
 		],
