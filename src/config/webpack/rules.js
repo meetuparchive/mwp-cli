@@ -3,14 +3,14 @@ const paths = require('../paths');
 const babelrc = require('../babel');
 
 module.exports = {
-	externalCSS: {
+	css: {
 		test: /\.css$/,
 		include: [path.resolve(paths.src.asset, 'css')],
 		use: ['style-loader', 'css-loader'],
 	},
-	css: {
-		test: /\.css$/,
-		include: [path.resolve(paths.srcPath, 'explore')],
+	mcss: {
+		test: /\.mcss$/,
+		include: [path.resolve(paths.srcPath, 'explore')], // our test component is in the "explore" feature
 		use: [
 			'style-loader',
 			{
