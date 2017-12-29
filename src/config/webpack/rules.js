@@ -5,11 +5,7 @@ const babelrc = require('../babel');
 module.exports = {
 	css: {
 		test: /\.css$/,
-		include: [path.resolve(paths.src.asset, 'css')],
-		use: ['style-loader', 'css-loader'],
-	},
-	styles: {
-		test: /\.styles$/,
+		include: [path.resolve(paths.srcPath, 'app/explore')],
 		use: [
 			'style-loader',
 			{
