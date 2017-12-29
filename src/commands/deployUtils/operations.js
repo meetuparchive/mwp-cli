@@ -50,9 +50,7 @@ module.exports = config => {
 						}, config.pollWait)
 					);
 				});
-		return doCheck;
+		return doCheck();
 	};
-	return {
-		track,
-	};
+	return { track };
 };

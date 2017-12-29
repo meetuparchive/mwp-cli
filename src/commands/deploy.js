@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const runE2E = require('./deployUtils/e2e');
 const cloudApi = require('./deployUtils/cloudApi');
 
-import { getApi } from './deployUtils';
+const { getApi } = require('./deployUtils');
 
 const runE2EWithRetry = id => runE2E(id).catch(() => runE2E(id));
 /*
@@ -59,7 +59,7 @@ module.exports = {
 					'The maximum number of available instances in a GAE deployment',
 			},
 			deployCount: {
-				default: 2,
+				default: 1,
 				describe: 'The number of parallel versions to deploy',
 			},
 			targetTraffic: {
@@ -89,13 +89,12 @@ module.exports = {
 		}).map((_, i) => `${argv.version}-${i}`);
 
 		return cloudApi.auth().then(({ auth, appsId }) => {
-			console.log(chalk.blue(`Deploying version ${config.version}`));
-
 			const indent = chalk.yellow(' >');
 			const config = Object.assign(
 				{ envVariables, versionIds, auth, appsId, indent },
 				argv
 			);
+			console.log(chalk.blue(`Deploying version ${config.version}`));
 
 			const { deploy, versions, migrate } = getApi(config);
 			return versions.validate
@@ -109,14 +108,17 @@ module.exports = {
 					// clean up deployed versions and exit
 					return deploy.del().then(() => process.exit(1));
 				})
-				.then(migrate)
-				.catch(error => {
-					console.log(chalk.red(`Migration stopped: ${error}`));
-					if (!(error instanceof versions.validate.RedundantError)) {
-						// no need to return non-zero exit code for newer deployment
-						process.exit(1);
-					}
-				});
+				.then(() =>
+					migrate().catch(error => {
+						console.log(chalk.red(`Migration stopped: ${error}`));
+						if (
+							!(error instanceof versions.validate.RedundantError)
+						) {
+							// no need to return non-zero exit code for newer deployment
+							process.exit(1);
+						}
+					})
+				);
 		});
 	},
 };

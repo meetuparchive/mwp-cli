@@ -89,14 +89,16 @@ module.exports = (config, { operations, allocations }) => {
 				const myVersions = versions.filter(v =>
 					versionIds.includes(v.id)
 				);
-				const newerVersions = versions
-					.filter(v => !versionIds.includes(v.id))
-					.filter(v => v.createTime > myVersions[0].createTime);
-				if (myVersions.length > 0 && newerVersions.length > 0) {
-					throw new RedundantError(
-						'Newer version deployed',
-						newerVersions[0].id
-					);
+				if (myVersions.length > 0) {
+					const newerVersions = versions
+						.filter(v => !versionIds.includes(v.id))
+						.filter(v => v.createTime > myVersions[0].createTime);
+					if (newerVersions.length > 0) {
+						throw new RedundantError(
+							'Newer version deployed',
+							newerVersions[0].id
+						);
+					}
 				}
 				console.log(indent, 'No newer version deployed, continuing...');
 				return versions;
@@ -167,7 +169,7 @@ module.exports = (config, { operations, allocations }) => {
 			versions.map(({ id }) =>
 				validate.noTraffic(id).then(v =>
 					patch({
-						id: v.id,
+						id,
 						updateMask: 'servingStatus',
 						resource: { servingStatus: 'STOPPED' },
 					})
@@ -194,7 +196,26 @@ module.exports = (config, { operations, allocations }) => {
 		del(id).catch(error =>
 			console.log(chalk.red(`Could not delete version ${id}: ${error}`))
 		);
+	const logOp = id => op => {
+		console.log(
+			chalk.green(`Creating version ${id} for ${op.metadata.user}\n`),
+			chalk.yellow(`Operation ${op.name} in progress`)
+		);
+		return op;
+	};
+	const create = id =>
+		cloudApi.versions
+			.create({
+				auth,
+				appsId,
+				servicesId,
+				resource: spec(id),
+			})
+			.then(logOp(id))
+			.then(trackOperation);
+
 	const versions = {
+		create,
 		spec,
 		get,
 		patch,
