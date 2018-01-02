@@ -27,6 +27,12 @@ module.exports = {
 					plugins: (loader) => [
 						require('postcss-cssnext')({
 							browsers: ['last 2 versions', '> 5%'],
+							features: {
+								customProperties: {
+									preserve: true,  // prepend computed values instead of replacing custom properties
+									warnings: false, // disable `:root` custom property warnings
+								},
+							},
 						})
 					],
 				},
