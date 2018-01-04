@@ -46,7 +46,6 @@
     "jest": "20.0.4",
     "lint-staged": "4.0.1",
     "mkdirp": "0.5.1",
-    "mwp-config": "11.1.2061",
     "prettier": "1.5.2",
     "raw-loader": "0.5.1",
     "react-dev-utils": "3.0.2",
@@ -61,7 +60,8 @@
     "yargs": "8.0.2"
   },
   "peerDependencies": {
-    "rxjs": "^5.4.2"
+    "rxjs": "^5.4.2",
+    "mwp-config": ">=11.0.0"
   },
   "lint-staged": {
     "{src,tests,__mocks__}/**/*.{js,jsx}": [
