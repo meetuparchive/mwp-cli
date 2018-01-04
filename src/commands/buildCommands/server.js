@@ -9,7 +9,7 @@ const addLocalesOption = require('../../util/addLocalesOption');
 const {
 	paths,
 	webpack: { getServerAppConfig, getRelativeBundlePath },
-} = require('../../config');
+} = require('mwp-config');
 
 const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 

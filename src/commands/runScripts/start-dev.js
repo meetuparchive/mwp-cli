@@ -6,11 +6,10 @@ const chalk = require('chalk');
 const webpack = require('webpack');
 
 const {
-	locales,
 	paths,
 	package: packageConfig,
 	webpack: { getServerAppConfig },
-} = require('../../config');
+} = require('mwp-config');
 
 const ready = {
 	browserApp: false,
@@ -119,7 +118,9 @@ function run(locales) {
 	 * parallels the one done in the Webpack Dev Server, and WDS will print
 	 * error messages whenever there is something wrong.
 	 */
-	log(chalk.blue(`building server rendering bundle to ${paths.output.server}`));
+	log(
+		chalk.blue(`building server rendering bundle to ${paths.output.server}`)
+	);
 	const serverAppCompileLogger = getCompileLogger('serverApp');
 	const serverAppCompiler = webpack(locales.map(getServerAppConfig));
 	serverAppCompiler.watch(
@@ -130,7 +131,10 @@ function run(locales) {
 		(err, stats) => {
 			serverAppCompileLogger(err, stats);
 
-			if (stats.hasErrors() && stats.toJson().errors[0].includes('trns/app/')) {
+			if (
+				stats.hasErrors() &&
+				stats.toJson().errors[0].includes('trns/app/')
+			) {
 				log(
 					`Try running '${chalk.yellow('yarn start:full')}'`,
 					'- if that fails, check error output for typos'

@@ -1,3 +1,8 @@
+# [4.0]
+
+- **Removed** `src/config` has been moved to `mwp-config` package managed by
+  MWP repo
+
 # [3.0]
 
 - Oauth values are no longer part of config - they are not used in MWP v10.2+

@@ -4790,9 +4790,9 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
-mwp-config@11.1.2043:
-  version "11.1.2043"
-  resolved "https://registry.yarnpkg.com/mwp-config/-/mwp-config-11.1.2043.tgz#44454a679a2110824995a0d3eb1d8415e701443d"
+mwp-config@11.1.2061:
+  version "11.1.2061"
+  resolved "https://registry.yarnpkg.com/mwp-config/-/mwp-config-11.1.2061.tgz#0b4c6b205adf217af309c9c4de8d4d5a481e9d05"
   dependencies:
     babel-core "6.25.0"
     babel-loader "7.1.1"
