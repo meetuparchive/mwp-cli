@@ -1,6 +1,6 @@
 const yargs = require('yargs');
 
-const { locales } = require('../../config');
+const { locales } = require('mwp-config');
 const openBrowser = require('react-dev-utils/openBrowser');
 const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move this script into CLI - currently requires MWP dependency :/
 
