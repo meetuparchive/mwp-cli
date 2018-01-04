@@ -1,4 +1,4 @@
-const locales = require('../config').locales;
+const { locales } = require('mwp-config');
 
 const supportedLocales =
 	process.env.NODE_ENV === 'production' ? locales : locales.slice(0, 1); // default to top locale in dev

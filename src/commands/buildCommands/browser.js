@@ -1,12 +1,11 @@
 const chalk = require('chalk');
-const path = require('path');
 const webpack = require('webpack');
 const addLocalesOption = require('../../util/addLocalesOption');
 
 const {
 	paths,
 	webpack: { getBrowserAppConfig, getRelativeBundlePath },
-} = require('../../config');
+} = require('mwp-config');
 
 // set up function for getting the built bundle filename
 const getBundlePath = getRelativeBundlePath('app', paths.output.browser);
