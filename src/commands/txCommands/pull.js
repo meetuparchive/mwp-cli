@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const Rx = require('rxjs');
 const path = require('path');
-const paths = require('../../config/paths');
+const { paths } = require('mwp-config');
 const txlib = require('./util');
 
 const tx = txlib.tx;
@@ -24,7 +24,8 @@ const pullResourceContent$ = branch =>
 		// 2. parse local trn content and grab updates
 		.flatMap(([lang_tag, content]) =>
 			Rx.Observable.zip(
-				[lang_tag], [content],
+				[lang_tag],
+				[content],
 				downloadTrnUpdates$(branch, lang_tag)
 			)
 		)
