@@ -301,7 +301,7 @@ const diffVerbose$ = (master$, content$) =>
 			)
 		)
 		.map(diff) // return local content that is new or updated
-		.do(diff => console.log('trns added / updated:', Object.keys(diff).length))
+		.do(diff => console.log('trns added / updated:', Object.keys(diff).length));
 
 const projectInfo$ = Rx.Observable.bindNodeCallback(
 	tx.projectInstanceMethods.bind(tx)
