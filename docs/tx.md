@@ -31,15 +31,18 @@ content locally and on Transifex.
   results of the diff (if any) are put in a new resource in `mup-web` on transifex.
 
 - `pull <resource>`- should be run while on a fresh branch from `master`, separate from other
-  code changes. It will grab translated content from the specified resource (branch
-  name). Merges pulled content into `src/trns/po/{localeCode}.po` files. Run for each
-  resource you wish to pull down, usually resources where translation is complete.
+  code changes. It will download translated content from of the current project's resources
+  in order of most-recently-updated. Merges pulled content into `src/trns/po/{localeCode}.po` files.
+  Run for each resource you wish to pull down, usually resources where translation is complete.
   Commit result, create PR, and merge PR after Travis build has passed.
 
 - `pullAll`- should be run while on a fresh branch from `master`, separate from other
-  code changes. It will grab translated content from all resources for the project it is run in in last updated resource order. As each resource it is pulled it merges pulled content into `src/trns/po/{localeCode}.po` files. If you'd like to have a history of each change
-  based on resource add a flag of `-c` and it will create a unique commit for each resource
-  that has a change to commit.
+  code changes. It will download translated content from all resources for the project it
+  is run in in last updated resource order. As each resource is pulled, and then merges
+  pulled content into the associated by locale `src/trns/po/{localeCode}.po` files.
+    * If you'd like to have a history of each change based on resource add a flag of `-c`
+    and it will create a unique commit for each resource that has a change to commit.
+
   Commit result, create PR, and merge PR after Travis build has passed.
 
 - `pushTxMaster` - Updates the master resource - the canonical copy of translated 

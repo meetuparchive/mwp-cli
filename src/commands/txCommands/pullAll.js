@@ -41,13 +41,13 @@ const onPullResourceComplete = (resource, commitOnComplete) => {
 
 	return child_process$('git status')
 		.flatMap(([stdout, stderr]) => {
-			if (stdout.includes('modified:')) {
-				child_process.execSync('git add src/trns');
-				return commitResource$(resource);
+			if (!stdout.includes('modified:')) {
+				console.log(chalk.grey(`no changes to commit for '${resource}'`));
+				return Rx.Observable.empty();
 			}
 
-			console.log(chalk.grey(`no changes to commit for '${resource}'`));
-			return Rx.Observable.empty();
+			child_process.execSync('git add src/trns');
+			return commitResource$(resource);
 		});
 };
 
@@ -60,7 +60,7 @@ const onPullResourceComplete = (resource, commitOnComplete) => {
 const pullResource = (resource, commitOnComplete) => {
 	console.log(chalk.cyan(`Starting tx:pull for '${resource}'`));
 	return pullResourceTrns.pullResourceContent$(resource)
-		.toArray()
+		.toArray() // wait until all content has been pulled before moving on to next tasks
 		.do(() => console.log(chalk.green(`\nCompleted tx:pull for '${resource}'`)))
 		.flatMap(() => onPullResourceComplete(resource, commitOnComplete));
 };
@@ -81,6 +81,6 @@ module.exports = {
 
 		getProjectResourcesList$
 			.flatMap(resource => pullResource(resource, argv.gitCommit), 1)
-			.subscribe(null, (error) => console.error(error), () => console.log(chalk.green('All resources pulled.')));
+			.subscribe(null, error => { throw error; }, () => console.log(chalk.green('All resources pulled.')));
 	},
 };
