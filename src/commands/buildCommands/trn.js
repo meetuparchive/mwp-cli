@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');
 
-const { paths, locales } = require('../../config');
+const { paths, locales } = require('mwp-config');
 const {
 	allLocalPoTrnsWithFallbacks$,
 	localTrns$,

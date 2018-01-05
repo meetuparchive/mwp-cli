@@ -1,7 +1,7 @@
 const fs = require('fs');
 const Rx = require('rxjs');
 const path = require('path');
-const paths = require('../../../config/paths');
+const { paths } = require('mwp-config');
 const txlib = require('./index');
 
 const tx = txlib.tx;
