@@ -2,72 +2,89 @@ const chalk = require('chalk');
 const child_process = require('child_process');
 const Rx = require('rxjs');
 const txlib = require('./util');
-const txPullResource = require('./util/pullResourceTrns');
+const pullResourceTrns = require('./util/pullResourceTrns');
 
 const getProjectResourcesList$ =
 	txlib.resources$
-		.flatMap(Rx.Observable.from)
-		.reduce((resources, resource) => [ ...resources, resource ], []);
+		.flatMap(Rx.Observable.from);
+
+const child_process$ = Rx.Observable.bindNodeCallback(child_process.exec);
 
 /**
- * recursively goes through list of resources and pulls trn content down
+ * Creates git commit of what has been staged
+ *
+ * note: adjusting resource name in git commit message to prevent jira ticket
+ * from moving through workflow. We have a script which looks at all git commits
+ * to see if a ticket number is contained within it and if so associates a branch/PR
+ * with it. We don't want that to happen with tx pulls.
+ * @param  {String} resource resource slug to be used when we pull translations
+ * @param  {Observable} observer Observable of resource pull
+ * @return {Observable} Observable of shell process
  */
-const pullResource = (resources, iteration, commitOnComplete) => {
-	console.log(chalk.cyan(`Starting tx:pull for '${resources[iteration]}'`));
-	txPullResource.pullResourceContent$(resources[iteration]).subscribe(null, null, () => {
-		console.log(chalk.green(`Completed tx:pull for '${resources[iteration]}'`));
+const commitResource = (resource, observer) =>
+	child_process$(`git commit -m "tx:pull for ${resource.replace(/-/g, '_')}" --no-verify`)
+		.flatMap(() => {
+			console.log(chalk.green(`- commited changes for '${resource}'`));
+			// start next tx:pull
+			return observer.complete();
+		});
 
-		const doNext = iteration+1 < resources.length;
+/**
+ * Called when a tx pull is complete for a particular resource
+ * @param  {String} resource resource slug to be used when we pull translations
+ * @param  {Observable} observer Observable of resource pull
+ * @param  {Boolean} commitOnComplete flag used to determine if we should commit the resource in git
+ * @return {undefined}
+ */
+const onPullResourceComplete = (resource, observer, commitOnComplete) => {
+	console.log(chalk.green('done...', resource));
+	if (!commitOnComplete) {
+		console.log('here...');
+		return observer.complete();
+	}
 
-		// only do a git commit if this is requested by the user when starting tx pull
-		if (commitOnComplete) {
-			// do an initial check to see if there is actually something to commit
-			child_process.exec('git status', (error, stdout, stderr) => {
-				// if 'nothing to commit' is NOT in `stdout` make a new commit
-				// with resource name in commit message
-				if (stdout.includes('nothing to commit') === false) {
-					child_process.execSync('git add src/trns');
-					// note: adjusting resource name to prevent branch/resources what contain
-					// jira tickets in name from causing tickets to move through workflow when
-					// PR for tx pulls are made
-					child_process.exec(`git commit -m "tx:pull for ${resources[iteration].replace(/-/g, '_')}" --no-verify`, () => {
-						console.log(chalk.green(`- commited changes for '${resources[iteration]}'`));
-						// start next tx:pull
-						doNext && pullResource(resources, iteration+1, commitOnComplete);
-					});
-				}
-				// when there is nothing to commit don't bother making commit entry and just
-				// message user with warning that no changes detected
-				else {
-					console.log(chalk.yellow(`- no changes to commit for '${resources[iteration]}'`));
+	// stops here...
+	console.log('or here....');
 
-					// start next tx:pull
-					doNext && pullResource(resources, iteration+1, commitOnComplete);
-				}
-			});
-		}
-
-		else {
-			doNext && pullResource(resources, iteration+1, commitOnComplete);
-		}
-	});
+	child_process$('git status')
+		.flatMap((error, stdout, stderr) => {
+			console.log('stdout', stdout);
+			if (stdout.includes('modified:')) {
+				child_process.execSync('git add src/trns');
+				return observer.complete();
+				// commitResource(resource, observer);
+			}
+		});
 };
+
+/**
+ * Kicks off process to pull an individual resources trns
+ * @param  {String} resource resource slug to be used when we pull translations
+ * @param  {Boolean} commitOnComplete flag used to determine if we should commit the resource in git
+ * @return {Observable} Observable of tx process
+ */
+const pullResource = (resource, commitOnComplete) =>
+	Rx.Observable.create(observer => {
+		pullResourceTrns.pullResourceContent$(resource)
+			.subscribe(null, null, () => onPullResourceComplete(resource, observer, commitOnComplete));
+	});
 
 module.exports = {
 	command: 'pullAll',
-	description: 'pulls all content for resources in from transifex in update date order. use --gh to create git commit after reach pull',
+	description: 'Pull all translations from resources from Transifex, ordered by most recently updated',
 	builder: yarg =>
 		yarg.option({
 			gitCommit: {
-				alias: 'gh',
+				alias: 'c',
 				default: false
 			},
 		}),
 	handler: argv => {
 		txlib.checkEnvVars();
-		console.log(chalk.magenta('Start pulling all trns for all resources in project'));
+		console.log(chalk.magenta('Start pulling all resources process...'));
 
 		getProjectResourcesList$
-			.subscribe(resources => pullResource(resources, 0, argv.gitCommit));
+			.flatMap(resource => pullResource(resource, argv.gitCommit), 1)
+			.subscribe(null, null, () => console.log(chalk.green('All resources pulled.')));
 	},
 };
