@@ -19,7 +19,7 @@ module.exports = {
 
 		argv.resource.forEach(resource =>
 			pullResourceTrns.pullResourceContent$(resource).subscribe(null, null, () =>
-				console.log(`${resource} done`)
+				console.log(chalk.green(`\n${resource} done`))
 			)
 		);
 	},

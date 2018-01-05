@@ -18,42 +18,36 @@ const child_process$ = Rx.Observable.bindNodeCallback(child_process.exec);
  * to see if a ticket number is contained within it and if so associates a branch/PR
  * with it. We don't want that to happen with tx pulls.
  * @param  {String} resource resource slug to be used when we pull translations
- * @param  {Observable} observer Observable of resource pull
  * @return {Observable} Observable of shell process
  */
-const commitResource = (resource, observer) =>
-	child_process$(`git commit -m "tx:pull for ${resource.replace(/-/g, '_')}" --no-verify`)
-		.flatMap(() => {
-			console.log(chalk.green(`- commited changes for '${resource}'`));
-			// start next tx:pull
-			return observer.complete();
+const commitResource$ = (resource) => {
+	const commitCommand = `git commit -m "tx:pull for ${resource.replace(/-/g, '_')}" --no-verify`;
+	return child_process$(commitCommand)
+		.do(() => {
+			console.log(chalk.green(commitCommand));
 		});
+};
 
 /**
  * Called when a tx pull is complete for a particular resource
  * @param  {String} resource resource slug to be used when we pull translations
- * @param  {Observable} observer Observable of resource pull
  * @param  {Boolean} commitOnComplete flag used to determine if we should commit the resource in git
- * @return {undefined}
+ * @return {Observable} Observable of tx process
  */
-const onPullResourceComplete = (resource, observer, commitOnComplete) => {
-	console.log(chalk.green('done...', resource));
+const onPullResourceComplete = (resource, commitOnComplete) => {
 	if (!commitOnComplete) {
-		console.log('here...');
-		return observer.complete();
+		return Rx.Observable.empty();
 	}
 
-	// stops here...
-	console.log('or here....');
-
-	child_process$('git status')
-		.flatMap((error, stdout, stderr) => {
-			console.log('stdout', stdout);
+	return child_process$('git status')
+		.flatMap(([stdout, stderr]) => {
 			if (stdout.includes('modified:')) {
 				child_process.execSync('git add src/trns');
-				return observer.complete();
-				// commitResource(resource, observer);
+				return commitResource$(resource);
 			}
+
+			console.log(chalk.grey(`no changes to commit for '${resource}'`));
+			return Rx.Observable.empty();
 		});
 };
 
@@ -63,11 +57,13 @@ const onPullResourceComplete = (resource, observer, commitOnComplete) => {
  * @param  {Boolean} commitOnComplete flag used to determine if we should commit the resource in git
  * @return {Observable} Observable of tx process
  */
-const pullResource = (resource, commitOnComplete) =>
-	Rx.Observable.create(observer => {
-		pullResourceTrns.pullResourceContent$(resource)
-			.subscribe(null, null, () => onPullResourceComplete(resource, observer, commitOnComplete));
-	});
+const pullResource = (resource, commitOnComplete) => {
+	console.log(chalk.cyan(`Starting tx:pull for '${resource}'`));
+	return pullResourceTrns.pullResourceContent$(resource)
+		.toArray()
+		.do(() => console.log(chalk.green(`\nCompleted tx:pull for '${resource}'`)))
+		.flatMap(() => onPullResourceComplete(resource, commitOnComplete));
+};
 
 module.exports = {
 	command: 'pullAll',
@@ -85,6 +81,6 @@ module.exports = {
 
 		getProjectResourcesList$
 			.flatMap(resource => pullResource(resource, argv.gitCommit), 1)
-			.subscribe(null, null, () => console.log(chalk.green('All resources pulled.')));
+			.subscribe(null, (error) => console.error(error), () => console.log(chalk.green('All resources pulled.')));
 	},
 };

@@ -44,7 +44,7 @@ const pullResourceContent$ = branch =>
 					);
 					fs.writeFileSync(filepath, poContent);
 				})
-				.do(() => console.log(`${lang_tag} complete`))
+				.do(() => process.stdout.write(`${lang_tag},`))
 		);
 
 module.exports = {
