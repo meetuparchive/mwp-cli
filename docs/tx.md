@@ -36,6 +36,12 @@ content locally and on Transifex.
   resource you wish to pull down, usually resources where translation is complete.
   Commit result, create PR, and merge PR after Travis build has passed.
 
+- `pullAll`- should be run while on a fresh branch, separate from other
+  code changes. It will grab translated content from all resources for the project it is run in in last updated resource order. As each resource it is pulled it merges pulled content into `src/trns/po/{localeCode}.po` files. If you'd like to have a history of each change
+  based on resource add a flag of `-c` and it will create a unique commit for each resource
+  that has a change to commit.
+  Commit result, create PR, and merge PR after Travis build has passed.
+
 - `pushTxMaster` - Updates the master resource - the cannonical copy of translated 
   content. The main usage is for diffing against when examining a new / updated PR.
   This is run whenever there's an update to the master branch. This pushes all

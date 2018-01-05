@@ -17,3 +17,11 @@ $ mope <command> [<args>]
 - [build](docs/build.md)
 - [run](docs/run.md)
 - [tx](docs/tx.md)
+
+
+## Developing
+When developing run the command you are working on in a repo that has a project defined (e.g. `mup-web`). 
+To start dev'ing.
+1. Checkout mwp-cli a *-web repo
+2. Go to *-web repo folder
+3. run `node ../mwp-cli/bin/mope.js COMMAND` (e.g. `node ../mwp-cli/bin/mope.js tx pullAll -c`)
