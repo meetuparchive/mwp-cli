@@ -71,6 +71,9 @@ module.exports = {
 				default: 10000, // 10 seconds
 				describe: 'The time to wait between progress checks',
 			},
+			noCanary: {
+				describe: 'Disable canary test',
+			},
 		}),
 	handler: argv => {
 		const envVariables = {
@@ -101,7 +104,11 @@ module.exports = {
 				.sufficientQuota()
 				.then(deploy.create)
 				.then(versions.start)
-				.then(() => Promise.all(versionIds.map(runE2EWithRetry)))
+				.then(
+					() =>
+						config.noCanary ||
+						Promise.all(versionIds.map(runE2EWithRetry))
+				)
 				.catch(error => {
 					console.log(chalk.red(`Stopping deployment: ${error}`));
 					console.log(chalk.red('Cleaning up failed deployment...'));
