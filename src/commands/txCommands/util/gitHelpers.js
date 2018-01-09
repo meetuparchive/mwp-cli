@@ -6,11 +6,11 @@ const child_process$ = Rx.Observable.bindNodeCallback(child_process.exec);
 
 /**
  * Creates git commit of what has been staged
- * @param  {String} resource resource slug to be used when we pull translations
  * @param  {String} commitMessage what commit message to commit
+ * @param  {String} args additional args to include with commit
  * @return {Observable} Observable of tx process
  */
-const commit$ = (resource, commitMessage) => {
+const commit$ = (commitMessage, args) => {
 	return child_process$('git status')
 		.flatMap(([stdout, stderr]) => {
 			if (!stdout.includes('modified:')) {
@@ -19,9 +19,10 @@ const commit$ = (resource, commitMessage) => {
 			}
 
 			child_process.execSync('git add .');
-			return child_process$(commitMessage)
+			const command = `git commit -m ${JSON.stringify(commitMessage)} ${args}`;
+			return child_process$(command)
 			.do(() => {
-				console.log(chalk.green(commitMessage));
+				console.log(chalk.green(command));
 			});
 		});
 };

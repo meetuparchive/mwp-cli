@@ -41,8 +41,8 @@ module.exports = {
 				if (!argv.gitCommit) {
 					return Rx.Observable.empty();
 				}
-				const commitCommand = `git commit -m "tx:pull for ${resource.replace(/-/g, '_')}" --no-verify`;
-				return gitHelpers.commit$(resource, commitCommand);
+				const commitMessage = `tx:pull for ${resource.replace(/-/g, '_')}`;
+				return gitHelpers.commit$(commitMessage, `--no-verify`);
 			})
 			.subscribe(null, error => { throw error; }, () => console.log(chalk.green('All resources pulled.')));
 	},
