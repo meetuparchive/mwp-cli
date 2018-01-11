@@ -10,7 +10,7 @@ module.exports = {
 		console.log(chalk.blue('pushing content to transifex master'));
 
 		Rx.Observable
-			.concat(txlib.updateMasterContent$, txlib.uploadTrnsMaster$) // update master content before pushing translations
+			.concat(txlib.updateMasterContent$, txlib.updateTranslations$) // update master content before pushing translations
 			.subscribe(null, null, () => console.log('done'));
 	},
 };

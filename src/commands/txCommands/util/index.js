@@ -387,16 +387,10 @@ const updateMasterContent$ = updateAllMessages$(MASTER_RESOURCE, PROJECT_MASTER)
 // convenience function for updating `mup-web` project's all_translations resource
 const updateAllTranslationsResource$ = updateAllMessages$(ALL_TRANSLATIONS_RESOURCE, PROJECT);
 
-// Helper to grab all translated content (e.g. Italian, Russian, etc)
-const updateTranslations$ = (resource, project) => allLocalPoTrns$
-	.flatMap(([lang_tag, content]) =>
-		wrapCompilePo$(content).map(content => [lang_tag, content]))
-	.flatMap((translation) => uploadAllTranslations$(resource, project, translation));
-
-const uploadAllTranslations$ = (resource, project, [lang_tag, content]) =>
+const uploadTrnsMaster$ = ([lang_tag, content]) =>
 	Rx.Observable.bindNodeCallback(tx.uploadTranslationInstanceMethod.bind(tx))(
-		project,
-		resource,
+		PROJECT_MASTER,
+		MASTER_RESOURCE,
 		lang_tag,
 		resourceContent(resource, content)
 	).do(
@@ -404,10 +398,15 @@ const uploadAllTranslations$ = (resource, project, [lang_tag, content]) =>
 			console.log(lang_tag);
 			console.log(response);
 		},
-		() => console.log(`error uploadAllTranslations$ ${lang_tag} to ${project} - ${resource}`)
+		() => console.log(`error uploadTrnsMaster$ ${lang_tag}`)
 		);
-// convenience function for updating `mup-web-master` project's master resource
-const uploadTrnsMaster$ = updateTranslations$(MASTER_RESOURCE, PROJECT_MASTER);
+
+// Helper to grab all translated content (e.g. Italian, Russian, etc)
+const updateTranslations$ = allLocalPoTrns$
+	.flatMap(([lang_tag, content]) =>
+		wrapCompilePo$(content).map(content => [lang_tag, content]))
+	.flatMap(uploadTrnsMaster$);
+
 
 module.exports = {
 	allLocalPoTrns$,
@@ -443,7 +442,6 @@ module.exports = {
 	uploadTrnsMaster$,
 	wrapCompilePo$,
 	wrapPoTrns,
-	updateAllTranslationsResource$,
 	updateMasterContent$,
 	uploadTrnsMaster$,
 };
