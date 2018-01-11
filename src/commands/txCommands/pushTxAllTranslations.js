@@ -11,6 +11,6 @@ module.exports = {
 
     Rx.Observable
       .concat(txlib.updateAllTranslationsResource$)
-      .subscribe((data) => console.log(data), (data) => console.log(data.params), () => console.log('done'));
+      .subscribe(null, null, () => console.log('done'));
   },
 };
