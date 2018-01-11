@@ -10,9 +10,9 @@ const getProjectResourcesList$ =
 		// downloaded first, this will allow other resources to be applied on top of
 		// any changes in that resource. Hopefully, this should prevent any changes in
 		// feature branches from being overridden by this resource
-		.map(resource =>
-			resource
-				.sort((a, b) => a === txlib.ALL_TRANSLATIONS_RESOURCE ? -1 : 1)
+		.map(resources =>
+			resources
+				.sort(a => a === txlib.ALL_TRANSLATIONS_RESOURCE ? -1 : 1)
 		)
 		.flatMap(Rx.Observable.from);
 
