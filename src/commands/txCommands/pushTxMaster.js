@@ -2,15 +2,14 @@ const chalk = require('chalk');
 const Rx = require('rxjs');
 const txlib = require('./util');
 
-module.exports = {
-	command: 'pushTxMaster',
-	description: 'push content to transifex master',
-	handler: argv => {
-		txlib.checkEnvVars();
-		console.log(chalk.blue('pushing content to transifex master'));
+// push content to transifex master
+const pushTxMaster = () => {
+	txlib.checkEnvVars();
+	console.log(chalk.blue('pushing content to transifex master'));
 
-		Rx.Observable
-			.concat(txlib.updateMasterContent$, txlib.updateTranslations$) // update master content before pushing translations
-			.subscribe(null, null, () => console.log('done'));
-	},
+	Rx.Observable
+		.concat(txlib.updateMasterContent$, txlib.updateTranslations$) // update master content before pushing translations
+		.subscribe(null, null, () => console.log('done'));
 };
+
+module.exports = { pushTxMaster };

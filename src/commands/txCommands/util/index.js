@@ -443,5 +443,7 @@ module.exports = {
 	wrapCompilePo$,
 	wrapPoTrns,
 	updateMasterContent$,
+	updateAllTranslationsResource$
 	uploadTrnsMaster$,
+	updateAllTranslationsResource$,
 };
