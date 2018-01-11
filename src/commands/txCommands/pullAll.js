@@ -4,20 +4,17 @@ const txlib = require('./util');
 const pullResourceTrns = require('./util/pullResourceTrns');
 const gitHelpers = require('./util/gitHelpers');
 
-
-const allTranslationsResource$ = downloadAllTranslationsResource =>
-	downloadAllTranslationsResource
-	? Rx.Observable.of(txlib.ALL_TRANSLATIONS_RESOURCE)
-	: Rx.Observable.empty();
-
 const getProjectResourcesList$ =
 	txlib.resources$
-		.flatMap(Rx.Observable.from)
-		// We exclude the ALL_TRANSLATIONS_RESOURCE from the list as we want to always
-		// downloaded this first, this will allow other resources to be applied on top of
+		// We want to sort the array of resources so that the ALL_TRANSLATIONS_RESOURCE is
+		// downloaded first, this will allow other resources to be applied on top of
 		// any changes in that resource. Hopefully, this should prevent any changes in
 		// feature branches from being overridden by this resource
-		.filter(resource => resource !== txlib.ALL_TRANSLATIONS_RESOURCE);
+		.map(resource =>
+			resource
+				.sort((a, b) => a === txlib.ALL_TRANSLATIONS_RESOURCE ? -1 : 1)
+		)
+		.flatMap(Rx.Observable.from);
 
 /**
  * Kicks off process to downloaded an individual resources trns
@@ -41,19 +38,12 @@ module.exports = {
 				alias: 'c',
 				default: false
 			},
-			downloadAllTranslationsResource: {
-				alias: 'allResource',
-				default: false,
-			},
 		}),
 	handler: argv => {
 		txlib.checkEnvVars();
 		console.log(chalk.magenta('Start downloading all resources process...'));
 
-		Rx.Observable
-			// See longer description above in `getProjectResourcesList$` but we essentially
-			// want allTranslationsResource$ downloaded first, then all feature branch resources
-			.merge(allTranslationsResource$(argv.downloadAllTranslationsResource), getProjectResourcesList$)
+		getProjectResourcesList$
 			.flatMap(pullResource$, 1)
 			.flatMap(resource => {
 				if (!argv.commit) {
