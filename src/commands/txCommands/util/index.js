@@ -17,6 +17,7 @@ const TX_PW = process.env.TRANSIFEX_PW;
 const PROJECT = packageConfig.txProject;
 const PROJECT_MASTER = `${PROJECT}-master`; // separate project so translators don't confuse with branch content
 const MASTER_RESOURCE = 'master';
+const ALL_TRANSLATIONS_RESOURCE = 'all_translations';
 
 const tx = new Transifex({
 	project_slug: PROJECT,
@@ -86,7 +87,7 @@ const wrapCompilePo$ = poObj =>
 const diff = ([main, extracted]) =>
 	Object.keys(extracted)
 		.filter(
-			key => !main[key] || main[key].msgstr[0] != extracted[key].msgstr[0]
+		key => !main[key] || main[key].msgstr[0] != extracted[key].msgstr[0]
 		)
 		.reduce((obj, key) => {
 			obj[key] = extracted[key];
@@ -210,20 +211,6 @@ const deleteResource$ = slug =>
 		slug
 	).do(() => console.log('delete', slug));
 
-const uploadTrnsMaster$ = ([lang_tag, content]) =>
-	Rx.Observable.bindNodeCallback(tx.uploadTranslationInstanceMethod.bind(tx))(
-		PROJECT_MASTER,
-		MASTER_RESOURCE,
-		lang_tag,
-		resourceContent(MASTER_RESOURCE, content)
-	).do(
-		response => {
-			console.log(lang_tag);
-			console.log(response);
-		},
-		() => console.log(`error uploadTrnsMaster$ ${lang_tag}`)
-	);
-
 const uploadTranslation$ = ([lang_tag, content]) =>
 	Rx.Observable.bindNodeCallback(tx.translationStringsPutMethod.bind(tx))(
 		PROJECT_MASTER,
@@ -233,7 +220,7 @@ const uploadTranslation$ = ([lang_tag, content]) =>
 	).do(
 		() => console.log(`translation upload complete - ${lang_tag}`),
 		() => console.log(`translation upload FAIL - ${lang_tag}`)
-	);
+		);
 
 const uploadTranslationsForKeys$ = keys =>
 	allLocalPoTrns$
@@ -302,8 +289,8 @@ const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
 
 const txMasterTrns$ = readResource$(MASTER_RESOURCE, PROJECT_MASTER)
 	.do(
-		() => console.log('master resource read complete'),
-		() => console.log('master resource read fail')
+	() => console.log('master resource read complete'),
+	() => console.log('master resource read fail')
 	)
 	.flatMap(parsePluckTrns);
 
@@ -381,6 +368,46 @@ const resourcesComplete$ = resourceCompletion$
 	.filter(item => Object.keys(item[1]).length === 0)
 	.map(([resource]) => resource);
 
+// Helper to grab all local trns to be merged to a tx resource (e.g. default English messages)
+const updateAllMessages$ = (resource, project) =>
+	localTrnsMerged$
+		.flatMap(poContent =>
+			updateResource$(
+				resource,
+				poContent,
+				project,
+			).do(
+				() => console.log(`update ${project} - ${resource} success`),
+				() => console.log(`update ${project} - ${resource}  FAIL!`))
+		) // update resource
+		.map(updateResult => [resource, updateResult]); // append 'master' for logging
+
+// convenience function for updating `mup-web-master` project's master resource
+const updateMasterContent$ = updateAllMessages$(MASTER_RESOURCE, PROJECT_MASTER);
+// convenience function for updating `mup-web` project's all_translations resource
+const updateAllTranslationsResource$ = updateAllMessages$(ALL_TRANSLATIONS_RESOURCE, PROJECT);
+
+const uploadTrnsMaster$ = ([lang_tag, content]) =>
+	Rx.Observable.bindNodeCallback(tx.uploadTranslationInstanceMethod.bind(tx))(
+		PROJECT_MASTER,
+		MASTER_RESOURCE,
+		lang_tag,
+		resourceContent(resource, content)
+	).do(
+		response => {
+			console.log(lang_tag);
+			console.log(response);
+		},
+		() => console.log(`error uploadTrnsMaster$ ${lang_tag}`)
+		);
+
+// Helper to grab all translated content (e.g. Italian, Russian, etc)
+const updateTranslations$ = allLocalPoTrns$
+	.flatMap(([lang_tag, content]) =>
+		wrapCompilePo$(content).map(content => [lang_tag, content]))
+	.flatMap(uploadTrnsMaster$);
+
+
 module.exports = {
 	allLocalPoTrns$,
 	allLocalPoTrnsWithFallbacks$,
@@ -415,4 +442,8 @@ module.exports = {
 	uploadTrnsMaster$,
 	wrapCompilePo$,
 	wrapPoTrns,
+	updateMasterContent$,
+	updateAllTranslationsResource$
+	uploadTrnsMaster$,
+	updateAllTranslationsResource$,
 };

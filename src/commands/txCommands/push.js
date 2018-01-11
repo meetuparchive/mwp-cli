@@ -5,6 +5,9 @@ const txlib = require('./util');
 
 const tx = txlib.tx;
 
+const { pushTxMaster } = require('./pushTxMaster');
+const { pushTxAllTranslations } = require('./pushTxAllTranslations');
+
 const readParseResource$ = slug =>
 	txlib.readResource$(slug).flatMap(txlib.parsePluckTrns);
 
@@ -19,9 +22,9 @@ const devGitBranch$ = Rx.Observable.bindNodeCallback(child_process.exec)(
 // names need to work as valid url paths
 const gitBranch$ = Rx.Observable
 	.if(
-		() => process.env.TRAVIS_PULL_REQUEST_BRANCH,
-		Rx.Observable.of(process.env.TRAVIS_PULL_REQUEST_BRANCH),
-		devGitBranch$
+	() => process.env.TRAVIS_PULL_REQUEST_BRANCH,
+	Rx.Observable.of(process.env.TRAVIS_PULL_REQUEST_BRANCH),
+	devGitBranch$
 	)
 	.map(branchname => branchname.replace(/\//g, '_'));
 
@@ -43,7 +46,7 @@ const pushResource$ = poData =>
 				return Rx.Observable.if(
 					() => branchResourceExists,
 					txlib.deleteResource$(gitBranch)
-					.do(() => console.log(`no new content - delete ${gitBranch}`))
+						.do(() => console.log(`no new content - delete ${gitBranch}`))
 				);
 			}
 		});
@@ -64,8 +67,8 @@ const resourceTrns$ = Rx.Observable
 		Rx.Observable.zip.apply({}, resources.map(readParseResource$))
 	)
 	.reduce(
-		(joinedTrns, resourceTrns) => Object.assign(joinedTrns, resourceTrns),
-		{}
+	(joinedTrns, resourceTrns) => Object.assign(joinedTrns, resourceTrns),
+	{}
 	);
 
 const masterAndResourceTrns$ = Rx.Observable
@@ -84,14 +87,34 @@ const branchCheck$ = gitBranch$.do(branchName => {
 	}
 });
 
-const pushContent$ = txlib.diffVerbose$(masterAndResourceTrns$,txlib.localTrnsMerged$)
+const pushContent$ = txlib.diffVerbose$(masterAndResourceTrns$, txlib.localTrnsMerged$)
 	.flatMap(pushResource$);
 
 module.exports = {
-	command: 'pushNewContent',
+	command: 'push',
 	description: 'push content to transifex',
+	builder: yarg =>
+		yarg.option({
+			project: {
+				alias: 'p',
+				default: txlib.PROJECT,
+			},
+			all: {
+				alias: 'a',
+				default: false,
+			}
+		}),
 	handler: argv => {
 		txlib.checkEnvVars();
+
+		if (argv.project === txlib.MASTER_RESOURCE) {
+			return pushTxMaster();
+		}
+
+		if (argv.all) {
+			return pushTxAllTranslations();
+		}
+
 		branchCheck$.subscribe();
 
 		console.log(chalk.blue('pushing content to transifex'));
