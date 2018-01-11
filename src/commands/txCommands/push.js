@@ -7,30 +7,10 @@ const tx = txlib.tx;
 
 const { pushTxMaster } = require('./pushTxMaster');
 const { pushTxAllTranslations } = require('./pushTxAllTranslations');
+const { gitBranch$, branchCheck$ } = require('./util/gitHelpers');
 
 const readParseResource$ = slug =>
 	txlib.readResource$(slug).flatMap(txlib.parsePluckTrns);
-
-const devGitBranch$ = Rx.Observable.bindNodeCallback(child_process.exec)(
-	'git rev-parse --abbrev-ref HEAD'
-)
-	.pluck(0)
-	.map(str => str.slice(0, -1));
-
-// Branch whether in dev or CI. Replaces forward slashes because
-// branch names are used as transifex resource names and resource
-// names need to work as valid url paths
-const gitBranch$ = Rx.Observable
-	.if(
-	() => process.env.TRAVIS_PULL_REQUEST_BRANCH,
-	Rx.Observable.of(process.env.TRAVIS_PULL_REQUEST_BRANCH),
-	devGitBranch$
-	)
-	.map(branchname => branchname.replace(/\//g, '_'));
-
-const branchResourceExists$ = Rx.Observable
-	.zip(txlib.resources$, gitBranch$)
-	.map(([resources, branch]) => resources.indexOf(branch) > -1);
 
 // syncs content in po format to tx
 const pushResource$ = poData =>
@@ -77,16 +57,6 @@ const masterAndResourceTrns$ = Rx.Observable
 		Object.assign({}, masterTrns, resourceTrns)
 	);
 
-// don't run against master! will delete trn content on transifex
-const branchCheck$ = gitBranch$.do(branchName => {
-	if (branchName === 'master') {
-		console.log(
-			'do not run this script on master. it will kill the master resource on Transifex.'
-		);
-		process.exit(0);
-	}
-});
-
 const pushContent$ = txlib.diffVerbose$(masterAndResourceTrns$, txlib.localTrnsMerged$)
 	.flatMap(pushResource$);
 
@@ -118,7 +88,6 @@ module.exports = {
 		branchCheck$.subscribe();
 
 		console.log(chalk.blue('pushing content to transifex'));
-
 		pushContent$.subscribe(null, null, () => console.log(`content pushed`));
 	},
 };

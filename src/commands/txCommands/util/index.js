@@ -11,6 +11,7 @@ const {
 } = require('mwp-config');
 const Rx = require('rxjs');
 const Transifex = require('transifex');
+const { branchCheck$ } = require('./gitHelpers');
 
 const TX_USER = process.env.TRANSIFEX_USER;
 const TX_PW = process.env.TRANSIFEX_PW;
@@ -387,8 +388,9 @@ const updateMasterContent$ = updateAllMessages$(MASTER_RESOURCE, PROJECT_MASTER)
 // convenience function for updating `mup-web` project's all_translations resource
 const updateAllTranslationsResource$ = updateAllMessages$(ALL_TRANSLATIONS_RESOURCE, PROJECT);
 
-const uploadTrnsMaster$ = ([lang_tag, content]) =>
-	Rx.Observable.bindNodeCallback(tx.uploadTranslationInstanceMethod.bind(tx))(
+const uploadTrnsMaster$ = ([lang_tag, content]) => {
+	branchCheck$.subscribe();
+	return Rx.Observable.bindNodeCallback(tx.uploadTranslationInstanceMethod.bind(tx))(
 		PROJECT_MASTER,
 		MASTER_RESOURCE,
 		lang_tag,
@@ -400,6 +402,7 @@ const uploadTrnsMaster$ = ([lang_tag, content]) =>
 		},
 		() => console.log(`error uploadTrnsMaster$ ${lang_tag}`)
 		);
+}
 
 // Helper to grab all translated content (e.g. Italian, Russian, etc)
 const updateTranslations$ = allLocalPoTrns$
@@ -443,7 +446,6 @@ module.exports = {
 	wrapCompilePo$,
 	wrapPoTrns,
 	updateMasterContent$,
-	updateAllTranslationsResource$
-	uploadTrnsMaster$,
 	updateAllTranslationsResource$,
+	uploadTrnsMaster$,
 };
