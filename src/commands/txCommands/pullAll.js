@@ -4,9 +4,13 @@ const txlib = require('./util');
 const pullResourceTrns = require('./util/pullResourceTrns');
 const gitHelpers = require('./util/gitHelpers');
 
+
+const allTranslationsResource$ = Rx.Observable.of([txlib.ALL_TRANSLATIONS_RESOURCE]);
+
 const getProjectResourcesList$ =
 	txlib.resources$
-		.flatMap(Rx.Observable.from);
+		.flatMap(Rx.Observable.from)
+		.filter(resource => resource !== txlib.ALL_TRANSLATIONS_RESOURCE);
 
 /**
  * Kicks off process to pull an individual resources trns
@@ -35,7 +39,8 @@ module.exports = {
 		txlib.checkEnvVars();
 		console.log(chalk.magenta('Start pulling all resources process...'));
 
-		getProjectResourcesList$
+		Rx.Observable
+			.merge(allTranslationsResource$, getProjectResourcesList$)
 			.flatMap(pullResource$, 1)
 			.flatMap(resource => {
 				if (!argv.gitCommit) {

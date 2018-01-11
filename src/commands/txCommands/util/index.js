@@ -17,6 +17,7 @@ const TX_PW = process.env.TRANSIFEX_PW;
 const PROJECT = packageConfig.txProject;
 const PROJECT_MASTER = `${PROJECT}-master`; // separate project so translators don't confuse with branch content
 const MASTER_RESOURCE = 'master';
+const ALL_TRANSLATIONS_RESOURCE = 'all_translations'; // #TODO: temp until me and yanyi merge branches
 
 const tx = new Transifex({
 	project_slug: PROJECT,
@@ -384,6 +385,7 @@ const resourcesComplete$ = resourceCompletion$
 module.exports = {
 	allLocalPoTrns$,
 	allLocalPoTrnsWithFallbacks$,
+	ALL_TRANSLATIONS_RESOURCE,
 	checkEnvVars,
 	createResource$,
 	deleteResource$,
