@@ -7,7 +7,7 @@ const tx = txlib.tx;
 
 const { pushTxMaster } = require('./pushTxMaster');
 const { pushTxAllTranslations } = require('./pushTxAllTranslations');
-const { gitBranch$, branchCheck$ } = require('./util/gitHelpers');
+const { gitBranch$, branchCheck$, branchResourceExists$ } = require('./util/gitHelpers');
 
 const readParseResource$ = slug =>
 	txlib.readResource$(slug).flatMap(txlib.parsePluckTrns);
