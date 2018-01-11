@@ -31,7 +31,7 @@ const pullResource$ = (resource) => {
 
 module.exports = {
 	command: 'pullAll',
-	description: 'Downloads all translations from resources from Transifex, ordered by most recently updated',
+	description: 'Downloads all translations for resources from Transifex, ordered by most recently updated',
 	builder: yarg =>
 		yarg.option({
 			commit: {
