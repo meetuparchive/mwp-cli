@@ -54,7 +54,6 @@ module.exports = {
 			// See longer description above in `getProjectResourcesList$` but we essentially
 			// want allTranslationsResource$ downloaded first, then all feature branch resources
 			.merge(allTranslationsResource$(argv.downloadAllTranslationsResource), getProjectResourcesList$)
-			// .filter(resources => resources.length)
 			.flatMap(pullResource$, 1)
 			.flatMap(resource => {
 				if (!argv.gitCommit) {
