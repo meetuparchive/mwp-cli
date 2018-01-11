@@ -56,7 +56,7 @@ module.exports = {
 			.merge(allTranslationsResource$(argv.downloadAllTranslationsResource), getProjectResourcesList$)
 			.flatMap(pullResource$, 1)
 			.flatMap(resource => {
-				if (!argv.gitCommit) {
+				if (!argv.commit) {
 					return Rx.Observable.empty();
 				}
 				const commitMessage = `tx:pull for ${resource.replace(/-/g, '_')}`;
