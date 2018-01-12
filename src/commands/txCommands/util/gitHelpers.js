@@ -26,7 +26,7 @@ const commit$ = (commitMessage, args) => {
 		});
 };
 
-const devGitBranch$ = Rx.Observable.bindNodeCallback(child_process.exec)(
+const devGitBranch$ = child_process$(
 	'git rev-parse --abbrev-ref HEAD'
 )
 	.pluck(0)
