@@ -49,8 +49,8 @@ const resourceTrns$ = Rx.Observable
 		Rx.Observable.zip.apply({}, resources.map(readParseResource$))
 	)
 	.reduce(
-	(joinedTrns, resourceTrns) => Object.assign(joinedTrns, resourceTrns),
-	{}
+		(joinedTrns, resourceTrns) => Object.assign(joinedTrns, resourceTrns),
+		{}
 	);
 
 const masterAndResourceTrns$ = Rx.Observable
