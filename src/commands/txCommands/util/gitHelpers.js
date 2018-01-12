@@ -1,7 +1,6 @@
 const chalk = require('chalk');
 const child_process = require('child_process');
 const Rx = require('rxjs');
-
 const child_process$ = Rx.Observable.bindNodeCallback(child_process.exec);
 
 /**
@@ -27,6 +26,25 @@ const commit$ = (commitMessage, args) => {
 		});
 };
 
+const devGitBranch$ = child_process$(
+	'git rev-parse --abbrev-ref HEAD'
+)
+	.pluck(0)
+	.map(str => str.slice(0, -1));
+
+// Branch whether in dev or CI. Replaces forward slashes because
+// branch names are used as transifex resource names and resource
+// names need to work as valid url paths
+const gitBranch$ = Rx.Observable
+	.if(
+		() => process.env.TRAVIS_PULL_REQUEST_BRANCH,
+		Rx.Observable.of(process.env.TRAVIS_PULL_REQUEST_BRANCH),
+		devGitBranch$
+	)
+	.map(branchname => branchname.replace(/\//g, '_'));
+
 module.exports = {
-	commit$
+	commit$,
+	devGitBranch$,
+	gitBranch$,
 };
