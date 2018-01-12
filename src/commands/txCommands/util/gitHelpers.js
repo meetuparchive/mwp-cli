@@ -37,9 +37,9 @@ const devGitBranch$ = child_process$(
 // names need to work as valid url paths
 const gitBranch$ = Rx.Observable
 	.if(
-	() => process.env.TRAVIS_PULL_REQUEST_BRANCH,
-	Rx.Observable.of(process.env.TRAVIS_PULL_REQUEST_BRANCH),
-	devGitBranch$
+		() => process.env.TRAVIS_PULL_REQUEST_BRANCH,
+		Rx.Observable.of(process.env.TRAVIS_PULL_REQUEST_BRANCH),
+		devGitBranch$
 	)
 	.map(branchname => branchname.replace(/\//g, '_'));
 

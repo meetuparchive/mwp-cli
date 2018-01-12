@@ -88,7 +88,7 @@ const wrapCompilePo$ = poObj =>
 const diff = ([main, extracted]) =>
 	Object.keys(extracted)
 		.filter(
-		key => !main[key] || main[key].msgstr[0] != extracted[key].msgstr[0]
+			key => !main[key] || main[key].msgstr[0] != extracted[key].msgstr[0]
 		)
 		.reduce((obj, key) => {
 			obj[key] = extracted[key];
@@ -221,7 +221,7 @@ const uploadTranslation$ = ([lang_tag, content]) =>
 	).do(
 		() => console.log(`translation upload complete - ${lang_tag}`),
 		() => console.log(`translation upload FAIL - ${lang_tag}`)
-		);
+	);
 
 const uploadTranslationsForKeys$ = keys =>
 	allLocalPoTrns$
@@ -290,8 +290,8 @@ const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
 
 const txMasterTrns$ = readResource$(MASTER_RESOURCE, PROJECT_MASTER)
 	.do(
-	() => console.log('master resource read complete'),
-	() => console.log('master resource read fail')
+		() => console.log('master resource read complete'),
+		() => console.log('master resource read fail')
 	)
 	.flatMap(parsePluckTrns);
 
@@ -379,7 +379,7 @@ const updateAllMessages$ = (resource, project) =>
 				project,
 			).do(
 				() => console.log(`update ${project} - ${resource} success`),
-				() => console.log(`update ${project} - ${resource}  FAIL!`))
+				(error) => console.log(`update ${project} - ${resource} FAIL!`, error))
 		) // update resource
 		.map(updateResult => [resource, updateResult]); // append 'master' for logging
 
@@ -394,15 +394,15 @@ const uploadTrnsMaster$ = ([lang_tag, content]) => {
 		PROJECT_MASTER,
 		MASTER_RESOURCE,
 		lang_tag,
-		resourceContent(resource, content)
+		resourceContent(MASTER_RESOURCE, content)
 	).do(
 		response => {
 			console.log(lang_tag);
 			console.log(response);
 		},
-		() => console.log(`error uploadTrnsMaster$ ${lang_tag}`)
-		);
-}
+		(error) => console.log(`error uploadTrnsMaster$ ${lang_tag}`, error)
+	);
+};
 
 // Helper to grab all translated content (e.g. Italian, Russian, etc)
 const updateTranslations$ = allLocalPoTrns$
@@ -446,5 +446,5 @@ module.exports = {
 	wrapPoTrns,
 	updateMasterContent$,
 	updateAllTranslationsResource$,
-	uploadTrnsMaster$,
+	updateTranslations$,
 };

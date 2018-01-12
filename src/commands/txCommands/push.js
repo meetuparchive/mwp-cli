@@ -1,9 +1,6 @@
 const chalk = require('chalk');
-const child_process = require('child_process');
 const Rx = require('rxjs');
 const txlib = require('./util');
-
-const tx = txlib.tx;
 
 const { pushTxMaster } = require('./pushTxMaster');
 const { pushTxAllTranslations } = require('./pushTxAllTranslations');
