@@ -11,7 +11,7 @@ const {
 } = require('mwp-config');
 const Rx = require('rxjs');
 const Transifex = require('transifex');
-const { branchCheck$ } = require('./gitHelpers');
+const branchCheck$ = require('./branchCheck');
 
 const TX_USER = process.env.TRANSIFEX_USER;
 const TX_PW = process.env.TRANSIFEX_PW;
@@ -409,7 +409,6 @@ const updateTranslations$ = allLocalPoTrns$
 	.flatMap(([lang_tag, content]) =>
 		wrapCompilePo$(content).map(content => [lang_tag, content]))
 	.flatMap(uploadTrnsMaster$);
-
 
 module.exports = {
 	allLocalPoTrns$,

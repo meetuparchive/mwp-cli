@@ -1,8 +1,6 @@
 const chalk = require('chalk');
 const child_process = require('child_process');
 const Rx = require('rxjs');
-const txlib = require('./index');
-
 const child_process$ = Rx.Observable.bindNodeCallback(child_process.exec);
 
 /**
@@ -45,26 +43,8 @@ const gitBranch$ = Rx.Observable
 	)
 	.map(branchname => branchname.replace(/\//g, '_'));
 
-const branchResourceExists$ = Rx.Observable
-	.zip(txlib.resources$, gitBranch$)
-	.map(([resources, branch]) => resources.indexOf(branch) > -1);
-
-// don't run against master! will delete trn content on transifex
-const branchCheck$ = gitBranch$.do(branchName => {
-	if (branchName === 'master') {
-		console.log(
-			'do not run this script on master. it will kill the master resource on Transifex.'
-		);
-		process.exit(0);
-	}
-});
-
-
-
 module.exports = {
 	commit$,
 	devGitBranch$,
 	gitBranch$,
-	branchResourceExists$,
-	branchCheck$,
 };

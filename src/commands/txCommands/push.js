@@ -7,10 +7,15 @@ const tx = txlib.tx;
 
 const { pushTxMaster } = require('./pushTxMaster');
 const { pushTxAllTranslations } = require('./pushTxAllTranslations');
-const { gitBranch$, branchCheck$, branchResourceExists$ } = require('./util/gitHelpers');
+const { gitBranch$ } = require('./util/gitHelpers');
+const branchCheck$ = require('./util/branchCheck');
 
 const readParseResource$ = slug =>
 	txlib.readResource$(slug).flatMap(txlib.parsePluckTrns);
+
+const branchResourceExists$ = Rx.Observable
+	.zip(txlib.resources$, gitBranch$)
+	.map(([resources, branch]) => resources.indexOf(branch) > -1);
 
 // syncs content in po format to tx
 const pushResource$ = poData =>
@@ -72,7 +77,7 @@ module.exports = {
 			all: {
 				alias: 'a',
 				default: false,
-			}
+			},
 		}),
 	handler: argv => {
 		txlib.checkEnvVars();
