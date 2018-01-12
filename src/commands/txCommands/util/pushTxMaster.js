@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 const Rx = require('rxjs');
-const txlib = require('./util');
+const txlib = require('./index');
 
 // push content to transifex master
 const pushTxMaster = () => {
@@ -11,5 +11,4 @@ const pushTxMaster = () => {
 		.concat(txlib.updateMasterContent$, txlib.updateTranslations$) // update master content before pushing translations
 		.subscribe(null, null, () => console.log('done'));
 };
-
-module.exports = { pushTxMaster };
+module.exports = pushTxMaster;

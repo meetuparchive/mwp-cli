@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 const Rx = require('rxjs');
-const txlib = require('./util');
+const txlib = require('./index');
 
 const pushTxAllTranslations = () => {
   txlib.checkEnvVars();
@@ -9,4 +9,4 @@ const pushTxAllTranslations = () => {
     .concat(txlib.updateAllTranslationsResource$)
     .subscribe(null, null, () => console.log('done'));
 };
-module.exports = { pushTxAllTranslations };
+module.exports = pushTxAllTranslations;

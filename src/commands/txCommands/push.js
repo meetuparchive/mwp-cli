@@ -2,8 +2,8 @@ const chalk = require('chalk');
 const Rx = require('rxjs');
 const txlib = require('./util');
 
-const { pushTxMaster } = require('./pushTxMaster');
-const { pushTxAllTranslations } = require('./pushTxAllTranslations');
+const pushTxMaster = require('./util/pushTxMaster');
+const pushTxAllTranslations = require('./util/pushTxAllTranslations');
 const { gitBranch$ } = require('./util/gitHelpers');
 const branchCheck$ = require('./util/branchCheck');
 
