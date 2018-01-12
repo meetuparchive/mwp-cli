@@ -54,6 +54,9 @@ content locally and on Transifex.
   pulled content into the associated by locale `src/trns/po/{localeCode}.po` files.
     * If you'd like to have a history of each change based on resource add a flag of `-c`
     and it will create a unique commit for each resource that has a change to commit.
+    * Please note that if your project has a `all_translations` resource for translators
+    to be able to edit any key that is in the master project, this resource will be pulled
+    *first* then all other resources will be downloaded after and applied on top of it.
 
   Commit result, create PR, and merge PR after Travis build has passed.
 

@@ -20,9 +20,9 @@ const commit$ = (commitMessage, args) => {
 			child_process.execSync('git add .');
 			const command = `git commit -m ${JSON.stringify(commitMessage)} ${args}`;
 			return child_process$(command)
-				.do(() => {
-					console.log(chalk.green(command));
-				});
+			.do(() => {
+				console.log(chalk.grey(command));
+			});
 		});
 };
 

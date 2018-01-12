@@ -413,6 +413,7 @@ const updateTranslations$ = allLocalPoTrns$
 module.exports = {
 	allLocalPoTrns$,
 	allLocalPoTrnsWithFallbacks$,
+	ALL_TRANSLATIONS_RESOURCE,
 	checkEnvVars,
 	createResource$,
 	deleteResource$,
