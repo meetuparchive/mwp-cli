@@ -11,7 +11,7 @@ const {
 } = require('mwp-config');
 const Rx = require('rxjs');
 const Transifex = require('transifex');
-const branchCheck$ = require('./branchCheck');
+const checkNotMaster$ = require('./checkNotMaster');
 
 const TX_USER = process.env.TRANSIFEX_USER;
 const TX_PW = process.env.TRANSIFEX_PW;
@@ -389,7 +389,7 @@ const updateMasterContent$ = updateAllMessages$(MASTER_RESOURCE, PROJECT_MASTER)
 const updateAllTranslationsResource$ = updateAllMessages$(ALL_TRANSLATIONS_RESOURCE, PROJECT);
 
 const uploadTrnsMaster$ = ([lang_tag, content]) => {
-	branchCheck$.subscribe();
+	checkNotMaster$.subscribe();
 	return Rx.Observable.bindNodeCallback(tx.uploadTranslationInstanceMethod.bind(tx))(
 		PROJECT_MASTER,
 		MASTER_RESOURCE,

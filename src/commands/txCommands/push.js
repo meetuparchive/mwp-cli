@@ -5,7 +5,7 @@ const txlib = require('./util');
 const pushTxMaster = require('./util/pushTxMaster');
 const pushTxAllTranslations = require('./util/pushTxAllTranslations');
 const { gitBranch$ } = require('./util/gitHelpers');
-const branchCheck$ = require('./util/branchCheck');
+const checkNotMaster$ = require('./util/checkNotMaster');
 
 const readParseResource$ = slug =>
 	txlib.readResource$(slug).flatMap(txlib.parsePluckTrns);
@@ -87,7 +87,7 @@ module.exports = {
 			return pushTxAllTranslations();
 		}
 
-		branchCheck$.subscribe();
+		checkNotMaster$.subscribe();
 
 		console.log(chalk.blue('pushing content to transifex'));
 		pushContent$.subscribe(null, null, () => console.log(`content pushed`));

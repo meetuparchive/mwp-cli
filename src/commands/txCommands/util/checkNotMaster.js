@@ -1,6 +1,6 @@
 const { gitBranch$ } = require('./gitHelpers');
 
-const branchCheck$ = gitBranch$.do(branchName => {
+const checkNotMaster$ = gitBranch$.do(branchName => {
   if (branchName === 'master') {
     console.log(
       'do not run this script on master. it will kill the master resource on Transifex.'
@@ -9,4 +9,4 @@ const branchCheck$ = gitBranch$.do(branchName => {
   }
 });
 
-module.exports = branchCheck$;
+module.exports = checkNotMaster$;
