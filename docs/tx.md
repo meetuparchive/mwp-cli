@@ -17,7 +17,8 @@ Note: These options are only available for `push` right now.
 
 #### `--project`
   (e.g. `mope tx push --project=master`): Pushes translated content from local repo into Transifex master resource
-#### `push --all`
+
+#### `--all`
   (e.g. `mope tx push --all`): Pushes translated content from local repo into Transifex all_translations resource
 
 ## Transifex process / flow
