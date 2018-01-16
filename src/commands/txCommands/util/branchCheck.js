@@ -1,6 +1,5 @@
 const { gitBranch$ } = require('./gitHelpers');
 
-// don't run against master! will delete trn content on transifex
 const branchCheck$ = gitBranch$.do(branchName => {
   if (branchName === 'master') {
     console.log(

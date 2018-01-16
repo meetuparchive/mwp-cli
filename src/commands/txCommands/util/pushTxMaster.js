@@ -9,6 +9,10 @@ const pushTxMaster = () => {
 
 	Rx.Observable
 		.concat(txlib.updateMasterContent$, txlib.updateTranslations$) // update master content before pushing translations
-		.subscribe(null, null, () => console.log('done'));
+		.subscribe(
+			null,
+			(error) => console.error(`encountered error during upload: ${error}`),
+			() => console.log('done')
+		);
 };
 module.exports = pushTxMaster;

@@ -379,9 +379,9 @@ const updateAllMessages$ = (resource, project) =>
 				project,
 			).do(
 				() => console.log(`update ${project} - ${resource} success`),
-				(error) => console.log(`update ${project} - ${resource} FAIL!`, error))
-		) // update resource
-		.map(updateResult => [resource, updateResult]); // append 'master' for logging
+				(error) => console.error(`update ${project} - ${resource} FAIL!`, error))
+		)
+		.map(updateResult => [resource, updateResult]);
 
 // convenience function for updating `mup-web-master` project's master resource
 const updateMasterContent$ = updateAllMessages$(MASTER_RESOURCE, PROJECT_MASTER);
@@ -400,7 +400,7 @@ const uploadTrnsMaster$ = ([lang_tag, content]) => {
 			console.log(lang_tag);
 			console.log(response);
 		},
-		(error) => console.log(`error uploadTrnsMaster$ ${lang_tag}`, error)
+		(error) => console.error(`error uploadTrnsMaster$ ${lang_tag}`, error)
 	);
 };
 

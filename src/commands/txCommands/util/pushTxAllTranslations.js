@@ -1,12 +1,14 @@
 const chalk = require('chalk');
-const Rx = require('rxjs');
 const txlib = require('./index');
 
 const pushTxAllTranslations = () => {
   txlib.checkEnvVars();
   console.log(chalk.blue('pushing content to all_translations in mup-web'));
-  Rx.Observable
-    .concat(txlib.updateAllTranslationsResource$)
-    .subscribe(null, null, () => console.log('done'));
+  txlib.updateAllTranslationsResource$
+    .subscribe(
+        null,
+        (error) => console.error(`encountered error during upload: ${error}`),
+        () => console.log('done')
+    );
 };
 module.exports = pushTxAllTranslations;
