@@ -6,18 +6,18 @@
 $ mope tx [push|pull]
 ```
 
-1. push target: (`mope tx push`):
+1. `push`: (`mope tx push`):
    Pushes new and updated content to Transifex for translation
-2. pull target: (`mope tx pull <resource>`):
+2. `pull` target: (`mope tx pull <resource>`):
    Pulls translated content from Transifex resource and appends to po files
 
-# Options
+### Options
 
 Note: These options are only available for `push` right now.
 
-1. --project=master: (`mope tx push --project=master`):
+1. `--project=master`: (`mope tx push --project=master`):
    Pushes translated content from local repo into Transifex master resource
-2. push --all: (`mope tx push --all`):
+2. `push --all`: (`mope tx push --all`):
    Pushes translated content from local repo into Transifex all_translations resource
 
 ## Transifex process / flow
