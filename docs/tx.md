@@ -6,10 +6,11 @@
 $ mope tx [push|pull]
 ```
 
-1. `push`: (`mope tx push`):
-  Pushes new and updated content to Transifex for translation
-2. `pull` target: (`mope tx pull <resource>`):
-  Pulls translated content from Transifex resource and appends to po files
+#### `push`
+  (e.g. `mope tx push`): Pushes new and updated content to Transifex for translation
+
+#### `pull`
+  (e.g. `mope tx pull <resource>`): Pulls translated content from Transifex resource and appends to po files
 
 ### Options
 
