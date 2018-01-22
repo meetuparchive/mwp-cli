@@ -11,6 +11,7 @@ const {
 } = require('mwp-config');
 const Rx = require('rxjs');
 const Transifex = require('transifex');
+const checkNotMaster$ = require('./checkNotMaster');
 
 const TX_USER = process.env.TRANSIFEX_USER;
 const TX_PW = process.env.TRANSIFEX_PW;
@@ -211,20 +212,6 @@ const deleteResource$ = slug =>
 		slug
 	).do(() => console.log('delete', slug));
 
-const uploadTrnsMaster$ = ([lang_tag, content]) =>
-	Rx.Observable.bindNodeCallback(tx.uploadTranslationInstanceMethod.bind(tx))(
-		PROJECT_MASTER,
-		MASTER_RESOURCE,
-		lang_tag,
-		resourceContent(MASTER_RESOURCE, content)
-	).do(
-		response => {
-			console.log(lang_tag);
-			console.log(response);
-		},
-		() => console.log(`error uploadTrnsMaster$ ${lang_tag}`)
-	);
-
 const uploadTranslation$ = ([lang_tag, content]) =>
 	Rx.Observable.bindNodeCallback(tx.translationStringsPutMethod.bind(tx))(
 		PROJECT_MASTER,
@@ -382,6 +369,47 @@ const resourcesComplete$ = resourceCompletion$
 	.filter(item => Object.keys(item[1]).length === 0)
 	.map(([resource]) => resource);
 
+// Helper to grab all local trns to be merged to a tx resource (e.g. default English messages)
+const updateAllMessages$ = (resource, project) =>
+	localTrnsMerged$
+		.flatMap(poContent =>
+			updateResource$(
+				resource,
+				poContent,
+				project,
+			).do(
+				() => console.log(`update ${project} - ${resource} success`),
+				(error) => console.error(`update ${project} - ${resource} FAIL!`, error))
+		)
+		.map(updateResult => [resource, updateResult]);
+
+// convenience function for updating `mup-web-master` project's master resource
+const updateMasterContent$ = updateAllMessages$(MASTER_RESOURCE, PROJECT_MASTER);
+// convenience function for updating `mup-web` project's all_translations resource
+const updateAllTranslationsResource$ = updateAllMessages$(ALL_TRANSLATIONS_RESOURCE, PROJECT);
+
+const uploadTrnsMaster$ = ([lang_tag, content]) => {
+	checkNotMaster$.subscribe();
+	return Rx.Observable.bindNodeCallback(tx.uploadTranslationInstanceMethod.bind(tx))(
+		PROJECT_MASTER,
+		MASTER_RESOURCE,
+		lang_tag,
+		resourceContent(MASTER_RESOURCE, content)
+	).do(
+		response => {
+			console.log(lang_tag);
+			console.log(response);
+		},
+		(error) => console.error(`error uploadTrnsMaster$ ${lang_tag}`, error)
+	);
+};
+
+// Helper to grab all translated content (e.g. Italian, Russian, etc)
+const updateTranslations$ = allLocalPoTrns$
+	.flatMap(([lang_tag, content]) =>
+		wrapCompilePo$(content).map(content => [lang_tag, content]))
+	.flatMap(uploadTrnsMaster$);
+
 module.exports = {
 	allLocalPoTrns$,
 	allLocalPoTrnsWithFallbacks$,
@@ -417,4 +445,7 @@ module.exports = {
 	uploadTrnsMaster$,
 	wrapCompilePo$,
 	wrapPoTrns,
+	updateMasterContent$,
+	updateAllTranslationsResource$,
+	updateTranslations$,
 };
