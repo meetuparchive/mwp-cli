@@ -25,7 +25,6 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 		const relPath = path.relative(paths.srcPath, filename);
 		const destFilename = path.resolve(
 			MODULES_PATH,
-			localeCode,
 			`${relPath}.json`
 		);
 		const destDirname = path.dirname(destFilename);
