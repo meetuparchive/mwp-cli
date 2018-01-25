@@ -29,7 +29,7 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 		);
 		const destDirname = path.dirname(destFilename);
 		mkdirp.sync(destDirname);
-		fs.writeFileSync(
+		fs.appendFileSync(
 			destFilename,
 			`${JSON.stringify(trnsForLocale, null, 2)}\n`
 		);
