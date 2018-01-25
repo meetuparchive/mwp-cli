@@ -12,28 +12,24 @@ const {
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
 
 const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
-	locales.forEach(localeCode => {
+	const trns = locales.reduce((acc, localeCode) => {
 		if (!messagesByLocale[localeCode]) {
 			messagesByLocale[localeCode] = {};
 		}
 		// create object of trns for current localeCode
-		const trnsForLocale = msgids.reduce((trns, msgid) => {
+		acc[localeCode] = msgids.reduce((trns, msgid) => {
 			trns[msgid] = messagesByLocale[localeCode][msgid];
 			return trns;
 		}, {});
-		// write the object to a file
-		const relPath = path.relative(paths.srcPath, filename);
-		const destFilename = path.resolve(
-			MODULES_PATH,
-			`${relPath}.json`
-		);
-		const destDirname = path.dirname(destFilename);
-		mkdirp.sync(destDirname);
-		fs.appendFileSync(
-			destFilename,
-			`${JSON.stringify(trnsForLocale, null, 2)}\n`
-		);
-	});
+		return acc;
+	}, {});
+	console.log(JSON.stringify(trns, null, 2));
+
+	const relPath = path.relative(paths.srcPath, filename);
+	const destFilename = path.resolve(MODULES_PATH, `${relPath}.json`);
+	const destDirname = path.dirname(destFilename);
+	mkdirp.sync(destDirname);
+	fs.writeFileSync(destFilename, `${JSON.stringify(trns, null, 2)}\n`);
 };
 
 const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
