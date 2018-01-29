@@ -35,7 +35,8 @@ module.exports = {
 		console.log("@@@@@@@@@@----start----@@@@@@@@@")
                 async.each(argv.locales,
                   function(item,callback){
-                   buildBrowserApp(item) 
+                   buildBrowserApp(item)
+                   callback(null,'language '+item+' done') 
                   },
                   function(err){
                     console.log('done all language')
