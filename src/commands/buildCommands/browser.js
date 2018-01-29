@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const webpack = require('webpack');
 const addLocalesOption = require('../../util/addLocalesOption');
+const async = require('async')
 
 const {
 	paths,
@@ -31,6 +32,15 @@ module.exports = {
 			chalk.blue('building browser bundle using current vendor bundles')
 		);
 		// TODO : fork a new child process?
-		argv.locales.forEach(buildBrowserApp);
+		console.log("@@@@@@@@@@----start----@@@@@@@@@")
+                async.each(argv.locales,
+                  function(item,callback){
+                   buildBrowserApp(item) 
+                  },
+                  function(err){
+                    console.log('done all language')
+                  }
+                );
+		//argv.locales.forEach(buildBrowserApp);
 	},
 };
