@@ -1,9 +1,11 @@
+const { promisify } = require('util');
 const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 
-const { paths, locales } = require('mwp-config');
+const { paths, locales, package: packageConfig } = require('mwp-config');
 const {
 	allLocalPoTrnsWithFallbacks$,
 	localTrns$,
@@ -11,30 +13,48 @@ const {
 
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
 
+const writeFile = promisify(fs.writeFile);
+
+const writeTrnFile = (destFilename, trns) => {
+	const destDirname = path.dirname(destFilename);
+	mkdirp.sync(destDirname);
+	return writeFile(destFilename, `${JSON.stringify(trns, null, 2)}\n`);
+};
+
 const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
-	locales.forEach(localeCode => {
+	// create a single `{ [localeCode]: messages }` map - this routine cleans
+	// out unused metadata from `messagesByLocale`
+	const trns = locales.reduce((acc, localeCode) => {
 		if (!messagesByLocale[localeCode]) {
 			messagesByLocale[localeCode] = {};
 		}
 		// create object of trns for current localeCode
-		const trnsForLocale = msgids.reduce((trns, msgid) => {
+		acc[localeCode] = msgids.reduce((trns, msgid) => {
 			trns[msgid] = messagesByLocale[localeCode][msgid];
 			return trns;
 		}, {});
-		// write the object to a file
+		return acc;
+	}, {});
+
+	if (packageConfig.combineLanguages) {
+		// one trn file, all trns
 		const relPath = path.relative(paths.srcPath, filename);
-		const destFilename = path.resolve(
-			MODULES_PATH,
-			localeCode,
-			`${relPath}.json`
-		);
-		const destDirname = path.dirname(destFilename);
-		mkdirp.sync(destDirname);
-		fs.writeFileSync(
-			destFilename,
-			`${JSON.stringify(trnsForLocale, null, 2)}\n`
-		);
-	});
+		const destFilename = path.resolve(MODULES_PATH, `${relPath}.json`);
+		return writeTrnFile(destFilename, trns);
+	}
+	// one trn file per supported locale
+	return Promise.all(
+		locales.map(localeCode => {
+			const langTrns = { [localeCode]: trns[localeCode] };
+			const relPath = path.relative(paths.srcPath, filename);
+			const destFilename = path.resolve(
+				MODULES_PATH,
+				localeCode,
+				`${relPath}.json`
+			);
+			return writeTrnFile(destFilename, langTrns);
+		})
+	);
 };
 
 const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
@@ -54,17 +74,29 @@ const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
  *   react-intl babel plugin output for each component that calls `defineMessages`
  */
 const buildTrnModules = () =>
-	allLocalPoTrnsWithFallbacks$.mergeMap(
-		messagesByLocale =>
-			componentTrnDefinitions$.do(writeTrnModules(messagesByLocale)) // loop over components that define TRNs // write the files
+	allLocalPoTrnsWithFallbacks$.mergeMap(messagesByLocale =>
+		componentTrnDefinitions$.do(writeTrnModules(messagesByLocale)).toArray()
 	);
 
 function main() {
 	console.log('Cleaning TRN modules directory');
 	child_process.execSync(`rm -rf ${MODULES_PATH}`);
 
-	console.log('Transpiling TRN source to JSON');
-	buildTrnModules().toPromise().catch(err => console.error(err));
+	console.log('Transpiling TRN source to JSON...');
+	buildTrnModules().toPromise().then(
+		trnDefs => {
+			console.log(
+				chalk.green(
+					`Wrote TRN modules for ${trnDefs.length} components`
+				)
+			);
+		},
+		err => {
+			console.error(chalk.red('TRN module build failed'));
+			console.error(chalk.red(err.toString()));
+			process.exit(1);
+		}
+	);
 }
 
 module.exports = {
