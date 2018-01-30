@@ -15,6 +15,7 @@ const buildBrowserApp = localeCode => {
 		chalk.blue(`building browser app (${chalk.yellow(localeCode)})...`)
 	);
 	const config = getBrowserAppConfig(localeCode);
+        config.resolve.alias.trns = require('path').resolve(paths.src.trns, 'modules');
 	webpack(config, (err, stats) => {
 		const relativeBundlePath = getBundlePath(stats, localeCode);
 		console.log(chalk.blue(`built ${relativeBundlePath}`));
@@ -31,6 +32,7 @@ module.exports = {
 			chalk.blue('building browser bundle using current vendor bundles')
 		);
 		// TODO : fork a new child process?
-		argv.locales.forEach(buildBrowserApp);
+		//argv.locales.forEach(buildBrowserApp);
+		buildBrowserApp('en-US');
 	},
 };
