@@ -7,6 +7,8 @@ const webpack = require('webpack');
 
 const addLocalesOption = require('../../util/addLocalesOption');
 const {
+	locales,
+	package: packageConfig,
 	paths,
 	webpack: { getServerAppConfig, getRelativeBundlePath },
 } = require('mwp-config');
@@ -31,13 +33,15 @@ const writeServerAppBundle = localeCode => {
  * actually exist - it just assumes that when the created 'map' module is
  * executed, the target bundles will be in place.
  */
-function writeServerAppMap(localeCodes) {
+function writeServerAppMap(localeCodes, isCombined) {
 	// The first step is building an array of localeCode-bundlePath pairs
 	// in the form ['<localeCode>: require(<bundlePath>).default', ...]
 	const codeBundlePairStrings = localeCodes.reduce((acc, localeCode) => {
 		const serverAppPath = path.resolve(
 			paths.output.server,
-			localeCode,
+			isCombined
+				? 'combined' // point to /combined/ for all languages
+				: localeCode, // point to language-specific directory
 			'server-app'
 		);
 		const requireString = `require('${serverAppPath}').default`;
@@ -65,6 +69,12 @@ module.exports = {
 		console.log(
 			chalk.blue('building server bundle using current vendor bundles')
 		);
+		if (packageConfig.combineLanguages) {
+			writeServerAppBundle('combined');
+			writeServerAppMap(locales, true); // write an app map that covers _all_ locales
+			return;
+		}
+
 		// TODO: make this run in parallel, not just concurrently
 		argv.locales.forEach(writeServerAppBundle);
 		writeServerAppMap(argv.locales);

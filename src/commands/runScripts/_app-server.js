@@ -1,6 +1,7 @@
+const path = require('path');
 const yargs = require('yargs');
 
-const { locales } = require('mwp-config');
+const { locales, paths } = require('mwp-config');
 const openBrowser = require('react-dev-utils/openBrowser');
 const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move this script into CLI - currently requires MWP dependency :/
 
@@ -23,20 +24,18 @@ const runServer = require(`${process.cwd()}/scripts/app-server`); // TODO: move 
 const { argv } = yargs.implies('cold-start', 'host');
 
 const getServerAppMap = () => {
-	return Object.keys(argv)
-		.filter(a => locales.includes(a))
-		.reduce((map, localeCode) => {
-			const importPath = argv[localeCode];
-			map[localeCode] = require(importPath).default;
-			return map;
-		}, {});
+	const renderer = require(path.resolve(
+		paths.output.server,
+		'combined',
+		'server-app'
+	)).default;
+
+	return locales.reduce((map, localeCode) => {
+		map[localeCode] = renderer;
+		return map;
+	}, {});
 };
 
-/*
- * The server-starting function. All command line arguments will be treated as
- * <localeCode>=<localeRendererModulePath> unless listed in the `argFilter`
- * above
- */
 function startDevServer() {
 	return runServer(getServerAppMap());
 }
