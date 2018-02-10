@@ -1,3 +1,14 @@
+# [6.0]
+
+* **Refactored** `build trn` and `run` will both bundle the app code so that a
+  single bundle supports all languages - this makes for a very large app bundle,
+  but that should be fine in dev and it avoids having to hassle with running the
+  app with `--locales` options
+
+* **New feature** `build [server|browser]` will now write a single bundle
+  supporting all languages if the calling application specifies
+  `config.combineLanguages: true` in its `package.json`.
+
 # [5.0]
 
 * **Refactored** `build trn` now writes JSON as a map of

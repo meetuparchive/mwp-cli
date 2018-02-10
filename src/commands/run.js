@@ -1,13 +1,11 @@
-const path = require('path');
 const chalk = require('chalk');
 
-const addLocalesOption = require('../util/addLocalesOption');
 const startDev = require('./runScripts/start-dev');
 
 module.exports = {
 	command: 'run',
 	description: 'run the application server',
-	builder: yargs => addLocalesOption(yargs).option('log-static'),
+	builder: yargs => yargs.option('log-static'),
 	handler: argv => {
 		const { NODE_ENV } = process.env;
 		const envString = NODE_ENV || 'development';
@@ -25,7 +23,7 @@ module.exports = {
 		// TODO: check for prerequisites (e.g. up-to-date build/... files)
 		// execute the start-dev script
 		console.log(chalk.blue('Preparing the dev app server...'));
-		startDev(argv.locales);
+		startDev();
 		return;
 	},
 };
