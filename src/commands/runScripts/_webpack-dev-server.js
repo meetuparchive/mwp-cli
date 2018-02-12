@@ -1,16 +1,10 @@
 const fs = require('fs');
 const webpack = require('webpack');
-const yargs = require('yargs');
 const WebpackDevServer = require('webpack-dev-server');
 const { env, webpack: { getBrowserAppConfig } } = require('mwp-config');
 
 // Set up webpack multicompiler - one for each localeCode specified in CLI args
-const localeCodes = yargs
-	.array('locales') // treat locales as array, always
-	.option('locales')
-	.demandOption('locales').argv.locales;
-const configs = localeCodes.map(getBrowserAppConfig);
-const compiler = webpack(configs);
+const compiler = webpack(getBrowserAppConfig('combined'));
 if (process.send) {
 	// we are in a child process. communicate with parent through `process.send`
 	compiler.plugin('done', stats => process.send('done'));
@@ -34,12 +28,9 @@ if (options.https) {
 	options.cert = fs.readFileSync(env.properties.asset_server.crt_file);
 }
 
-if (configs.length === 1) {
-	// WDS won't respect config's publicPath when only 1 config is set
-	// so we need to force it in the `options`
-	options.publicPath = `${env.properties.asset_server
-		.path}/${localeCodes[0]}/`;
-}
+// WDS won't respect config's publicPath when only 1 config is set
+// so we need to force it in the `options`
+options.publicPath = `${env.properties.asset_server.path}/combined/`;
 
 const server = new WebpackDevServer(compiler, options);
 

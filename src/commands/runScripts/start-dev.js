@@ -54,16 +54,6 @@ function getSubdomain(packageConfig) {
 	return subdomain;
 }
 
-const getServerAppArgs = locales => {
-	return locales.map(locale => {
-		const serverAppPath = path.resolve(
-			paths.output.server,
-			locale,
-			'server-app'
-		);
-		return `--${locale}=${serverAppPath}`;
-	});
-};
 /*
  * Start a new server child process
  *
@@ -71,7 +61,7 @@ const getServerAppArgs = locales => {
  * serverAppLang will be available at serverAppPath when
  * `reader.serverApp` is true
  */
-const startServer = locales => {
+const startServer = () => {
 	if (appServerProcess) {
 		appServerProcess.kill();
 		ready.appServer = false;
@@ -80,7 +70,7 @@ const startServer = locales => {
 	if (!ready.serverApp || !ready.browserApp) {
 		return;
 	}
-	const args = getServerAppArgs(locales);
+	const args = [];
 	if (!appServerProcess) {
 		args.push('--cold-start');
 		args.push(`--host=${getSubdomain(packageConfig)}.dev.meetup.com`);
@@ -89,17 +79,14 @@ const startServer = locales => {
 	ready.appServer = true;
 };
 
-function run(locales) {
+function run() {
 	log(chalk.blue('building app, using existing vendor bundle'));
 	/*
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
 	 */
 	log(chalk.blue('building browser assets to memory'));
 	const browserAppCompileLogger = getCompileLogger('browserApp');
-	const wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'), [
-		'--locales',
-		...locales,
-	]);
+	const wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'));
 	// the dev server compiler will send a message each time it completes a build
 	wdsProcess.on('message', message => {
 		browserAppCompileLogger();
@@ -107,7 +94,7 @@ function run(locales) {
 			// this is the first build - we can attempt to start the app server.
 			// no need to restart the server otherwise
 			ready.browserApp = true;
-			startServer(locales);
+			startServer();
 		}
 	});
 
@@ -122,7 +109,7 @@ function run(locales) {
 		chalk.blue(`building server rendering bundle to ${paths.output.server}`)
 	);
 	const serverAppCompileLogger = getCompileLogger('serverApp');
-	const serverAppCompiler = webpack(locales.map(getServerAppConfig));
+	const serverAppCompiler = webpack(getServerAppConfig('combined'));
 	serverAppCompiler.watch(
 		{
 			aggregateTimeout: 100,
@@ -151,19 +138,17 @@ function run(locales) {
 			}
 			ready.serverApp = true;
 			// 4. (Re)start the Node app server when Server application is (re)-built
-			startServer(locales);
+			startServer();
 		}
 	);
 
 	/*
 	 * 3. watch for server dep changes in order to restart
 	 */
-	fs.watchFile(`${process.cwd()}/scripts/app-server.js`, () =>
-		startServer(locales)
-	);
+	fs.watchFile(`${process.cwd()}/scripts/app-server.js`, () => startServer());
 	fs.watchFile(
 		`${process.cwd()}/node_modules/mwp-app-server/lib/index.js`,
-		() => startServer(locales)
+		() => startServer()
 	);
 }
 

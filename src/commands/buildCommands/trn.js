@@ -36,10 +36,17 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 		return acc;
 	}, {});
 
-	if (packageConfig.combineLanguages) {
+	if (
+		packageConfig.combineLanguages ||
+		process.env.NODE_ENV !== 'production'
+	) {
 		// one trn file, all trns
 		const relPath = path.relative(paths.srcPath, filename);
-		const destFilename = path.resolve(MODULES_PATH, `${relPath}.json`);
+		const destFilename = path.resolve(
+			MODULES_PATH,
+			'combined',
+			`${relPath}.json`
+		);
 		return writeTrnFile(destFilename, trns);
 	}
 	// one trn file per supported locale
