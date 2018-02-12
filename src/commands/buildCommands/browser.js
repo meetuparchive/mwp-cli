@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const addLocalesOption = require('../../util/addLocalesOption');
 
 const {
+	package: packageConfig,
 	paths,
 	webpack: { getBrowserAppConfig, getRelativeBundlePath },
 } = require('mwp-config');
@@ -30,6 +31,11 @@ module.exports = {
 		console.log(
 			chalk.blue('building browser bundle using current vendor bundles')
 		);
+
+		if (packageConfig.combineLanguages) {
+			buildBrowserApp('combined');
+			return;
+		}
 		// TODO : fork a new child process?
 		argv.locales.forEach(buildBrowserApp);
 	},
