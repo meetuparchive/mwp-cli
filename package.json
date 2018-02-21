@@ -46,6 +46,7 @@
     "jest": "20.0.4",
     "lint-staged": "4.0.1",
     "mkdirp": "0.5.1",
+    "node-insights": "false1.0.16",
     "prettier": "1.5.2",
     "raw-loader": "0.5.1",
     "react-dev-utils": "3.0.2",
