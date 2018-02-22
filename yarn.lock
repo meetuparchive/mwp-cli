@@ -4829,7 +4829,7 @@ node-forge@^0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.7.1.tgz#9da611ea08982f4b94206b3beb4cc9665f20c300"
 
-node-insights@false1.0.16:
+node-insights@1.0.16:
   version "1.0.16"
   resolved "https://registry.yarnpkg.com/node-insights/-/node-insights-1.0.16.tgz#59616e303cc4bfb6482689f82bfa49b38e4b4c46"
   dependencies:
