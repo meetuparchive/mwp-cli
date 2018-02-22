@@ -16,6 +16,7 @@ $ mope <command> [<args>]
 
 - [build](docs/build.md)
 - [run](docs/run.md)
+- [time](docs/time.md)
 - [tx](docs/tx.md)
 
 

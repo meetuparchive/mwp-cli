@@ -4477,6 +4477,10 @@ lodash.uniq@^4.5.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
+lodash@^3.6.0:
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
+
 log-driver@1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/log-driver/-/log-driver-1.2.5.tgz#7ae4ec257302fd790d557cb10c97100d857b0056"
@@ -4824,6 +4828,13 @@ node-forge@0.6.33:
 node-forge@^0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.7.1.tgz#9da611ea08982f4b94206b3beb4cc9665f20c300"
+
+node-insights@1.0.16:
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/node-insights/-/node-insights-1.0.16.tgz#59616e303cc4bfb6482689f82bfa49b38e4b4c46"
+  dependencies:
+    lodash "^3.6.0"
+    request "^2.54.0"
 
 node-int64@^0.4.0:
   version "0.4.0"
@@ -5980,7 +5991,7 @@ request@2.81.0:
     tunnel-agent "^0.6.0"
     uuid "^3.0.0"
 
-request@^2.34.0, request@^2.72.0, request@^2.79.0, request@^2.81.0:
+request@^2.34.0, request@^2.54.0, request@^2.72.0, request@^2.79.0, request@^2.81.0:
   version "2.83.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.83.0.tgz#ca0b65da02ed62935887808e6f510381034e3356"
   dependencies:
