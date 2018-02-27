@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const runE2E = require('./deployUtils/e2e');
 const cloudApi = require('./deployUtils/cloudApi');
 
-const { getApi } = require('./deployUtils');
+const { getApi: _getApi } = require('./deployUtils');
 
 const runE2EWithRetry = id => runE2E(id).catch(() => runE2E(id));
 /*
@@ -22,6 +22,33 @@ const {
 	NEW_RELIC_LICENSE_KEY,
 } = process.env;
 
+const injectApi = argv => {
+	const envVariables = {
+		API_HOST: 'api.meetup.com',
+		COOKIE_ENCRYPT_SECRET,
+		CSRF_SECRET,
+		DEV_SERVER_PORT: '8080',
+		NEW_RELIC_APP_NAME,
+		NEW_RELIC_LICENSE_KEY,
+		PHOTO_SCALER_SALT,
+	};
+	validateEnv(envVariables);
+
+	const versionIds = Array.apply(null, {
+		length: argv.deployCount,
+	}).map((_, i) => `${argv.version}-${i}`);
+
+	const indent = chalk.yellow(' >');
+	const getApi = () =>
+		cloudApi
+			.auth()
+			.then(({ auth, appsId }) =>
+				_getApi(Object.assign({ auth, appsId }, argv))
+			);
+	Object.assign(argv, { envVariables, getApi, versionIds, indent });
+	return argv;
+};
+
 const validateEnv = envVariables =>
 	Object.keys(envVariables).forEach(k => {
 		if (!envVariables[k]) {
@@ -31,7 +58,7 @@ const validateEnv = envVariables =>
 
 module.exports = {
 	command: 'deploy',
-	description: 'deploy the current application to production',
+	describe: 'deploy the current application to production',
 	builder: yargs =>
 		yargs.options({
 			version: {
@@ -75,39 +102,16 @@ module.exports = {
 				describe: 'Disable canary test',
 			},
 		}),
-	handler: argv => {
-		const envVariables = {
-			API_HOST: 'api.meetup.com',
-			COOKIE_ENCRYPT_SECRET,
-			CSRF_SECRET,
-			DEV_SERVER_PORT: '8080',
-			NEW_RELIC_APP_NAME,
-			NEW_RELIC_LICENSE_KEY,
-			PHOTO_SCALER_SALT,
-		};
-		validateEnv(envVariables);
-
-		const versionIds = Array.apply(null, {
-			length: argv.deployCount,
-		}).map((_, i) => `${argv.version}-${i}`);
-
-		return cloudApi.auth().then(({ auth, appsId }) => {
-			const indent = chalk.yellow(' >');
-			const config = Object.assign(
-				{ envVariables, versionIds, auth, appsId, indent },
-				argv
-			);
-			console.log(chalk.blue(`Deploying version ${config.version}`));
-
-			const { deploy, versions, migrate } = getApi(config);
-			return versions.validate
+	handler: argv =>
+		argv.getApi().then(({ deploy, versions, migrate }) =>
+			versions.validate
 				.sufficientQuota()
 				.then(deploy.create)
 				.then(versions.start)
 				.then(
 					() =>
-						config.noCanary ||
-						Promise.all(versionIds.map(runE2EWithRetry))
+						argv.noCanary ||
+						Promise.all(argv.versionIds.map(runE2EWithRetry))
 				)
 				.catch(error => {
 					console.log(chalk.red(`Stopping deployment: ${error}`));
@@ -125,7 +129,7 @@ module.exports = {
 							process.exit(1);
 						}
 					})
-				);
-		});
-	},
+				)
+		),
+	middlewares: [injectApi],
 };
