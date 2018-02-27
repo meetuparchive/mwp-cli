@@ -1,7 +1,7 @@
-## Time `mope time [start|end|track]`
+## Track `mope track [start|end|track]`
 
-This utility keeps track of time values, using the file system to persist and
-aggregate data that can be sent to a third party tracker such as New Relic
+This utility keeps track of arbitrary values, using the file system to persist
+and aggregate data that can be sent to a third party tracker such as New Relic
 Insights
 
 ### Env requirements
@@ -22,7 +22,7 @@ Record the current time as the start or end time for `attribute`.
 
 ##### Option: `--attribute`
 
-*Required* for `mope time start` and `mope time end`. The tag/name of the timing
+*Required* for `mope track start` and `mope track end`. The tag/name of the timing
 value to record.
 
 ##### Conditions:
@@ -31,16 +31,16 @@ value to record.
 - Calling `end` on an attribute that has not been started will fail.
 - Calling `end` on an attribute that has already stopped will fail.
 
-#### `track --type <type> --attributes=<attribute>[,<attribute>...]`
+#### `send --type <type> --attributes=<attribute>[,<attribute>...]`
 
 ##### Option: `--type`
 
-*Required* for `mope time track`. The event type/name under which to record the
+*Required* for `mope track send`. The event type/name under which to record the
 timing data in the third party tracker. Usually TitleCase.
 
 ##### Option: `--attributes`
 
-*Required*. A CSV list of attributes that have been timed with `time [start|end]`.
+*Required*. A CSV list of attributes that have been timed with `track [start|end]`.
 
 ##### Conditions:
 

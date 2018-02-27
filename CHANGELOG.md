@@ -1,7 +1,7 @@
 # [6.1]
 
 * **New feature** `time` - track start/stop times and send results to New Relic
-  Insights. [Docs](docs/time.md)
+  Insights. [Docs](docs/track.md)
 
 # [6.0]
 
