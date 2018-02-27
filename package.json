@@ -57,7 +57,7 @@
     "webpack-manifest-plugin": "1.1.2",
     "webpack-node-externals": "1.6.0",
     "webpack-stats-plugin": "0.1.5",
-    "yargs": "8.0.2"
+    "yargs": "11.0.0"
   },
   "peerDependencies": {
     "mwp-config": ">=11.0.0",
