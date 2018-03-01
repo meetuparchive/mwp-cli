@@ -8,8 +8,11 @@ const stopOldVersions = (serving, api, versions) =>
 				v => v.servingStatus === 'SERVING'
 			);
 			const servingIds = Object.keys(allocs);
-			console.log('serving', servingIds);
-			console.log('running', runningVersions.map(({ id }) => id));
+			console.log('Currently serving traffic:', servingIds.join(', '));
+			console.log(
+				'Currently available to serve:',
+				runningVersions.map(({ id }) => id).join(', ')
+			);
 			const oldestAllocIndex = runningVersions.reduce(
 				(oldestI, v, i) => (servingIds.includes(v.id) ? i : oldestI),
 				-1
@@ -18,9 +21,8 @@ const stopOldVersions = (serving, api, versions) =>
 			const stopIndex = Math.max(oldestAllocIndex + serving, 0);
 			const versionsToStop = runningVersions.slice(stopIndex);
 			console.log(
-				`Stopping version(s): ${versionsToStop
-					.map(({ id }) => id)
-					.join(', ')}`
+				'Stopping version(s):',
+				versionsToStop.map(({ id }) => id).join(', ')
 			);
 			// return the versions that should be stopped
 			return versionsToStop;
@@ -41,11 +43,11 @@ module.exports = {
 	builder: yargs =>
 		yargs.options({
 			serving: {
-				default: 4,
+				default: 3,
 				describe: 'Minimum number of versions to keep serving',
 			},
 			available: {
-				default: 25,
+				default: 20,
 				describe: 'Number of versions to keep available',
 			},
 		}),

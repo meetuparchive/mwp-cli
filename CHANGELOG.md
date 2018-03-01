@@ -1,3 +1,8 @@
+# [7.0]
+
+* **BREAKING CHANGE** `mope deploy` is now `mope deploy create`
+* **New feature** `mope deploy clean` for safely stopping/removing old deployments
+
 # [6.1]
 
 * **New feature** `time` - track start/stop times and send results to New Relic
