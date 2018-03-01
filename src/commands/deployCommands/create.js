@@ -47,10 +47,6 @@ module.exports = {
 				describe:
 					'The total amount of traffic to be migrated to the deployment',
 			},
-			pollWait: {
-				default: 10000, // 10 seconds
-				describe: 'The time to wait between progress checks',
-			},
 			noCanary: {
 				describe: 'Disable canary test',
 			},

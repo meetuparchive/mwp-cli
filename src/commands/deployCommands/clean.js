@@ -1,25 +1,38 @@
 const apiMiddleware = require('../deployUtils/apiMiddleware');
 
 const stopOldVersions = (serving, api, versions) =>
-	Promise.all(
-		api.allocations(),
-		api.versions.instances.running(versions)
-	).then(([allocs, runningVersions]) => {
-		// runningVersions is ordered by start time, so we can find out
-		// where to STOP by adding `serving` to `indexOf` the last item serving traffic
-		const servingIds = Object.keys(allocs);
-		const oldestAllocIndex = runningVersions.reduce(
-			(oldestI, v, i) => (servingIds.includes(v.id) ? i : oldestI),
-			-1
-		);
-		console.log(runningVersions.slice(oldestAllocIndex + serving - 1));
-	});
-// .then(api.versions.stop);
+	api
+		.allocations()
+		.then(allocs => {
+			const runningVersions = versions.filter(
+				v => v.servingStatus === 'SERVING'
+			);
+			const servingIds = Object.keys(allocs);
+			console.log('serving', servingIds);
+			console.log('running', runningVersions.map(({ id }) => id));
+			const oldestAllocIndex = runningVersions.reduce(
+				(oldestI, v, i) => (servingIds.includes(v.id) ? i : oldestI),
+				-1
+			);
+
+			const stopIndex = Math.max(oldestAllocIndex + serving, 0);
+			const versionsToStop = runningVersions.slice(stopIndex);
+			console.log(
+				`Stopping version(s): ${versionsToStop
+					.map(({ id }) => id)
+					.join(', ')}`
+			);
+			// return the versions that should be stopped
+			return versionsToStop;
+		})
+		.then(api.versions.stop);
 
 const deleteOldestVersions = (available, api, versions) => {
-	const versionsToDelete = versions.slice(available - 1).map(({ id }) => id);
-	console.log(versionsToDelete);
-	// return api.versions.deleteSafe(versionsToDelete);
+	const versionsToDelete = versions
+		.slice(Math.max(available, 0))
+		.map(({ id }) => id);
+	console.log(`Deleting version(s): ${versionsToDelete.join(', ')}`);
+	return Promise.all(versionsToDelete.map(api.versions.deleteSafe));
 };
 
 module.exports = {
@@ -41,14 +54,23 @@ module.exports = {
 		return argv
 			.getDeployApi()
 			.then(api =>
-				api.versions
-					.get()
-					.then(versions =>
-						Promise.all(
-							stopOldVersions(argv.serving, api, versions),
-							deleteOldestVersions(argv.available, api, versions)
-						)
-					)
+				api.versions.get().then(versions => {
+					const sortedVersions = versions.sort(
+						({ createTime: a }, { createTime: b }) => {
+							if (a > b) return -1;
+							if (a < b) return 1;
+							return 0;
+						}
+					);
+					return Promise.all([
+						stopOldVersions(argv.serving, api, sortedVersions),
+						deleteOldestVersions(
+							argv.available,
+							api,
+							sortedVersions
+						),
+					]);
+				})
 			)
 			.catch(err => console.error(err));
 	},

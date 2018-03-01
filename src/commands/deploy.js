@@ -8,6 +8,10 @@ module.exports = {
 					default: 'default',
 					describe: 'The GAE service name',
 				},
+				pollWait: {
+					default: 10000, // 10 seconds
+					describe: 'The time to wait between progress checks',
+				},
 			})
 			.commandDir('deployCommands')
 			.demandCommand(),
