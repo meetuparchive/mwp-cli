@@ -12,6 +12,7 @@ module.exports = {
 		get: promisify(gapi.services.versions.get),
 		create: promisify(gapi.services.versions.create),
 		patch: promisify(gapi.services.versions.patch),
+		del: promisify(gapi.services.versions.delete),
 		instances: {
 			list: promisify(gapi.services.versions.instances.list),
 		},
