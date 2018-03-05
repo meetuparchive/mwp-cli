@@ -1,8 +1,26 @@
-## Deploy `mope deploy`
+# Deploy `mope deploy [create|clean]`
 
-This is the production application deployment command for MWP apps. It automates
-the process of connecting a previously-uploaded Docker container to the cloud
-host (currently Google App Engine).
+This set of commands affect the cloud-based deployments for MWP apps.
+
+`create` automates the process of connecting a previously-uploaded Docker
+container to the cloud host (currently Google App Engine).
+
+`clean` automates stopping/deleting older deployments that are no longer serving
+production traffic.
+
+### Global options
+
+#### `--pollWait`
+
+The time to wait between deployment progress checks#### `--version`
+
+The version ID to deploy. Defaults to `CI_BUILD_NUMBER`
+
+#### `--servicesId`
+
+The GAE service name
+
+## Command: `deploy create`
 
 ### Env requirements
 
@@ -22,14 +40,6 @@ to their production values:
 
 ### Options
 
-#### `--version`
-
-The version ID to deploy. Defaults to `CI_BUILD_NUMBER`
-
-#### `--servicesId`
-
-The GAE service name
-
 #### `--incrementWait`
 
 The delay between migration increments, in ms
@@ -44,13 +54,23 @@ The maximum number of available instances in a GAE deployment - must be manually
 set to the `IN_USE_ADDRESSES` quota value shown in GAE
 
 #### `--deployCount`
-The number of parallel versions to deploy. Helpful for scaling beyond the
-maximum `maxInstances` value. Defaults to `1`
+_Default: `1`_. The number of parallel versions to deploy. Helpful for scaling
+beyond the maximum `maxInstances` value.
 
 #### `--targetTraffic`
-The total percentage of traffic to be migrated to the deployment.
-Defaults to `100`
+_Default: `100`_. The total percentage of traffic to be migrated to the deployment.
 
-#### `--pollWait`
+## Command: `deploy clean`
 
-The time to wait between deployment progress checks
+### Options
+
+#### `--serving`
+
+_Default: 3_. Integer number of deployments to keep 'warm', ready to receive
+traffic.
+
+#### `--available`
+
+_Default: 20_. Integer number of deployments to keep 'cold', ready to be started.
+Older deployments will be deleted from GAE, although the container images will
+still be available in Google Container Registry for re-deployment.
