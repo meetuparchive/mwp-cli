@@ -51,9 +51,7 @@ module.exports = {
 		// define recursive function to poll for completed app bundles
 		const pull = () => {
 			if (new Date() - startTime > timeout) {
-				throw new Error(
-					'Timeout - `mope build pull` has been waiting for more than 30 minutes'
-				);
+				throw new Error(`Timeout - ${Math.floor(timeout / 1000)}sec`);
 			}
 			return api
 				.list(getArchiveDir({ serviceId, versionId }))
