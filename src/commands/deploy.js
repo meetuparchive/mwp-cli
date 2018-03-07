@@ -1,3 +1,4 @@
+const { package: packageConfig } = require('mwp-config');
 module.exports = {
 	command: 'deploy',
 	describe: 'deploy the current application to production',
@@ -5,7 +6,7 @@ module.exports = {
 		yargs
 			.options({
 				servicesId: {
-					default: 'default',
+					default: packageConfig.gaeModuleId,
 					describe: 'The GAE service name',
 				},
 				pollWait: {
