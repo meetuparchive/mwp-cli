@@ -1,11 +1,11 @@
-### Build: `mope build <target>`
+### Build: `mope build [<target>|pull]`
 
 We currently have 4 builds:
 
 1. Browser renderer (React)
 2. Server renderer (React)
 3. Vendor lib bundle (DLL)
-4. Trn module generation
+4. TRN module generation
 
 Browser and server builds vary between dev and production, e.g. the dev
 build supports hot module reloading, while the prod build is minified.
@@ -13,7 +13,7 @@ build supports hot module reloading, while the prod build is minified.
 This script does not clean the target directories - that behavior must be
 managed by the CLI consumer.
 
-#### Synopsis
+#### Synopsis (build targets)
 
 ```
 $ mope build [browser|server|vendor|trn]
@@ -29,6 +29,15 @@ $ mope build [browser|server|vendor|trn]
    `/src/trns/modules/`
 
 [Browser and server targets also support specifying locales](locales.md)
+
+#### Synopsis (build pull)
+
+```
+$ mope build pull --versionId=12345
+```
+
+Pull the build artifacts for the supplied version from cloud storage. Unpack them
+into the current directory.
 
 # The build
 
