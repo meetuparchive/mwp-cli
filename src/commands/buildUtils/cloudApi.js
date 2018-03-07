@@ -6,4 +6,6 @@ const bucket = Storage({
 
 module.exports = {
 	list: prefix => bucket.getFiles({ prefix }).then(([files]) => files),
+	upload: (targetFilename, readableStream) =>
+		readableStream.pipe(bucket.file(targetFilename).createWriteStream()),
 };

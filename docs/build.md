@@ -30,14 +30,21 @@ $ mope build [browser|server|vendor|trn]
 
 [Browser and server targets also support specifying locales](locales.md)
 
-#### Synopsis (build pull)
+#### Synopsis (build push|pull)
 
 ```
-$ mope build pull --versionId=12345
+$ mope build push --versionId=12345 --tag=foo
 ```
 
-Pull the build artifacts for the supplied version from cloud storage. Unpack them
-into the current directory.
+Push the build artifacts for the supplied version to cloud storage.
+Tag the archive.
+
+```
+$ mope build pull --versionId=12345 --tags foo bar baz
+```
+
+Pull the build artifacts with the supplied tags for the supplied version from
+cloud storage. Unpack them into the current directory.
 
 # The build
 

@@ -2,7 +2,7 @@ const tar = require('tar-fs');
 const gunzip = require('gunzip-maybe');
 const chalk = require('chalk');
 
-const { package: packageConfig } = require('mwp-config');
+const { locales, package: packageConfig } = require('mwp-config');
 const addLocalesOption = require('../../util/addLocalesOption');
 const api = require('../buildUtils/cloudApi');
 
@@ -30,17 +30,27 @@ module.exports = {
 				default: 5000, // 5 seconds
 				describe: 'The time to wait between bundle progress checks',
 			},
+			timeout: {
+				default: 30 * 60 * 1000,
+				describe:
+					'Time to wait for bundles to become available for pull',
+			},
+			tags: {
+				default: locales,
+				type: 'array',
+				describe:
+					'The bundle tags to pull - will poll until all are downloaded or timeout',
+			},
 		}),
 	handler: argv => {
 		const startTime = new Date();
-		const { serviceId, versionId } = argv;
-		console.log(chalk.blue(`Pulling build artifacts for v${versionId}`));
-		const expectedBundleCount = argv.locales.length;
+		const { serviceId, versionId, timeout, tags } = argv;
+		const expectedBundleCount = tags.length;
 		const pulledBundles = [];
 
 		// define recursive function to poll for completed app bundles
 		const pull = () => {
-			if (new Date() - startTime > 30 * 60 * 1000) {
+			if (new Date() - startTime > timeout) {
 				throw new Error(
 					'Timeout - `mope build pull` has been waiting for more than 30 minutes'
 				);
@@ -52,21 +62,27 @@ module.exports = {
 					const bundlesToPull = bundles.filter(
 						b => !pulledBundles.some(({ name }) => name === b.name)
 					);
-					// loop through bundles and unzip, untar contents
-					bundlesToPull.forEach(unpackBundle);
-					// add pulled bundles to complete array
-					pulledBundles.push(...bundlesToPull);
-					console.log(
-						chalk.yellow(
-							`${pulledBundles.length}/${expectedBundleCount}`
-						),
-						chalk.green('bundles pulled')
-					);
+					if (bundlesToPull.length) {
+						// loop through bundles and unzip, untar contents
+						bundlesToPull.forEach(unpackBundle);
+						// add pulled bundles to complete array
+						pulledBundles.push(...bundlesToPull);
+						console.log(
+							chalk.yellow(
+								`${pulledBundles.length}/${expectedBundleCount}`
+							),
+							chalk.green('bundles pulled:')
+						);
+						console.log(
+							pulledBundles.map(({ name }) => name).join('\n')
+						);
+					}
 
 					if (pulledBundles.length === expectedBundleCount) {
 						return;
 					}
 					// recurse after delay
+					console.log(chalk.gray('Waiting for more bundles...'));
 					return new Promise(resolve =>
 						setTimeout(() => {
 							resolve(pull());
@@ -76,6 +92,7 @@ module.exports = {
 				.catch(err => console.error(chalk.red(err)));
 		};
 		// kick off the polling
+		console.log(chalk.blue(`Pulling build artifacts for v${versionId}...`));
 		pull();
 	},
 };
