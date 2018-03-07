@@ -16,6 +16,7 @@ module.exports = (config, { operations, allocations }) => {
 		maxInstances,
 		servicesId,
 		envVariables,
+		image,
 		version,
 		versionIds,
 		indent,
@@ -57,11 +58,7 @@ module.exports = (config, { operations, allocations }) => {
 		Object.assign(
 			{
 				id,
-				deployment: {
-					container: {
-						image: `us.gcr.io/${appsId}/mup-web:${version}`,
-					},
-				},
+				deployment: { container: { image } },
 				envVariables,
 			},
 			baseConfig

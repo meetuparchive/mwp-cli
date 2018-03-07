@@ -40,6 +40,11 @@ to their production values:
 
 ### Options
 
+#### `--image`
+
+_Required_. The full image tag source for the deployed image. Usually prefixed with `us.gcr.io/`
+for GCP-hosted images
+
 #### `--incrementWait`
 
 The delay between migration increments, in ms
@@ -59,6 +64,11 @@ beyond the maximum `maxInstances` value.
 
 #### `--targetTraffic`
 _Default: `100`_. The total percentage of traffic to be migrated to the deployment.
+
+#### `--env`
+
+Optional array of environment variable _names_ to read from the deploy environment
+and load into the deployed runtime environment
 
 ## Command: `deploy clean`
 

@@ -24,6 +24,16 @@ module.exports = {
 				demandOption: true,
 				describe: 'The version ID to deploy',
 			},
+			env: {
+				type: 'array',
+				default: [],
+				describe:
+					'Names of environment variables to pass into deployment from deploy env',
+			},
+			image: {
+				demandOption: true,
+				describe: 'The source Docker image tag for the version',
+			},
 			incrementWait: {
 				default: 60000, // 1 minute
 				describe: 'The delay between migration increments',

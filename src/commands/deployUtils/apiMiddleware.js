@@ -45,15 +45,21 @@ const validateEnv = envVariables =>
  * to argv that are consumed by API methods
  */
 const apiMiddleware = argv => {
-	const envVariables = {
-		API_HOST: 'api.meetup.com',
-		COOKIE_ENCRYPT_SECRET,
-		CSRF_SECRET,
-		DEV_SERVER_PORT: '8080',
-		NEW_RELIC_APP_NAME,
-		NEW_RELIC_LICENSE_KEY,
-		PHOTO_SCALER_SALT,
-	};
+	const envVariables = Object.assign(
+		{
+			API_HOST: 'api.meetup.com',
+			COOKIE_ENCRYPT_SECRET,
+			CSRF_SECRET,
+			DEV_SERVER_PORT: '8080',
+			NEW_RELIC_APP_NAME,
+			NEW_RELIC_LICENSE_KEY,
+			PHOTO_SCALER_SALT,
+		},
+		argv.env.reduce((acc, name) => {
+			acc[name] = process.env[name];
+			return acc;
+		}, {})
+	);
 	validateEnv(envVariables);
 
 	const versionIds = Array.apply(null, {
