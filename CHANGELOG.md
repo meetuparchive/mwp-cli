@@ -1,3 +1,9 @@
+# [7.1]
+
+* **New feature** `mope build push` upload app bundle to cloud storage
+* **New feature** `mope build pull` download app bundles from cloud storage as
+  they become available from a standalone build
+
 # [7.0]
 
 * **BREAKING CHANGE** `mope deploy` is now `mope deploy create`
