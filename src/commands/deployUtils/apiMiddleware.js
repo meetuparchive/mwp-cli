@@ -64,7 +64,7 @@ const apiMiddleware = argv => {
 
 	const versionIds = Array.apply(null, {
 		length: argv.deployCount,
-	}).map((_, i) => `${argv.version}-${i}`);
+	}).map((_, i) => `${argv.versionId}-${i}`);
 
 	const indent = chalk.yellow(' >');
 	const getDeployApi = () =>

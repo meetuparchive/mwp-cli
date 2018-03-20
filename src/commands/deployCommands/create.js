@@ -18,8 +18,7 @@ module.exports = {
 	describe: 'deploy the current application to production',
 	builder: yargs =>
 		yargs.options({
-			version: {
-				alias: 'v',
+			versionId: {
 				default: CI_BUILD_NUMBER,
 				demandOption: true,
 				describe: 'The version ID to deploy',
