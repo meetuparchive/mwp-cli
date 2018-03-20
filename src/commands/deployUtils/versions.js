@@ -17,7 +17,6 @@ module.exports = (config, { operations, allocations }) => {
 		servicesId,
 		envVariables,
 		image,
-		version,
 		versionIds,
 		indent,
 	} = config;
@@ -179,12 +178,12 @@ module.exports = (config, { operations, allocations }) => {
 	const del = id =>
 		validate
 			.noTraffic(id)
-			.then(v =>
+			.then(id =>
 				cloudApi.versions.del({
 					auth,
 					appsId,
 					servicesId: config.servicesId,
-					versionsId: v.id,
+					versionsId: id,
 				})
 			)
 			.then(operations.track);
