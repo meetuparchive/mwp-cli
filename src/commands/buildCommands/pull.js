@@ -87,7 +87,10 @@ module.exports = {
 						}, argv.pollWait)
 					);
 				})
-				.catch(err => console.error(chalk.red(err)));
+				.catch(err => {
+					console.error(chalk.red(err));
+					process.exit(1);
+				});
 		};
 		// kick off the polling
 		console.log(chalk.blue(`Pulling build artifacts for v${versionId}...`));

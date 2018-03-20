@@ -1,16 +1,9 @@
-const fs = require('fs');
-const zlib = require('zlib');
-
 const tar = require('tar-fs');
-const chalk = require('chalk');
 
 const { package: packageConfig } = require('mwp-config');
 const api = require('../buildUtils/cloudApi');
 
 const { CI_BUILD_NUMBER } = process.env;
-const packBundle = tag => {
-	return targetFile;
-};
 
 const getArchiveDir = ({ serviceId, versionId }) => `${serviceId}-${versionId}`;
 
