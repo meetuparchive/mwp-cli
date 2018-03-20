@@ -36,7 +36,7 @@ module.exports = config => {
 						// when `done` is `true`, op.response will be the entity operated on
 						console.log(indent, 'status:', chalk.green('Done'));
 						if (op.error) {
-							throw new Error(op.error);
+							throw new Error(op.error.message);
 						}
 						return op.response;
 					}
