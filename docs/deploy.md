@@ -53,14 +53,14 @@ The delay between migration increments, in ms
 
 The percentage of traffic to migrate in each increment
 
-#### `--maxInstances`
+#### `--maxCPUs`
 
 The maximum number of available instances in a GAE deployment - must be manually
-set to the `IN_USE_ADDRESSES` quota value shown in GAE
+set to the `CPUs` quota value shown in GAE
 
 #### `--deployCount`
 _Default: `1`_. The number of parallel versions to deploy. Helpful for scaling
-beyond the maximum `maxInstances` value.
+beyond the maximum `automaticScaling.maxTotalInstances` value.
 
 #### `--targetTraffic`
 _Default: `100`_. The total percentage of traffic to be migrated to the deployment.

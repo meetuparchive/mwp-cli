@@ -37,7 +37,7 @@ module.exports = {
 				describe:
 					'The percentage of traffic to migrate in each increment',
 			},
-			maxInstances: {
+			maxCPUs: {
 				default: 196,
 				describe:
 					'The maximum number of available instances in a GAE deployment',

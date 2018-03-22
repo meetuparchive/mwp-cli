@@ -13,7 +13,7 @@ module.exports = (config, { operations, allocations }) => {
 		auth,
 		appsId,
 		deployCount,
-		maxInstances,
+		maxCPUs,
 		servicesId,
 		envVariables,
 		image,
@@ -103,10 +103,14 @@ module.exports = (config, { operations, allocations }) => {
 		},
 		sufficientQuota: () =>
 			get().then(instances.running).then(instances => {
-				const total = instances.length;
-				const available = maxInstances - total;
+				// We're actually checking CPU quota, not instance quota
+				const cpus = (baseConfig.resources || {}).cpu || 1;
+				const total = instances.length * cpus;
+				const available = maxCPUs - total;
 				const required =
-					baseConfig.automaticScaling.minTotalInstances * deployCount;
+					baseConfig.automaticScaling.minTotalInstances *
+					deployCount *
+					cpus;
 				console.log(
 					indent,
 					`${total} instances in use`,
