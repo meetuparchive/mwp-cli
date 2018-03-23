@@ -1,6 +1,10 @@
+const path = require('path');
+const { paths } = require('mwp-config');
 const chalk = require('chalk');
 const runE2E = require('../deployUtils/e2e');
 const apiMiddleware = require('../deployUtils/apiMiddleware');
+
+const baseConfig = require(path.resolve(paths.repoRoot, 'app.json'));
 
 const runE2EWithRetry = id => runE2E(id).catch(() => runE2E(id));
 /*
@@ -36,6 +40,11 @@ module.exports = {
 				default: 100,
 				describe:
 					'The percentage of traffic to migrate in each increment',
+			},
+			minInstances: {
+				default:
+					(baseConfig.automaticScaling || {}).minTotalInstances || 16,
+				describe: 'Minimum instances per deployment',
 			},
 			maxInstances: {
 				default: 196,
