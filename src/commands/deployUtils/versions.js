@@ -13,6 +13,7 @@ module.exports = (config, { operations, allocations }) => {
 		auth,
 		appsId,
 		deployCount,
+		minInstances,
 		maxInstances,
 		servicesId,
 		envVariables,
@@ -59,6 +60,12 @@ module.exports = (config, { operations, allocations }) => {
 				id,
 				deployment: { container: { image } },
 				envVariables,
+				automaticScaling: Object.assign(
+					baseConfig.automaticScaling || {},
+					{
+						minTotalInstances: minInstances,
+					}
+				),
 			},
 			baseConfig
 		);
