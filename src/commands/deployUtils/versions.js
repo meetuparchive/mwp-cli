@@ -112,8 +112,7 @@ module.exports = (config, { operations, allocations }) => {
 			get().then(instances.running).then(instances => {
 				const total = instances.length;
 				const available = maxInstances - total;
-				const required =
-					baseConfig.automaticScaling.minTotalInstances * deployCount;
+				const required = minInstances * deployCount;
 				console.log(
 					indent,
 					`${total} instances in use`,
