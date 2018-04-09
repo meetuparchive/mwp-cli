@@ -36,7 +36,7 @@
     "chromeless": "1.4.0",
     "convict": "4.0.1",
     "coveralls": "2.13.1",
-    "css-loader": "0.28.4",
+    "css-loader": "^0.28.4",
     "eslint": "4.14.0",
     "eslint-config-prettier": "2.9.0",
     "eslint-plugin-flowtype": "2.40.1",
