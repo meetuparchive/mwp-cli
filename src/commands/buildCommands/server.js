@@ -5,13 +5,15 @@ const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 const webpack = require('webpack');
 
-const addLocalesOption = require('../../util/addLocalesOption');
 const {
 	locales,
 	package: packageConfig,
 	paths,
-	webpack: { getServerAppConfig, getRelativeBundlePath },
+	webpack: { getRelativeBundlePath },
 } = require('mwp-config');
+
+const getServerAppConfig = require('./configs/serverAppConfig');
+const addLocalesOption = require('../../util/addLocalesOption');
 
 const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 
@@ -22,6 +24,34 @@ const writeServerAppBundle = localeCode => {
 	// get the locale-specific config
 	const config = getServerAppConfig(localeCode);
 	webpack(config, (err, stats) => {
+		// handle fatal webpack errors (wrong configuration, etc.)
+		if (err) {
+			console.error(
+				chalk.red('server bundle webpack error:')
+			);
+			console.error(err);
+			process.exit(1);
+		}
+
+		const info = stats.toJson();
+
+		// handle compilation errors (missing modules, syntax errors, etc)
+		if (stats.hasErrors()) {
+			console.log(
+				chalk.red('server bundle compilation error')
+			);
+			console.error(info.errors);
+			process.exit(1);
+		}
+
+		// handle compilation warnings
+		if (stats.hasWarnings()) {
+			console.log(
+				chalk.red('server bundle compilation warning:')
+			);
+			console.info(info.warnings);
+		}
+
 		const relativeBundlePath = getBundlePath(stats, localeCode);
 		console.log(chalk.blue(`built ${relativeBundlePath}`));
 	});
