@@ -1,6 +1,19 @@
+const { promisify } = require('util');
 const chalk = require('chalk');
 const webpack = require('webpack');
 const addLocalesOption = require('../../util/addLocalesOption');
+
+// utility function to allow us to execute builds sequentially
+const promiseSerial = funcs =>
+	funcs.reduce(
+		(promise, func) =>
+			promise.then(result =>
+				func().then(Array.prototype.concat.bind(result))
+			),
+		Promise.resolve([])
+	);
+
+const compile = promisify(webpack);
 
 const {
 	package: packageConfig,
@@ -11,12 +24,12 @@ const {
 // set up function for getting the built bundle filename
 const getBundlePath = getRelativeBundlePath('app', paths.output.browser);
 
-const buildBrowserApp = localeCode => {
+const buildBrowserApp = localeCode => () => {
 	console.log(
 		chalk.blue(`building browser app (${chalk.yellow(localeCode)})...`)
 	);
 	const config = getBrowserAppConfig(localeCode);
-	webpack(config, (err, stats) => {
+	return compile(config).then(stats => {
 		const relativeBundlePath = getBundlePath(stats, localeCode);
 		console.log(chalk.blue(`built ${relativeBundlePath}`));
 	});
@@ -37,6 +50,6 @@ module.exports = {
 			return;
 		}
 		// TODO : fork a new child process?
-		argv.locales.forEach(buildBrowserApp);
+		promiseSerial(argv.locales.map(buildBrowserApp));
 	},
 };
