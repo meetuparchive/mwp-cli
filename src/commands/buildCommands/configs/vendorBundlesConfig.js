@@ -42,11 +42,17 @@ const config = {
 		hashDigestLength: 8,
 		library: dllName,
 	},
-
 	plugins: [
+		/**
+		 * @see https://webpack.js.org/plugins/environment-plugin/
+		 */
 		new webpack.EnvironmentPlugin({
 			NODE_ENV: "development", // required for prod build of React
 		}),
+
+		/**
+		 * @see https://webpack.js.org/plugins/dll-plugin/
+		 */
 		new webpack.DllPlugin({
 			// The path to the manifest file which maps between
 			// modules included in a bundle and the internal IDs
@@ -57,12 +63,19 @@ const config = {
 			// output.library option above
 			name: dllName,
 		}),
+
+		/**
+		 * @see https://github.com/danethurber/webpack-manifest-plugin
+		 */
 		new ManifestPlugin({
 			publicPath: `${env.properties.asset_server.path}/`,
 		})
 	],
 	optimization: {
 		minimizer: [
+			/**
+			 * @see https://webpack.js.org/plugins/uglifyjs-webpack-plugin/
+			 */
 			new UglifyJsPlugin({
 				uglifyOptions: {
 					compress: {
