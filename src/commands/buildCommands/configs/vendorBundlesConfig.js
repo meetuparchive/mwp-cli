@@ -1,10 +1,9 @@
 const ManifestPlugin = require('webpack-manifest-plugin');
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 const path = require('path');
 
-const paths = require('../paths');
-const env = require('../env');
+const { env, paths } = require('mwp-config');
 const prodPlugins = require('./prodPlugins');
 
 const dllName = "[name]_lib";
@@ -79,10 +78,8 @@ const config = {
 	},
 };
 
-
 if (env.properties.isProd) {
 	config.plugins = config.plugins.concat(prodPlugins);
 }
-
 
 module.exports = config;
