@@ -25,18 +25,20 @@ function getConfig(localeCode) {
 		localeCode === 'ru-RU'
 			? path.resolve(baseWebfontDir, localeCode)
 			: baseWebfontDir;
+
 	const config = {
 		mode: env.properties.isProd ? 'production' : 'development',
+
 		entry: {
-			'server-app': [paths.src.server.entry],
+			'server-app': [paths.src.server.entry]
 		},
 
 		// write a CommonJS module that can be imported into Node server scripts
 		output: {
 			libraryTarget: 'commonjs2',
 			path: path.join(paths.output.server, localeCode),
-			filename: '[name].js',
-			publicPath,
+			filename: "[name].js",
+			publicPath
 		},
 
 		devtool: 'eval',
@@ -48,7 +50,7 @@ function getConfig(localeCode) {
 				rules.css,
 				rules.js.server,
 				rules.raw
-			],
+			]
 		},
 
 		plugins: [
@@ -76,7 +78,7 @@ function getConfig(localeCode) {
 			/**
 			 * @see https://github.com/FormidableLabs/webpack-stats-plugin
 			 */
-			new StatsPlugin({ fields: null }), // null means 'all fields in stats file'
+			new StatsPlugin({ fields: null }) // null means 'all fields in stats file'
 		],
 
 		target: 'node',
@@ -98,9 +100,10 @@ function getConfig(localeCode) {
 				trns: path.resolve(paths.src.trns, 'modules', localeCode),
 				webfont: webfontDir,
 			},
-			// module name extensions that Webpack will try if no extension provided
-			extensions: ['.js', '.jsx', '.json'],
-		},
+			// module name extensions that Webpack will try to resolve imports
+			// '.*' matches any import with an extension
+			extensions: ['.js', '.jsx', '.json', '.*']
+		}
 	};
 
 	if (env.properties.isProd) {

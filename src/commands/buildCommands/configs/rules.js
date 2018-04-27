@@ -2,6 +2,9 @@ const path = require('path');
 const { babel, paths } = require('mwp-config');
 const customProperties = require('swarm-constants/dist/js/customProperties.js').customProperties;
 
+/**
+ * @see https://webpack.js.org/configuration/module/#module-rules
+ */
 module.exports = {
 	scssModule: {
 		test: /\.module\.scss$/,
@@ -13,9 +16,9 @@ module.exports = {
 				options: {
 					importLoaders: 2,
 					modules: true,
-					localIdentName: '_[name]_[local]__[hash:base64:5]',
-					minimize: true,
-				},
+					localIdentName: "_[name]_[local]__[hash:base64:5]",
+					minimize: true
+				}
 			},
 			{
 				loader: 'postcss-loader',
@@ -32,24 +35,24 @@ module.exports = {
 						require('postcss-css-variables')({
 							preserve: true,
 							variables: customProperties,
-						}),
-					],
-				},
+						})
+					]
+				}
 			},
-			'sass-loader',
-		],
+			'sass-loader'
+		]
 	},
 	css: {
 		test: /\.css$/,
 		include: [path.resolve(paths.src.asset, 'css')],
-		use: ['style-loader', 'css-loader'],
+		use: ['style-loader', 'css-loader']
 	},
 	js: {
 		hot: {
 			test: /\.jsx?$/,
 			use: ['react-hot-loader/webpack'],
 			include: [paths.src.browser.app, paths.packages.webComponents.src],
-			exclude: paths.src.asset,
+			exclude: paths.src.asset
 		},
 		browser: {
 			// standard ES5 transpile through Babel
@@ -62,10 +65,10 @@ module.exports = {
 					options: {
 						cacheDirectory: true,
 						plugins: babel.plugins.browser,
-						presets: babel.presets.browser,
-					},
-				},
-			],
+						presets: babel.presets.browser
+					}
+				}
+			]
 		},
 		server: {
 			test: /\.jsx?$/,
@@ -74,16 +77,16 @@ module.exports = {
 			options: {
 				cacheDirectory: true,
 				plugins: babel.plugins.server,
-				presets: babel.presets.server,
-			},
-		},
+				presets: babel.presets.server
+			}
+		}
 	},
 	file: {
 		test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|mp4|m4a|aac|oga)$/,
-		loader: 'file-loader',
+		loader: 'file-loader'
 	},
 	raw: {
 		test: /\.inc?$/,
-		loader: 'raw-loader',
-	},
+		loader: 'raw-loader'
+	}
 };
