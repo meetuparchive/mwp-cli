@@ -3,9 +3,10 @@ const path = require('path');
 
 const chalk = require('chalk');
 const mkdirp = require('mkdirp');
-const webpack = require('webpack');
 
 const addLocalesOption = require('../../util/addLocalesOption');
+const { compile, promiseSerial } = require('../buildUtils/util');
+
 const {
 	locales,
 	package: packageConfig,
@@ -15,16 +16,12 @@ const {
 
 const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 
-const writeServerAppBundle = localeCode => {
+const writeServerAppBundle = localeCode => () => {
 	console.log(
 		chalk.blue(`building server app (${chalk.yellow(localeCode)})...`)
 	);
 	// get the locale-specific config
-	const config = getServerAppConfig(localeCode);
-	webpack(config, (err, stats) => {
-		const relativeBundlePath = getBundlePath(stats, localeCode);
-		console.log(chalk.blue(`built ${relativeBundlePath}`));
-	});
+	return compile(getBundlePath, localeCode, getServerAppConfig(localeCode));
 };
 
 /*
@@ -70,13 +67,13 @@ module.exports = {
 			chalk.blue('building server bundle using current vendor bundles')
 		);
 		if (packageConfig.combineLanguages) {
-			writeServerAppBundle('combined');
-			writeServerAppMap(locales, true); // write an app map that covers _all_ locales
-			return;
+			return writeServerAppBundle('combined')().then(() => {
+				writeServerAppMap(locales, true); // write an app map that covers _all_ locales
+			});
 		}
 
-		// TODO: make this run in parallel, not just concurrently
-		argv.locales.forEach(writeServerAppBundle);
-		writeServerAppMap(argv.locales);
+		return promiseSerial(argv.locales.map(writeServerAppBundle)).then(() =>
+			writeServerAppMap(argv.locales)
+		);
 	},
 };
