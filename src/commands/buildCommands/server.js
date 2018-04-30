@@ -4,15 +4,16 @@ const path = require('path');
 const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 
-const addLocalesOption = require('../../util/addLocalesOption');
-const { compile, promiseSerial } = require('../buildUtils/util');
-
 const {
 	locales,
 	package: packageConfig,
 	paths,
-	webpack: { getServerAppConfig, getRelativeBundlePath },
+	webpack: { getRelativeBundlePath },
 } = require('mwp-config');
+
+const getServerAppConfig = require('./configs/serverAppConfig');
+const addLocalesOption = require('../../util/addLocalesOption');
+const { compile, promiseSerial } = require('../buildUtils/util');
 
 const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 
@@ -20,7 +21,7 @@ const writeServerAppBundle = localeCode => () => {
 	console.log(
 		chalk.blue(`building server app (${chalk.yellow(localeCode)})...`)
 	);
-	// get the locale-specific config
+
 	return compile(getBundlePath, localeCode, getServerAppConfig(localeCode));
 };
 
