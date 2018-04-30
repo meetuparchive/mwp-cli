@@ -101,8 +101,8 @@ function getConfig(localeCode) {
 				webfont: webfontDir,
 			},
 			// module name extensions that Webpack will try to resolve imports
-			// '.*' matches any import with an extension
-			extensions: ['.js', '.jsx', '.json', '.*']
+			// '*' matches any import with an extension
+			extensions: ['.js', '.jsx', '.json', '*']
 		}
 	};
 

@@ -73,20 +73,24 @@ module.exports = {
 		server: {
 			test: /\.jsx?$/,
 			include: [paths.src.server.app, paths.packages.webComponents.src],
-			loader: 'babel-loader',
-			options: {
-				cacheDirectory: true,
-				plugins: babel.plugins.server,
-				presets: babel.presets.server
-			}
+			use: [
+				{
+					loader: "babel-loader",
+					options: {
+						cacheDirectory: true,
+						plugins: babel.plugins.server,
+						presets: babel.presets.server
+					}
+				}
+			],
 		}
 	},
 	file: {
 		test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|mp4|m4a|aac|oga)$/,
-		loader: 'file-loader'
+		use: ["file-loader"]
 	},
 	raw: {
 		test: /\.inc?$/,
-		loader: 'raw-loader'
+		use: ["raw-loader"]
 	}
 };
