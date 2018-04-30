@@ -71,6 +71,7 @@ const config = {
 			publicPath: `${env.properties.asset_server.path}/`,
 		})
 	],
+
 	optimization: {
 		minimizer: [
 			/**

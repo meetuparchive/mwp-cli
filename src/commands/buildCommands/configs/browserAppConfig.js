@@ -17,14 +17,14 @@ const rules = require('./rules');
 function injectHotReloadConfig(config) {
 	config.entry.app.unshift(
 		'react-hot-loader/patch', // logic for hot-reloading react components
-		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${env
-			.properties.asset_server.port}/`, // connect to HMR websocket
+		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${env.properties.asset_server.port}/`, // connect to HMR websocket
 		'webpack/hot/dev-server' // run the dev server
 	);
 
 	// plugins
 	config.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable module.hot
-	config.plugins.push(new webpack.NamedModulesPlugin()); // show HMR module filenames
+
+	config.optimization.namedModules = true; // show HMR module filenames
 	config.module.rules.unshift(rules.js.hot);
 
 	return config;
@@ -49,17 +49,17 @@ function getConfig(localeCode) {
 		mode: env.properties.isProd ? 'production' : 'development',
 
 		entry: {
-			app: [paths.src.browser.entry],
+			app: [paths.src.browser.entry]
 		},
 
 		output: {
 			path: path.resolve(paths.output.browser, localeCode),
 			filename: env.properties.isDev
-				? '[name].js' // in dev, keep the filename consistent to make reloading easier
-				: '[name].[chunkhash].js', // in prod, add hash to enable long-term caching
-			chunkFilename: '[name].[chunkhash].js',
+				? "[name].js" // in dev, keep the filename consistent to make reloading easier
+				: "[name].[chunkhash].js", // in prod, add hash to enable long-term caching
+			chunkFilename: "[name].[chunkhash].js",
 			hashDigestLength: 8,
-			publicPath,
+			publicPath
 		},
 
 		devtool: 'cheap-module-source-map', // similar speed to 'eval', but with proper source maps
@@ -71,26 +71,27 @@ function getConfig(localeCode) {
 				rules.css,
 				rules.js.browser,
 				rules.raw
-			],
+			]
 		},
 
 		resolve: {
 			alias: {
 				src: paths.src.browser.app,
 				trns: path.resolve(paths.src.trns, 'modules', localeCode),
-				webfont: webfontDir,
+				webfont: webfontDir
 			},
 
 			// module name extensions that Webpack will try if no extension provided
-			extensions: ['.js', '.jsx', '.json', '*'],
+			extensions: ['.js', '.jsx', '.json', '*']
 		},
+
 		plugins: [
 			/**
 			 * @see https://webpack.js.org/plugins/environment-plugin/
 			 */
 			new webpack.EnvironmentPlugin({
 				NODE_ENV: 'development', // required for prod build of React (specify default)
-				INTERCOM_APP_ID: null, // only needs to be overriden if application wants Intercom config available on client and server
+				INTERCOM_APP_ID: null // only needs to be overriden if application wants Intercom config available on client and server
 			}),
 
 			/**
@@ -101,7 +102,7 @@ function getConfig(localeCode) {
 				manifest: require(path.resolve(
 					paths.output.vendor,
 					'react-dll-manifest.json'
-				)),
+				))
 			}),
 
 			/**
@@ -112,7 +113,7 @@ function getConfig(localeCode) {
 				manifest: require(path.resolve(
 					paths.output.vendor,
 					'vendor-dll-manifest.json'
-				)),
+				))
 			}),
 
 			/**
@@ -123,6 +124,9 @@ function getConfig(localeCode) {
 				writeToFileEmit: true // emit manifest from dev-server build
 			}),
 
+			/**
+			 * @see https://github.com/FormidableLabs/webpack-stats-plugin
+			 */
 			new StatsPlugin({
 				fields: null // null means `all fields in stats file`
 			})
@@ -147,8 +151,8 @@ function getConfig(localeCode) {
 					/.json$/, // manifest files
 					/.jpg$/,
 					/.png$/,
-					/.mp4$/,
-				],
+					/.mp4$/
+				]
 			})
 		);
 	}

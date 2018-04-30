@@ -45,12 +45,12 @@ module.exports = {
 	css: {
 		test: /\.css$/,
 		include: [path.resolve(paths.src.asset, 'css')],
-		use: ['style-loader', 'css-loader']
+		use: ["style-loader", "css-loader"]
 	},
 	js: {
 		hot: {
 			test: /\.jsx?$/,
-			use: ['react-hot-loader/webpack'],
+			use: ["react-hot-loader/webpack"],
 			include: [paths.src.browser.app, paths.packages.webComponents.src],
 			exclude: paths.src.asset
 		},
@@ -61,7 +61,7 @@ module.exports = {
 			exclude: paths.src.asset,
 			use: [
 				{
-					loader: 'babel-loader',
+					loader: "babel-loader",
 					options: {
 						cacheDirectory: true,
 						plugins: babel.plugins.browser,
@@ -82,7 +82,7 @@ module.exports = {
 						presets: babel.presets.server
 					}
 				}
-			],
+			]
 		}
 	},
 	file: {
