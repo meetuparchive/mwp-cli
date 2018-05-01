@@ -56,9 +56,14 @@ function getConfig(localeCode) {
 		plugins: [
 			/**
 			 * @see https://webpack.js.org/plugins/environment-plugin/
+			 *
+			 * Replaces references to process.env.NODE_ENV in the code
+			 * with the build-time string value of NODE_ENV.
 			 */
 			new webpack.EnvironmentPlugin({
-				NODE_ENV: 'development', // required for prod build of React
+				// React relies on process.env.NODE_ENV for including dev warnings,
+				// and we use it for similar purposes in application code.
+				NODE_ENV: 'development',
 			}),
 
 			/**
