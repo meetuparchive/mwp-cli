@@ -1,5 +1,5 @@
 const path = require('path');
-const { babel, paths } = require('mwp-config');
+const { babel, env, paths } = require('mwp-config');
 const customProperties = require('swarm-constants/dist/js/customProperties.js').customProperties;
 
 /**
@@ -48,12 +48,6 @@ module.exports = {
 		use: ["style-loader", "css-loader"]
 	},
 	js: {
-		hot: {
-			test: /\.jsx?$/,
-			use: ["react-hot-loader/webpack"],
-			include: [paths.src.browser.app, paths.packages.webComponents.src],
-			exclude: paths.src.asset
-		},
 		browser: {
 			// standard ES5 transpile through Babel
 			test: /\.jsx?$/,
@@ -64,7 +58,7 @@ module.exports = {
 					loader: "babel-loader",
 					options: {
 						cacheDirectory: true,
-						plugins: babel.plugins.browser,
+						plugins: env.properties.isDev ? babel.plugins.browser.concat(['react-hot-loader/babel']) : babel.plugins.browser,
 						presets: babel.presets.browser
 					}
 				}
@@ -73,6 +67,7 @@ module.exports = {
 		server: {
 			test: /\.jsx?$/,
 			include: [paths.src.server.app, paths.packages.webComponents.src],
+			exclude: paths.src.asset,
 			use: [
 				{
 					loader: "babel-loader",

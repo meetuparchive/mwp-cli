@@ -15,17 +15,22 @@ const rules = require('./rules');
  * @returns {Object} HMR-ified config
  */
 function injectHotReloadConfig(config) {
+	/**
+	 * @see http://gaearon.github.io/react-hot-loader/getstarted/
+	 * 		- "Option 2: Webpack Dev Server with custom server (client-side rendering only)"
+	 */
 	config.entry.app.unshift(
-		'react-hot-loader/patch', // logic for hot-reloading react components
 		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${env.properties.asset_server.port}/`, // connect to HMR websocket
-		'webpack/hot/dev-server' // run the dev server
+		'webpack/hot/only-dev-server' // run the dev server
 	);
 
 	// plugins
 	config.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable module.hot
 
-	config.optimization.namedModules = true; // show HMR module filenames
-	config.module.rules.unshift(rules.js.hot);
+ 	// show HMR module filenames
+	config.optimization = {
+		namedModules: true
+	};
 
 	return config;
 }
@@ -39,7 +44,7 @@ function injectHotReloadConfig(config) {
 function getConfig(localeCode) {
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
-	const baseWebfontDir = path.resolve(paths.src.server.app, 'assets', 'fonts');
+	const baseWebfontDir = path.resolve(paths.src.asset, 'fonts');
 	const webfontDir =
 		localeCode === 'ru-RU'
 			? path.resolve(baseWebfontDir, localeCode)
@@ -130,10 +135,10 @@ function getConfig(localeCode) {
 			new StatsPlugin({
 				fields: null // null means `all fields in stats file`
 			})
-		],
+		]
 	};
 
-	if (env.properties.isDev && !env.properties.disable_hmr) {
+	if (env.properties.isDev) {
 		injectHotReloadConfig(config);
 	}
 
