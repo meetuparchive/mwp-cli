@@ -1,7 +1,9 @@
 const fs = require('fs');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
-const { env, webpack: { getBrowserAppConfig } } = require('mwp-config');
+const { env } = require('mwp-config');
+
+const getBrowserAppConfig = require('../buildCommands/configs/browserAppConfig');
 
 // Set up webpack multicompiler - one for each localeCode specified in CLI args
 const compiler = webpack(getBrowserAppConfig('combined'));
