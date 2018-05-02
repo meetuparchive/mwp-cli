@@ -9,7 +9,6 @@ module.exports = {
 		const { NODE_ENV } = process.env;
 		const envString = NODE_ENV || 'development';
 
-		console.log(chalk.gray('$ mope run'));
 		console.log(chalk.gray(`NODE_ENV=${envString}`));
 
 		if (envString !== 'development') {
