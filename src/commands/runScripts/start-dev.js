@@ -1,21 +1,18 @@
 const fs = require('fs');
 const fork = require('child_process').fork;
 const path = require('path');
-
 const chalk = require('chalk');
 const webpack = require('webpack');
+const { package: packageConfig } = require('mwp-config');
 
-const {
-	paths,
-	package: packageConfig,
-	webpack: { getServerAppConfig },
-} = require('mwp-config');
+const getServerAppConfig = require('../buildCommands/configs/serverAppConfig');
 
 const ready = {
 	browserApp: false,
 	serverApp: false,
 	appServer: false,
 };
+
 let appServerProcess;
 
 const log = (...msgs) => console.log(chalk.yellow('>>'), ...msgs);
@@ -80,13 +77,15 @@ const startServer = () => {
 };
 
 function run() {
-	log(chalk.blue('building app, using existing vendor bundle'));
-	/*
+	const scriptName = path.basename(__filename, path.extname(__filename));
+	log(chalk.blue(`${scriptName}: Preparing the Dev App Server using existing vendor bundle...`));
+
+	/**
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
 	 */
-	log(chalk.blue('building browser assets to memory'));
 	const browserAppCompileLogger = getCompileLogger('browserApp');
 	const wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'));
+
 	// the dev server compiler will send a message each time it completes a build
 	wdsProcess.on('message', message => {
 		browserAppCompileLogger();
@@ -98,18 +97,16 @@ function run() {
 		}
 	});
 
-	/*
+	/**
 	 * 2. Start the Webpack watch-mode compiler for the Server application
 	 *
 	 * no need to check for errors/warnings in the stats because this build
 	 * parallels the one done in the Webpack Dev Server, and WDS will print
 	 * error messages whenever there is something wrong.
 	 */
-	log(
-		chalk.blue(`building server rendering bundle to ${paths.output.server}`)
-	);
 	const serverAppCompileLogger = getCompileLogger('serverApp');
 	const serverAppCompiler = webpack(getServerAppConfig('combined'));
+
 	serverAppCompiler.watch(
 		{
 			aggregateTimeout: 100,
