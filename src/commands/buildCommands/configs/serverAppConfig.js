@@ -105,6 +105,7 @@ function getConfig(localeCode) {
 				trns: path.resolve(paths.src.trns, 'modules', localeCode),
 				webfont: webfontDir,
 			},
+			// module name extensions that Webpack will try if no extension provided
 			// '*' matches imports with extensions
 			extensions: ['.js', '.jsx', '.json', '*']
 		}

@@ -87,6 +87,7 @@ function getConfig(localeCode) {
 			},
 
 			// module name extensions that Webpack will try if no extension provided
+			// '*' matches imports with extensions
 			extensions: ['.js', '.jsx', '.json', '*']
 		},
 
