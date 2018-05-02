@@ -6,7 +6,7 @@ module.exports = {
 	command: 'vendor',
 	description: 'build the vendor (DLL) bundles',
 	handler: argv => {
-		console.log(chalk.blue('building vendor bundles...\n\n'));
+		console.log(chalk.blue('building vendor bundles...'));
 
 		webpack(vendorBundlesConfig, (err, stats) => {
 
