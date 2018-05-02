@@ -8,12 +8,15 @@ const {
 	locales,
 	package: packageConfig,
 	paths,
-	webpack: { getRelativeBundlePath },
 } = require('mwp-config');
 
 const getServerAppConfig = require('./configs/serverAppConfig');
 const addLocalesOption = require('../../util/addLocalesOption');
-const { compile, promiseSerial } = require('../buildUtils/util');
+const {
+	compile,
+	getRelativeBundlePath,
+	promiseSerial,
+} = require('../buildUtils/util');
 
 const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 

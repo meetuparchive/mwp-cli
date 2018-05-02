@@ -2,12 +2,15 @@ const chalk = require('chalk');
 const {
 	package: packageConfig,
 	paths,
-	webpack: { getRelativeBundlePath },
 } = require('mwp-config');
 
 const getBrowserAppConfig = require('./configs/browserAppConfig');
 const addLocalesOption = require('../../util/addLocalesOption');
-const { compile, promiseSerial } = require('../buildUtils/util');
+const {
+	compile,
+	getRelativeBundlePath,
+	promiseSerial,
+} = require('../buildUtils/util');
 
 const getBundlePath = getRelativeBundlePath('app', paths.output.browser);
 
