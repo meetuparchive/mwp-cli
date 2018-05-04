@@ -27,12 +27,6 @@ module.exports = {
 			.demandCommand()
 			.command('start', 'record a start time', { attribute }, argv => {
 				const current = getCurrentTimes();
-				if (current[argv.attribute]) {
-					throw new Error(
-						`${argv.attribute} already started at ${argv.attribute
-							.start}`
-					);
-				}
 				current[argv.attribute] = { start: new Date().getTime() };
 				return setCurrentTimes(current);
 			})
@@ -41,12 +35,6 @@ module.exports = {
 				const currentTime = current[argv.attribute];
 				if (!currentTime) {
 					throw new Error(`${argv.attribute} not started`);
-				}
-				if (currentTime.end) {
-					throw new Error(
-						`${argv.attribute} already ended at`,
-						new Date(currentTime.end)
-					);
 				}
 				currentTime.end = new Date().getTime();
 				return setCurrentTimes(current);
