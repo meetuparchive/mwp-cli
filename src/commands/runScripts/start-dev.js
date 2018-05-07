@@ -25,19 +25,41 @@ const replaceCwd = s => s.replace(new RegExp(`${process.cwd()}/`, 'g'), '');
 const errorLogLines = lines => [...lines.slice(0, 2), ...lines.slice(5, 7)];
 
 const getCompileLogger = type => (err, stats) => {
-	if (stats && stats.hasErrors()) {
-		stats
-			.toJson()
-			.errors.map(x => x.split('\n'))
+	// handle fatal webpack errors (wrong configuration, etc.)
+	if (err) {
+		console.error(
+			chalk.red('webpack error:')
+		);
+		console.error(err);
+		process.exit(1);
+	}
+
+	const info = stats.toJson();
+
+	// handle compilation errors (missing modules, syntax errors, etc)
+	if (stats.hasErrors()) {
+		info.errors
+			.map(x => x.split('\n'))
 			.map(errorLogLines)
 			.map(lines => lines.join('\n   '))
 			.map(replaceCwd)
 			.map(x => chalk.red(x))
 			.forEach(x => log(x));
+
+		process.exit(1);
 	}
+
+	if (stats.hasWarnings()) {
+		console.log(
+			chalk.red('vendor bundle compilation warning:')
+		);
+		console.info(info.warnings);
+	};
+
 	const message = ready[type]
 		? chalk.blue(`${type} updated`)
 		: chalk.green(`${type} bundle built`);
+
 	log(message);
 };
 
