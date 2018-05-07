@@ -51,7 +51,7 @@ const getCompileLogger = type => (err, stats) => {
 
 	if (stats.hasWarnings()) {
 		console.log(
-			chalk.red('vendor bundle compilation warning:')
+			chalk.red('webpack compilation warning:')
 		);
 		console.info(info.warnings);
 	};
