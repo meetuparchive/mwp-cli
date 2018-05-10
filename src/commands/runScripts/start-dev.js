@@ -34,27 +34,29 @@ const getCompileLogger = type => (err, stats) => {
 		process.exit(1);
 	}
 
-	const info = stats.toJson();
+	if (stats) {
+		const info = stats.toJson();
+		
+		// handle compilation errors (missing modules, syntax errors, etc)
+		if (stats.hasErrors()) {
+			info.errors
+				.map(x => x.split('\n'))
+				.map(errorLogLines)
+				.map(lines => lines.join('\n   '))
+				.map(replaceCwd)
+				.map(x => chalk.red(x))
+				.forEach(x => log(x));
 
-	// handle compilation errors (missing modules, syntax errors, etc)
-	if (stats.hasErrors()) {
-		info.errors
-			.map(x => x.split('\n'))
-			.map(errorLogLines)
-			.map(lines => lines.join('\n   '))
-			.map(replaceCwd)
-			.map(x => chalk.red(x))
-			.forEach(x => log(x));
-
-		process.exit(1);
+			process.exit(1);
+		}
+		
+		if (stats.hasWarnings()) {
+			console.log(
+				chalk.red('webpack compilation warning:')
+			);
+			console.info(info.warnings);
+		}
 	}
-
-	if (stats.hasWarnings()) {
-		console.log(
-			chalk.red('webpack compilation warning:')
-		);
-		console.info(info.warnings);
-	};
 
 	const message = ready[type]
 		? chalk.blue(`${type} updated`)
