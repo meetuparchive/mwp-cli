@@ -21,6 +21,7 @@ $ mope <command> [<args>]
 
 
 ## Developing
+
 The mwp-cli executable (mope) is defined in /bin/mope.js - you can execute it directly without installing the `mwp-cli` package. In development, this means that you can test the CLI from your application directory by running node path/to/mwp-cli/bin/mope.js
 
 For example on running `mwp-cli` from `mup-web`
