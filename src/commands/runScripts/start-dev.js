@@ -14,6 +14,7 @@ const ready = {
 };
 
 let appServerProcess;
+let wdsProcess;
 
 const log = (...msgs) => console.log(chalk.yellow('>>'), ...msgs);
 
@@ -24,6 +25,16 @@ const replaceCwd = s => s.replace(new RegExp(`${process.cwd()}/`, 'g'), '');
 // the full error output is too verbose - lines 0, 1, 5, 6 are most interesting
 const errorLogLines = lines => [...lines.slice(0, 2), ...lines.slice(5, 7)];
 
+const killChildProcesses = () => {
+	if(wdsProcess) {
+		wdsProcess.kill();
+	}
+
+	if(appServerProcess) {
+		appServerProcess.kill();
+	}
+};
+
 const getCompileLogger = type => (err, stats) => {
 	// handle fatal webpack errors (wrong configuration, etc.)
 	if (err) {
@@ -31,12 +42,16 @@ const getCompileLogger = type => (err, stats) => {
 			chalk.red('webpack error:')
 		);
 		console.error(err);
-		process.exit(1);
+
+		if (!ready.browserApp) {
+			killChildProcesses();
+			process.exit(1);
+		}
 	}
 
 	if (stats) {
 		const info = stats.toJson();
-		
+
 		// handle compilation errors (missing modules, syntax errors, etc)
 		if (stats.hasErrors()) {
 			info.errors
@@ -47,9 +62,12 @@ const getCompileLogger = type => (err, stats) => {
 				.map(x => chalk.red(x))
 				.forEach(x => log(x));
 
-			process.exit(1);
+			if (!ready.browserApp) {
+				killChildProcesses();
+				process.exit(1);
+			}
 		}
-		
+
 		if (stats.hasWarnings()) {
 			console.log(
 				chalk.red('webpack compilation warning:')
@@ -108,12 +126,12 @@ function run() {
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
 	 */
 	const browserAppCompileLogger = getCompileLogger('browserApp');
-	const wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'));
+	wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'));
 
 	// the dev server compiler will send a message each time it completes a build
 	wdsProcess.on('message', message => {
 		browserAppCompileLogger();
-		if (!ready.browerApp) {
+		if (!ready.browserApp) {
 			// this is the first build - we can attempt to start the app server.
 			// no need to restart the server otherwise
 			ready.browserApp = true;
