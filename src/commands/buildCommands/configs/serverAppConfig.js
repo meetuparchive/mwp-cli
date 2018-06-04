@@ -41,7 +41,7 @@ function getConfig(localeCode) {
 			publicPath
 		},
 
-		devtool: 'eval',
+		devtool: env.properties.isProd ? 'hidden-source-map' : 'eval',
 
 		module: {
 			rules: [

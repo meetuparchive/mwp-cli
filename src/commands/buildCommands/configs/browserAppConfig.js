@@ -67,7 +67,7 @@ function getConfig(localeCode) {
 			publicPath
 		},
 
-		devtool: 'cheap-module-source-map', // similar speed to 'eval', but with proper source maps
+		devtool: env.properties.isProd ? 'hidden-source-map' : 'cheap-module-source-map', // similar speed to 'eval', but with proper source maps
 
 		module: {
 			rules: [
