@@ -11,6 +11,7 @@ const get = (path, options = {}) => _get(`${TRAVIS_API_URL}${path}`, options);
 const post = (path, options = {}) => _post(`${TRAVIS_API_URL}${path}`, options);
 
 // Travis API needs auth token and repo to search for data
+// https://developer.travis-ci.com/
 const getTravisApi = ({ token, repo }) => {
 	const headers = {
 		'Travis-API-Version': 3,
