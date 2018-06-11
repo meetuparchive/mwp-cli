@@ -1,3 +1,8 @@
+# [7.2]
+
+* **New feature** `mope build status` check the status of a Travis build, and
+  optionally auto-cancel if a newer build was started recently
+
 # [7.1]
 
 * **New feature** `mope build push` upload app bundle to cloud storage

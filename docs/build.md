@@ -1,4 +1,4 @@
-### Build: `mope build [<target>|pull]`
+### Build: `mope build [<target>|push|pull|status]`
 
 We currently have 4 builds:
 
@@ -45,6 +45,17 @@ $ mope build pull --versionId=12345 --tags foo bar baz
 
 Pull the build artifacts with the supplied tags for the supplied version from
 cloud storage. Unpack them into the current directory.
+
+#### Synopsis (build status)
+
+```
+$ mope build status [--id=12345] [--auto-cancel] [--min-interval=5000] [--repo=meetup/mup-web] [--token=asdf]
+```
+
+Check the Travis build status for the specified build ID, and optionally cancel
+the build if another one has started within the `min-interval`. Defaults for most
+options come from standard Travis environment variables - `auto-cancel` defaults
+to `false`.
 
 # The build
 
