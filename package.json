@@ -61,7 +61,7 @@
     "sass-loader": "7.0.1",
     "style-loader": "0.21.0",
     "sw-precache-webpack-plugin": "0.11.5",
-    "swarm-constants": "1.2.99",
+    "swarm-constants": "1.2.112",
     "tar-fs": "1.16.0",
     "transifex": "1.5.0",
     "uglifyjs-webpack-plugin": "1.2.5",
