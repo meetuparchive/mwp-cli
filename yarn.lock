@@ -8667,13 +8667,13 @@ sw-toolbox@^3.4.0:
     path-to-regexp "^1.0.1"
     serviceworker-cache-polyfill "^4.0.0"
 
+swarm-constants@1.2.112:
+  version "1.2.112"
+  resolved "https://registry.yarnpkg.com/swarm-constants/-/swarm-constants-1.2.112.tgz#198d970b1c3d77a730ddc37d7bc1b43d940a66ce"
+
 swarm-constants@1.2.94:
   version "1.2.94"
   resolved "https://registry.yarnpkg.com/swarm-constants/-/swarm-constants-1.2.94.tgz#859364602af081b1e7ea52018a967eec4663fbbd"
-
-swarm-constants@1.2.99:
-  version "1.2.99"
-  resolved "https://registry.yarnpkg.com/swarm-constants/-/swarm-constants-1.2.99.tgz#0f1e4c9839b22aa87f2d665ad045fa304b0d82eb"
 
 symbol-observable@1.0.1:
   version "1.0.1"
