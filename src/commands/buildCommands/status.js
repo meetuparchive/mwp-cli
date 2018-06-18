@@ -1,3 +1,4 @@
+const { URLSearchParams } = require('url');
 const { promisify } = require('util');
 const request = require('request');
 
@@ -30,17 +31,37 @@ const getTravisApi = ({ token, repo }) => {
 				get(`/build/${id}`, { headers }).then(({ body }) =>
 					JSON.parse(body)
 				),
-			latest: repo =>
+			latest: (repo, prNumber) => {
 				// 'latest' build of interest are _active_ builds only (started/created)
-				get(
+				// need PR number for PR builds in order to filter all recent PR builds
+				// for those matching the current PR.
+				const params = new URLSearchParams();
+				params.append('state', 'started,created');
+				params.append('sort_by', 'started_at:desc');
+				params.append('event_type', prNumber ? 'pull_request' : 'push');
+				params.append('limit', '10'); //
+				return get(
 					`/repo/${encodeURIComponent(
 						repo
-					)}/builds?state=started,created&sort_by=started_at:desc&limit=1`,
+					)}/builds${params.toString()}`,
 					{ headers }
 				)
 					.then(resp => JSON.parse(resp.body).builds)
-					.then(builds => (builds.length > 0 ? builds[0] : null))
-					.catch(console.error),
+					.then(builds => {
+						const matchingBuilds = prNumber
+							? builds.filter(
+									b =>
+										b.pull_request_number.toString() ===
+										prNumber
+							  )
+							: builds || [];
+						if (matchingBuilds.length === 0) {
+							return null;
+						}
+						return matchingBuilds[0];
+					})
+					.catch(console.error);
+			},
 		},
 	};
 };
@@ -83,6 +104,13 @@ module.exports = {
 					demandOption: true,
 					describe: '{owner}/{repoName} for the build repo',
 				},
+				prNumber: {
+					default:
+						process.env.TRAVIS_PULL_REQUEST_BRANCH && // empty string if not PR
+						process.env.TRAVIS_PULL_REQUEST, // "false" if not PR
+					demandOption: false,
+					describe: 'for PR builds, the PR number',
+				},
 				token: {
 					default: process.env.TRAVIS_API_TOKEN,
 					demandOption: true,
@@ -95,7 +123,7 @@ module.exports = {
 			})
 			.implies('minInterval', 'autoCancel'),
 	handler: argv => {
-		const { autoCancel, id, token, repo, minInterval } = argv;
+		const { autoCancel, id, token, prNumber, repo, minInterval } = argv;
 		const travisApi = getTravisApi({ token, repo });
 		travisApi.build.get(id).then(build => {
 			console.log(`Build ${id} started at ${build.started_at}`);
@@ -108,12 +136,13 @@ module.exports = {
 			// `minInterval` after current build
 			const testShortInterval = makeTestShortInterval(build, minInterval);
 			travisApi.build
-				.latest(repo)
+				.latest(repo, prNumber !== 'false' && prNumber)
 				.then(testShortInterval)
 				.then(
 					isNewer =>
 						isNewer ? travisApi.build.cancel(id) : Promise.resolve()
-				);
+				)
+				.catch(console.error);
 		});
 	},
 };
