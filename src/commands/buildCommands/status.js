@@ -46,7 +46,7 @@ const getTravisApi = ({ token, repo }) => {
 					)}/builds${params.toString()}`,
 					{ headers }
 				)
-					.then(resp => JSON.parse(resp.body).builds)
+					.then(resp => JSON.parse(resp.body).builds || [])
 					.then(builds => {
 						const matchingBuilds = prNumber
 							? builds.filter(
