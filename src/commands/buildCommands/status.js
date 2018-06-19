@@ -21,8 +21,8 @@ const getTravisApi = ({ token, repo }) => {
 	return {
 		build: {
 			cancel: id =>
-				post(`/build/${id}/cancel`)
-					.then(({ body }) => {
+				post(`/build/${id}/cancel`, { headers })
+					.then(request => {
 						console.log(`Canceled build ${id}`);
 					})
 					.catch(console.error),
