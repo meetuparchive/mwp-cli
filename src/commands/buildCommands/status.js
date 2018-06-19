@@ -40,12 +40,10 @@ const getTravisApi = ({ token, repo }) => {
 				params.append('sort_by', 'started_at:desc');
 				params.append('event_type', prNumber ? 'pull_request' : 'push');
 				params.append('limit', '10'); //
-				return get(
-					`/repo/${encodeURIComponent(
-						repo
-					)}/builds${params.toString()}`,
-					{ headers }
-				)
+				const path = `/repo/${encodeURIComponent(
+					repo
+				)}/builds?${params.toString()}`;
+				return get(path, { headers })
 					.then(resp => JSON.parse(resp.body).builds || [])
 					.then(builds => {
 						const matchingBuilds = prNumber
