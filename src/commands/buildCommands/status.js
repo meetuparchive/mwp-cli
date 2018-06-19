@@ -50,7 +50,7 @@ const getTravisApi = ({ token, repo }) => {
 							? builds.filter(
 									b =>
 										b.pull_request_number.toString() ===
-										prNumber
+										prNumber.toString()
 							  )
 							: builds || [];
 						if (matchingBuilds.length === 0) {
@@ -73,7 +73,7 @@ const makeTestShortInterval = (build1, minInterval) => build2 => {
 	}
 	const start1 = new Date(build1.started_at);
 	const start2 = new Date(build2.started_at);
-	if (start2 - start1 > minInterval) {
+	if (start2 - start1 < minInterval) {
 		console.log(`Newer build ${build2.id} started at ${build2.started_at}`);
 		return true;
 	}
