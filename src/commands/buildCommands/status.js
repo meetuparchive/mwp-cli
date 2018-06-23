@@ -67,8 +67,8 @@ const getTravisApi = ({ token, repo }) => {
 // make a function that will test if a second build started within the
 // `minInterval` time between builds
 const makeTestShortInterval = (build1, minInterval) => build2 => {
-	if (!build2) {
-		// nothing running
+	if (!build2 || build2.id === build1.id) {
+		// nothing running, or latest build is the current build
 		return false;
 	}
 	const start1 = new Date(build1.started_at);
