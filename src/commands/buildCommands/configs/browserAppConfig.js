@@ -73,6 +73,7 @@ function getConfig(localeCode) {
 			rules: [
 				rules.file,
 				rules.scssModule,
+				rules.scss,
 				rules.css,
 				rules.js.browser,
 				rules.raw

@@ -1,6 +1,6 @@
 const path = require('path');
 const { babel, env, paths } = require('mwp-config');
-const customProperties = require('swarm-constants/dist/js/customProperties.js').customProperties;
+const postCssLoaderConfig = require('./postCssLoaderConfig.js');
 
 /**
  * @see https://webpack.js.org/configuration/module/#module-rules
@@ -20,25 +20,23 @@ module.exports = {
 					minimize: true
 				}
 			},
+			postCssLoaderConfig,
+			'sass-loader'
+		]
+	},
+	scss: {
+		test: /main\.scss$/,
+		include: [paths.srcPath],
+		use: [
 			{
-				loader: 'postcss-loader',
+				loader: 'file-loader',
 				options: {
-					ident: 'postcss',
-					plugins: loader => [
-						require('postcss-cssnext')({
-							browsers: ['last 2 versions', 'not ie <= 10'],
-							features: {
-								customProperties: false,
-								colorFunction: false,
-							},
-						}),
-						require('postcss-css-variables')({
-							preserve: true,
-							variables: customProperties,
-						})
-					]
+					name: '[name].[hash:7].css'
 				}
 			},
+			'extract-loader',
+			'css-loader',
+			postCssLoaderConfig,
 			'sass-loader'
 		]
 	},
