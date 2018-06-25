@@ -24,7 +24,7 @@ module.exports = {
 			'sass-loader'
 		]
 	},
-	scss: {
+	baseScss: {
 		test: /main\.scss$/,
 		include: [paths.srcPath],
 		use: [
