@@ -1,4 +1,4 @@
-# [8.2]
+# [8.0]
 
 * **BREAKING CHANGE** `mope build` will run any files matching `main.scss` through PostCSS. Inline loaders should no longer be used on `main.scss`. Expect warnings from PostCSS until we remove unneeded browser prefixes
 
