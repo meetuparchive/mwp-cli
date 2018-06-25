@@ -32,15 +32,6 @@ module.exports = {
 				demandOption: true,
 				describe: 'The source Docker image tag for the version',
 			},
-			incrementWait: {
-				default: 60000, // 1 minute
-				describe: 'The delay between migration increments',
-			},
-			incrementPercentage: {
-				default: 100,
-				describe:
-					'The percentage of traffic to migrate in each increment',
-			},
 			minInstances: {
 				default:
 					(baseConfig.automaticScaling || {}).minTotalInstances || 16,
@@ -54,11 +45,6 @@ module.exports = {
 			deployCount: {
 				default: 1,
 				describe: 'The number of parallel versions to deploy',
-			},
-			targetTraffic: {
-				default: 100,
-				describe:
-					'The total amount of traffic to be migrated to the deployment',
 			},
 			noCanary: {
 				describe: 'Disable canary test',
@@ -81,16 +67,12 @@ module.exports = {
 					// clean up deployed versions and exit
 					return deploy.del().then(() => process.exit(1));
 				})
-				.then(() =>
-					migrate().catch(error => {
-						console.log(chalk.red(`Migration stopped: ${error}`));
-						if (
-							!(error instanceof versions.validate.RedundantError)
-						) {
-							// no need to return non-zero exit code for newer deployment
-							process.exit(1);
-						}
-					})
-				)
+				.then(() => {
+					console.log(
+						chalk.green(
+							`${argv.versionId} ready to receive traffic`
+						)
+					);
+				})
 		),
 };
