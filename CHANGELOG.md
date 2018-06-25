@@ -8,6 +8,14 @@
     (e.g. e2e testing) has completed, which allows it to be done in parallel with
     testing.
 
+*   **BREAKING CHANGE** `mope build` will run any files matching `main.scss`
+    through PostCSS. Inline loaders should no longer be used on `main.scss`.
+    Expect warnings from PostCSS until we remove unneeded browser prefixes
+
+    For example in `cssLinks.js`:
+    this: `const baseCSSHref = require('file-loader?name=[name].[hash:7].css!extract-loader!css-loader!sass-loader!../assets/scss/main.scss');`
+    becomes: `const baseCSSHref = require('../assets/scss/main.scss');`
+
 # [7.2]
 
 *   **New feature** `mope build status` check the status of a Travis build, and
