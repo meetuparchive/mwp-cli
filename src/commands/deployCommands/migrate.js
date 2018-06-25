@@ -1,19 +1,7 @@
 const path = require('path');
 const { paths } = require('mwp-config');
 const chalk = require('chalk');
-const runE2E = require('../deployUtils/e2e');
 const apiMiddleware = require('../deployUtils/apiMiddleware');
-
-const baseConfig = require(path.resolve(paths.repoRoot, 'app.json'));
-
-const runE2EWithRetry = id => runE2E(id).catch(() => runE2E(id));
-/*
- * Automated migration for gcloud deployments
- * https://cloud.google.com/appengine/docs/admin-api/getting-started/
- * https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions
- * https://cloud.google.com/appengine/docs/admin-api/deploying-apps
- * https://cloud.google.com/appengine/docs/admin-api/creating-config-files
- */
 
 const { CI_BUILD_NUMBER } = process.env;
 
