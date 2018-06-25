@@ -1,3 +1,7 @@
+# [8.2]
+
+* **BREAKING CHANGE** `mope build` will run any files matching `main.scss` through PostCSS. Inline loaders should no longer be used on `main.scss`. Expect warnings from PostCSS until we remove unneeded browser prefixes
+
 # [7.2]
 
 * **New feature** `mope build status` check the status of a Travis build, and
