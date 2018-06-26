@@ -16,6 +16,9 @@
     this: `const baseCSSHref = require('file-loader?name=[name].[hash:7].css!extract-loader!css-loader!sass-loader!../assets/scss/main.scss');`
     becomes: `const baseCSSHref = require('../assets/scss/main.scss');`
 
+*   **New feature** `mope deploy delete` to safely delete a version - useful for
+    cleanup.
+
 # [7.2]
 
 *   **New feature** `mope build status` check the status of a Travis build, and

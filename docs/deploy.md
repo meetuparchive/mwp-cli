@@ -1,4 +1,4 @@
-# Deploy `mope deploy [create|migrate|clean]`
+# Deploy `mope deploy [create|migrate|clean|delete]`
 
 This set of commands affect the cloud-based deployments for MWP apps.
 
@@ -78,8 +78,6 @@ The percentage of traffic to migrate in each increment
 
 _Default: `100`_. The total percentage of traffic to be migrated to the deployment.
 
-#
-
 ## Command: `deploy clean`
 
 ### Options
@@ -94,3 +92,7 @@ traffic.
 _Default: 20_. Integer number of deployments to keep 'cold', ready to be started.
 Older deployments will be deleted from GAE, although the container images will
 still be available in Google Container Registry for re-deployment.
+
+## Command: `deploy delete`
+
+Delete the specified version. Safely.
