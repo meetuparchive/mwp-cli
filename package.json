@@ -51,7 +51,7 @@
     "mkdirp": "0.5.1",
     "node-insights": "1.0.16",
     "node-sass": "4.9.0",
-    "postcss-css-variables": "0.8.1",
+    "postcss-css-variables": "0.9.0",
     "postcss-cssnext": "3.1.0",
     "postcss-loader": "2.1.4",
     "prettier": "1.12.1",
