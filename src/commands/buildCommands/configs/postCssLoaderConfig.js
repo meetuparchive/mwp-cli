@@ -15,6 +15,7 @@ module.exports = {
             require('postcss-css-variables')({
                 preserve: true,
                 variables: customProperties,
+                preserveInjectedVariables: false,
             })
         ]
     }
