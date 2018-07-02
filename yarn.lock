@@ -6856,9 +6856,9 @@ postcss-css-variables@0.8.0:
     extend "^3.0.1"
     postcss "^6.0.8"
 
-postcss-css-variables@0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/postcss-css-variables/-/postcss-css-variables-0.8.1.tgz#a52e5ef1a2eb633a8a4f5fc434d6d85d40fe7310"
+postcss-css-variables@0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/postcss-css-variables/-/postcss-css-variables-0.9.0.tgz#dc442742b460949fa0a53f5a7c91b0115319cf7f"
   dependencies:
     escape-string-regexp "^1.0.3"
     extend "^3.0.1"
