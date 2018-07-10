@@ -13,6 +13,11 @@ module.exports = {
 					default: 10000, // 10 seconds
 					describe: 'The time to wait between progress checks',
 				},
+				deployCount: {
+					default: 1,
+					describe:
+						'The number of parallel versions that have been deployed',
+				},
 				env: {
 					type: 'array',
 					default: [],

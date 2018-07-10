@@ -42,10 +42,6 @@ module.exports = {
 				describe:
 					'The maximum number of available instances in a GAE deployment',
 			},
-			deployCount: {
-				default: 1,
-				describe: 'The number of parallel versions to deploy',
-			},
 			noCanary: {
 				describe: 'Disable canary test',
 			},
