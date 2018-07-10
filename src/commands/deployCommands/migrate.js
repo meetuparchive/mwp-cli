@@ -1,5 +1,3 @@
-const path = require('path');
-const { paths } = require('mwp-config');
 const chalk = require('chalk');
 const apiMiddleware = require('../deployUtils/apiMiddleware');
 
@@ -14,6 +12,11 @@ module.exports = {
 				default: CI_BUILD_NUMBER,
 				demandOption: true,
 				describe: 'The version ID to migrate traffic to',
+			},
+			deployCount: {
+				default: 1,
+				describe:
+					'The number of parallel versions that have been deployed',
 			},
 			incrementWait: {
 				default: 60000, // 1 minute
