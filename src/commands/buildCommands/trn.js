@@ -36,6 +36,7 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 		return acc;
 	}, {});
 
+	// in dev, we want to build a single module containing all locales
 	if (
 		packageConfig.combineLanguages ||
 		process.env.NODE_ENV !== 'production'
@@ -49,7 +50,7 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 		);
 		return writeTrnFile(destFilename, trns);
 	}
-	// one trn file per supported locale
+	// otherwise, write a single module-per-locale
 	return Promise.all(
 		locales.map(localeCode => {
 			const langTrns = { [localeCode]: trns[localeCode] };
@@ -97,6 +98,7 @@ const PICKER_LOCALES = {
 	'tr-TR': fpLocale('tr'),
 };
 const buildDateLocales = () => {
+	// in dev, we want to build a single module containing all locales
 	if (
 		packageConfig.combineLanguages ||
 		process.env.NODE_ENV !== 'production'
@@ -111,6 +113,7 @@ const buildDateLocales = () => {
 		return writeFile(destFilename, JSON.stringify(PICKER_LOCALES));
 	}
 
+	// otherwise, write a single module-per-locale
 	return Promise.all(
 		locales.map(localeCode => {
 			const destFilename = path.resolve(
