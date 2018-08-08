@@ -1,3 +1,19 @@
+# [8.1]
+
+*   **New feature** `mope build trn` will now also write 'pickerLocale' modules
+    that can be imported just like other TRN modules. The values can be passed
+    as `datepickerOptions.locale` params to MWC `CalendarComponent` in order to
+    localize the date picker.
+
+    Import syntax aligns other TRN imports - be sure to key into the `pickerLocale`
+    map using the appropriate `localeCode`
+
+    ```jsx
+    import pickerLocale from 'trns/date/pickerLocale';
+    ...
+    <CalendarComponent datepickerOptions={{ locale: pickerLocale[localeCode] }} />
+    ```
+
 # [8.0]
 
 *   **BREAKING CHANGE** `mope deploy create` will no longer migrate traffic to the
