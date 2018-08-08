@@ -5,12 +5,13 @@
     as `datepickerOptions.locale` params to MWC `CalendarComponent` in order to
     localize the date picker.
 
-    Import syntax aligns other TRN imports
+    Import syntax aligns other TRN imports - be sure to key into the `pickerLocale`
+    map using the appropriate `localeCode`
 
     ```jsx
     import pickerLocale from 'trns/date/pickerLocale';
     ...
-    <CalendarComponent datepickerOptions={{ locale: pickerLocale }} />
+    <CalendarComponent datepickerOptions={{ locale: pickerLocale[localeCode] }} />
     ```
 
 # [8.0]
