@@ -1,3 +1,10 @@
+# [8.1]
+
+*   **New feature** `mope build trn` will now also write 'pickerLocale' modules
+    that can be imported just like other TRN modules. The values can be passed
+    as `datepickerOptions.locale` params to MWC `CalendarComponent` in order to
+    localize the date picker.
+
 # [8.0]
 
 *   **BREAKING CHANGE** `mope deploy create` will no longer migrate traffic to the

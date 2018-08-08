@@ -72,6 +72,62 @@ const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
 	msgids: trnsFromFile.map(({ id }) => id),
 }));
 
+// Function for importing Flatpickr (fp) locale data for a particular 2-character
+// language code code
+const fpLocale = lang =>
+	require(require.resolve(`flatpickr/dist/l10n/${lang}`, {
+		paths: [paths.repoRoot],
+	}))[lang];
+
+const PICKER_LOCALES = {
+	'en-US': undefined, // default
+	'en-AU': undefined, // default
+	'de-DE': fpLocale('de'),
+	es: fpLocale('es'),
+	'es-ES': fpLocale('es'),
+	'fr-FR': fpLocale('fr'),
+	'it-IT': fpLocale('it'),
+	'ja-JP': fpLocale('ja'),
+	'ko-KR': fpLocale('ko'),
+	'nl-NL': fpLocale('nl'),
+	'pt-BR': fpLocale('pt'),
+	'pl-PL': fpLocale('pl'),
+	'ru-RU': fpLocale('ru'),
+	'th-TH': fpLocale('th'),
+	'tr-TR': fpLocale('tr'),
+};
+const buildDateLocales = () => {
+	if (
+		packageConfig.combineLanguages ||
+		process.env.NODE_ENV !== 'production'
+	) {
+		const destFilename = path.resolve(
+			MODULES_PATH,
+			'combined',
+			'date',
+			'pickerLocale.json'
+		);
+		mkdirp.sync(path.dirname(destFilename));
+		return writeFile(destFilename, JSON.stringify(PICKER_LOCALES));
+	}
+
+	return Promise.all(
+		locales.map(localeCode => {
+			const destFilename = path.resolve(
+				MODULES_PATH,
+				localeCode,
+				'date',
+				'pickerLocale.json'
+			);
+			mkdirp.sync(path.dirname(destFilename));
+			return writeFile(
+				destFilename,
+				JSON.stringify({ [localeCode]: PICKER_LOCALES[localeCode] })
+			).then(() => console.log('Wrote', destFilename));
+		})
+	);
+};
+
 /**
  * Write JSON modules for each component that defines TRN messages. Missing
  * translations will result in an empty JSON object
@@ -89,21 +145,26 @@ function main() {
 	console.log('Cleaning TRN modules directory');
 	child_process.execSync(`rm -rf ${MODULES_PATH}`);
 
-	console.log('Transpiling TRN source to JSON...');
-	buildTrnModules().toPromise().then(
-		trnDefs => {
-			console.log(
-				chalk.green(
-					`Wrote TRN modules for ${trnDefs.length} components`
-				)
-			);
-		},
-		err => {
-			console.error(chalk.red('TRN module build failed'));
-			console.error(chalk.red(err.toString()));
-			process.exit(1);
-		}
-	);
+	console.log('Writing locale data modules for datepicker');
+	buildDateLocales()
+		.then(() => {
+			console.log('Transpiling TRN source to JSON...');
+			return buildTrnModules().toPromise();
+		})
+		.then(
+			trnDefs => {
+				console.log(
+					chalk.green(
+						`Wrote TRN modules for ${trnDefs.length} components`
+					)
+				);
+			},
+			err => {
+				console.error(chalk.red('TRN module build failed'));
+				console.error(chalk.red(err.toString()));
+				process.exit(1);
+			}
+		);
 }
 
 module.exports = {
