@@ -16,13 +16,13 @@ module.exports = {
 				options: {
 					importLoaders: 2,
 					modules: true,
-					localIdentName: "_[name]_[local]__[hash:base64:5]",
-					minimize: true
-				}
+					localIdentName: '_[name]_[local]__[hash:base64:5]',
+					minimize: true,
+				},
 			},
 			postCssLoaderConfig,
-			'sass-loader'
-		]
+			'sass-loader',
+		],
 	},
 	baseScss: {
 		test: /main\.scss$/,
@@ -31,19 +31,19 @@ module.exports = {
 			{
 				loader: 'file-loader',
 				options: {
-					name: '[name].[hash:7].css'
-				}
+					name: '[name].[hash:8].css',
+				},
 			},
 			'extract-loader',
 			'css-loader',
 			postCssLoaderConfig,
-			'sass-loader'
-		]
+			'sass-loader',
+		],
 	},
 	css: {
 		test: /\.css$/,
 		include: [path.resolve(paths.src.asset, 'css')],
-		use: ["style-loader", "css-loader"]
+		use: ['style-loader', 'css-loader'],
 	},
 	js: {
 		browser: {
@@ -53,14 +53,18 @@ module.exports = {
 			exclude: paths.src.asset,
 			use: [
 				{
-					loader: "babel-loader",
+					loader: 'babel-loader',
 					options: {
 						cacheDirectory: true,
-						plugins: env.properties.isDev ? babel.plugins.browser.concat(['react-hot-loader/babel']) : babel.plugins.browser,
-						presets: babel.presets.browser
-					}
-				}
-			]
+						plugins: env.properties.isDev
+							? babel.plugins.browser.concat([
+									'react-hot-loader/babel',
+							  ])
+							: babel.plugins.browser,
+						presets: babel.presets.browser,
+					},
+				},
+			],
 		},
 		server: {
 			test: /\.jsx?$/,
@@ -68,22 +72,22 @@ module.exports = {
 			exclude: paths.src.asset,
 			use: [
 				{
-					loader: "babel-loader",
+					loader: 'babel-loader',
 					options: {
 						cacheDirectory: true,
 						plugins: babel.plugins.server,
-						presets: babel.presets.server
-					}
-				}
-			]
-		}
+						presets: babel.presets.server,
+					},
+				},
+			],
+		},
 	},
 	file: {
 		test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|mp4|m4a|aac|oga)$/,
-		use: ["file-loader"]
+		use: ['file-loader'],
 	},
 	raw: {
 		test: /\.inc?$/,
-		use: ["raw-loader"]
-	}
+		use: ['raw-loader'],
+	},
 };
