@@ -1,4 +1,4 @@
-const GitHubApi = require('github');
+const GitHubApi = require('@octokit/rest');
 const chalk = require('chalk');
 const github = GitHubApi();
 
