@@ -15,8 +15,7 @@
   },
   "scripts": {
     "test": "jest --coverage",
-    "test:watch": "yarn test -- --watch --verbose",
-    "coveralls": "cat coverage/lcov.info | coveralls"
+    "test:watch": "yarn test -- --watch --verbose"
   },
   "dependencies": {
     "@alrra/travis-scripts": "3.0.1",
@@ -36,7 +35,6 @@
     "chalk": "2.4.1",
     "chromeless": "1.4.0",
     "convict": "4.0.1",
-    "coveralls": "3.0.2",
     "css-loader": "1.0.0",
     "eslint": "4.19.1",
     "eslint-config-prettier": "2.9.0",
