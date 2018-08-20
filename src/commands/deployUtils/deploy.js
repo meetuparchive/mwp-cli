@@ -1,5 +1,5 @@
 module.exports = (config, { versions, operations }) => {
-	const { version, versionIds } = config;
+	const { version, versionIds, force } = config;
 	return {
 		create: () => {
 			const { noExisting, noNewer } = versions.validate;
@@ -7,13 +7,17 @@ module.exports = (config, { versions, operations }) => {
 				`Creating ${version} deployment:`,
 				`versions ${versionIds.join(', ')}`
 			);
-			return Promise.all([noExisting(), noNewer()]).then(() =>
+			const validations = force ? [noNewer()] : [noExisting(), noNewer()];
+			return Promise.all(validations).then(() =>
 				Promise.all(versionIds.map(versions.create))
 			);
 		},
 		del: () =>
 			versions
 				.stop(versionIds.map(id => ({ id })))
-				.then(() => Promise.all(versionIds.map(versions.deleteSafe))),
+				.then(() => Promise.all(
+					versionIds.map(versions.deleteSafe)
+				)
+			),
 	};
 };

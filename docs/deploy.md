@@ -10,6 +10,11 @@ production traffic.
 
 ### Global options
 
+
+#### `--force`
+
+Forces the deployment even if the instance is running
+
 #### `--pollWait`
 
 The time to wait between deployment progress checks#### `--version`
