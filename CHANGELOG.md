@@ -1,3 +1,8 @@
+# [8.2]
+
+*   **New feature** `--force` flag on `mope deploy create` will redeploy the build
+    even if the instance is running. Should be used with caution.
+
 # [8.1]
 
 *   **New feature** `mope build trn` will now also write 'pickerLocale' modules
