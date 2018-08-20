@@ -24,6 +24,11 @@ module.exports = {
 					describe:
 						'Names of environment variables to pass into deployment from deploy env',
 				},
+				force: {
+					type: 'boolean',
+					default: false,
+					describe: 'forces deploy without checking if deployment already exists'
+				}
 			})
 			.commandDir('deployCommands')
 			.demandCommand(),
