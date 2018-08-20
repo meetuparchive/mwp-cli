@@ -17,7 +17,9 @@ Forces the deployment even if the instance is running
 
 #### `--pollWait`
 
-The time to wait between deployment progress checks#### `--version`
+The time to wait between deployment progress checks
+
+#### `--version`
 
 The version ID to deploy. Defaults to `CI_BUILD_NUMBER`
 
