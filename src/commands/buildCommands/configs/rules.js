@@ -16,8 +16,7 @@ module.exports = {
 				options: {
 					importLoaders: 2,
 					modules: true,
-					localIdentName: '_[name]_[local]__[hash:base64:5]',
-					minimize: true,
+					localIdentName: '_[name]_[local]__[hash:base64:5]'
 				},
 			},
 			postCssLoaderConfig,
