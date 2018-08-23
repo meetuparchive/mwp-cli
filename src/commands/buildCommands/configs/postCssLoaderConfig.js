@@ -18,6 +18,9 @@ module.exports = {
                 preserve: true,
                 variables: customProperties,
                 preserveInjectedVariables: false,
+            }),
+            require('cssnano')({
+                preset: 'default',
             })
         ]
     }
