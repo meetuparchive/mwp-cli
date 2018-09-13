@@ -34,14 +34,17 @@ function writeServerAppMap(localeCodes, isCombined) {
 	// The first step is building an array of localeCode-bundlePath pairs
 	// in the form ['<localeCode>: require(<bundlePath>).default', ...]
 	const codeBundlePairStrings = localeCodes.reduce((acc, localeCode) => {
-		const serverAppPath = path.resolve(
-			paths.output.server,
-			isCombined
-				? 'combined' // point to /combined/ for all languages
-				: localeCode, // point to language-specific directory
-			'server-app'
+		const relativeServerAppPath = path.relative(
+			paths.output.serverMap,
+			path.resolve(
+				paths.output.server,
+				isCombined
+					? 'combined' // point to /combined/ for all languages
+					: localeCode, // point to language-specific directory
+				'server-app'
+			)
 		);
-		const requireString = `require('${serverAppPath}').default`;
+		const requireString = `require('${relativeServerAppPath}').default`;
 		acc.push(`'${localeCode}': ${requireString}`);
 		return acc;
 	}, []);
