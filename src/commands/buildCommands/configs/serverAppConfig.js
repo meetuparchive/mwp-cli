@@ -78,13 +78,19 @@ function getConfig(localeCode) {
 				// server bundles must reference _browser_ bundle public path
 				// - inject it as a 'global variable' here
 				VENDOR_MANIFEST_PATH: JSON.stringify(
-					path.resolve(paths.output.browser, 'manifest.json')
+					path.relative(
+						paths.src.server.entry,
+						path.resolve(paths.output.browser, 'manifest.json')
+					)
 				),
 				BROWSER_MANIFEST_PATH: JSON.stringify(
-					path.resolve(
-						paths.output.browser,
-						localeCode,
-						'manifest.json'
+					path.relative(
+						paths.src.server.entry,
+						path.resolve(
+							paths.output.browser,
+							localeCode,
+							'manifest.json'
+						)
 					)
 				),
 			}),
