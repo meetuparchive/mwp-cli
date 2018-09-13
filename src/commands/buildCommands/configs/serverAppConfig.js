@@ -20,7 +20,11 @@ const rules = require('./rules');
 function getConfig(localeCode) {
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
-	const baseWebfontDir = path.resolve(paths.src.server.app, 'assets', 'fonts');
+	const baseWebfontDir = path.resolve(
+		paths.src.server.app,
+		'assets',
+		'fonts'
+	);
 	const webfontDir =
 		localeCode === 'ru-RU'
 			? path.resolve(baseWebfontDir, localeCode)
@@ -30,15 +34,15 @@ function getConfig(localeCode) {
 		mode: env.properties.isProd ? 'production' : 'development',
 
 		entry: {
-			'server-app': [paths.src.server.entry]
+			'server-app': [paths.src.server.entry],
 		},
 
 		// write a CommonJS module that can be imported into Node server scripts
 		output: {
 			libraryTarget: 'commonjs2',
 			path: path.join(paths.output.server, localeCode),
-			filename: "[name].js",
-			publicPath
+			filename: '[name].js',
+			publicPath,
 		},
 
 		devtool: 'eval',
@@ -50,8 +54,8 @@ function getConfig(localeCode) {
 				rules.baseScss,
 				rules.css,
 				rules.js.server,
-				rules.raw
-			]
+				rules.raw,
+			],
 		},
 
 		plugins: [
@@ -77,27 +81,34 @@ function getConfig(localeCode) {
 					path.resolve(paths.output.browser, 'manifest.json')
 				),
 				BROWSER_MANIFEST_PATH: JSON.stringify(
-					path.resolve(paths.output.browser, localeCode, 'manifest.json')
+					path.resolve(
+						paths.output.browser,
+						localeCode,
+						'manifest.json'
+					)
 				),
 			}),
 
 			/**
 			 * @see https://github.com/FormidableLabs/webpack-stats-plugin
 			 */
-			new StatsPlugin({ fields: null }) // null means 'all fields in stats file'
+			new StatsPlugin({ fields: null }), // null means 'all fields in stats file'
 		],
 
 		target: 'node',
 
 		externals: [
 			nodeExternals({
-				modulesDir: process.env.NODE_PATH ? process.env.NODE_PATH : null,
+				modulesDir: process.env.NODE_PATH
+					? process.env.NODE_PATH
+					: null,
 				whitelist: [
 					/^meetup-web-components/,
-					/^swarm-icons\/dist\/sprite\/sprite\.inc$/
+					/^swarm-icons\/dist\/sprite\/sprite\.inc$/,
 				],
 			}),
-			/.*?build\//
+			new RegExp(paths.buildPath),
+			/\.\/build\//,
 		],
 
 		resolve: {
@@ -108,8 +119,8 @@ function getConfig(localeCode) {
 			},
 			// module name extensions that Webpack will try if no extension provided
 			// '*' matches imports with extensions
-			extensions: ['.js', '.jsx', '.json', '*']
-		}
+			extensions: ['.js', '.jsx', '.json', '*'],
+		},
 	};
 
 	if (env.properties.isProd) {
