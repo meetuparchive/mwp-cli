@@ -18,7 +18,6 @@ const rules = require('./rules');
  * imported by the server and used to render requests to the app route.
  */
 function getConfig(localeCode) {
-	const outputPath = path.join(paths.output.server, localeCode);
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
 	const baseWebfontDir = path.resolve(
@@ -41,7 +40,7 @@ function getConfig(localeCode) {
 		// write a CommonJS module that can be imported into Node server scripts
 		output: {
 			libraryTarget: 'commonjs2',
-			path: outputPath,
+			path: path.join(paths.output.server, localeCode),
 			filename: '[name].js',
 			publicPath,
 		},
@@ -80,13 +79,13 @@ function getConfig(localeCode) {
 				// - inject it as a 'global variable' here
 				VENDOR_MANIFEST_PATH: JSON.stringify(
 					path.relative(
-						outputPath,
+						paths.src.server.entry,
 						path.resolve(paths.output.browser, 'manifest.json')
 					)
 				),
 				BROWSER_MANIFEST_PATH: JSON.stringify(
 					path.relative(
-						outputPath,
+						paths.src.server.entry,
 						path.resolve(
 							paths.output.browser,
 							localeCode,
