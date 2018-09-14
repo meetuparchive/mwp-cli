@@ -4,11 +4,7 @@ const path = require('path');
 const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 
-const {
-	locales,
-	package: packageConfig,
-	paths,
-} = require('mwp-config');
+const { locales, package: packageConfig, paths } = require('mwp-config');
 
 const getServerAppConfig = require('./configs/serverAppConfig');
 const addLocalesOption = require('../../util/addLocalesOption');
@@ -80,4 +76,5 @@ module.exports = {
 			writeServerAppMap(argv.locales)
 		);
 	},
+	writeServerAppBundle,
 };
