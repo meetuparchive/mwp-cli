@@ -58,7 +58,7 @@ module.exports = {
 						plugins: env.properties.isDev
 							? babel.plugins.browser.concat([
 									'react-hot-loader/babel',
-								])
+							  ])
 							: babel.plugins.browser,
 						presets: babel.presets.browser,
 					},
@@ -87,7 +87,7 @@ module.exports = {
 			{
 				loader: 'file-loader',
 				options: {
-					name: '[name].[hash:8].css',
+					name: '[name].[hash:8].[ext]',
 				},
 			},
 		],
