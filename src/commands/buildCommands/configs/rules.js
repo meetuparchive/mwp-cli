@@ -16,7 +16,7 @@ module.exports = {
 				options: {
 					importLoaders: 2,
 					modules: true,
-					localIdentName: '_[name]_[local]__[hash:base64:5]'
+					localIdentName: '_[name]_[local]__[hash:base64:5]',
 				},
 			},
 			postCssLoaderConfig,
@@ -58,7 +58,7 @@ module.exports = {
 						plugins: env.properties.isDev
 							? babel.plugins.browser.concat([
 									'react-hot-loader/babel',
-							  ])
+								])
 							: babel.plugins.browser,
 						presets: babel.presets.browser,
 					},
@@ -83,7 +83,14 @@ module.exports = {
 	},
 	file: {
 		test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|mp4|m4a|aac|oga)$/,
-		use: ['file-loader'],
+		use: [
+			{
+				loader: 'file-loader',
+				options: {
+					name: '[name].[hash:8].css',
+				},
+			},
+		],
 	},
 	raw: {
 		test: /\.inc?$/,
