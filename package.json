@@ -4,7 +4,7 @@
   "description": "CLI for Meetup Web Platform apps",
   "main": "index.js",
   "repository": "git@github.com:meetup/mwp-cli.git",
-  "author": "Michael McGahan <mike.mcgahan@gmail.com>",
+  "author": "Meetup",
   "license": "MIT",
   "config": {
     "txProject": "test",
@@ -76,13 +76,13 @@
     "yargs": "11.0.0"
   },
   "peerDependencies": {
-    "mwp-config": "^17.0.2575",
+    "mwp-config": "^18.0.2768",
     "rxjs": "^5.4.2"
   },
   "devDependencies": {
     "jest": "23.5.0",
     "lint-staged": "7.0.5",
-    "mwp-config": "17.0.2575"
+    "mwp-config": "18.0.2768"
   },
   "lint-staged": {
     "{src,tests,__mocks__}/**/*.{js,jsx}": [
