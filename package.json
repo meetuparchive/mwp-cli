@@ -41,7 +41,7 @@
     "eslint-config-prettier": "2.9.0",
     "eslint-plugin-flowtype": "2.40.1",
     "eslint-plugin-react": "7.5.1",
-    "extract-loader": "3.0.0",
+    "extract-loader": "2.0.1",
     "file-loader": "1.1.11",
     "gettext-parser": "1.2.2",
     "glob": "7.1.2",
