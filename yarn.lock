@@ -6360,9 +6360,9 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
-mwp-config@17.0.2575:
-  version "17.0.2575"
-  resolved "https://registry.yarnpkg.com/mwp-config/-/mwp-config-17.0.2575.tgz#bc443e83ef8addbc65129fb486edeafe300d4068"
+mwp-config@18.0.2768:
+  version "18.0.2768"
+  resolved "https://registry.yarnpkg.com/mwp-config/-/mwp-config-18.0.2768.tgz#80a3e466708ada111bcaf49227425b043b192b97"
   dependencies:
     babel-core "6.25.0"
     babel-plugin-react-intl "2.3.1"
