@@ -10,7 +10,7 @@ const { CI_BUILD_NUMBER } = process.env;
 const unpackBundle = file =>
 	file.createReadStream().pipe(gunzip()).pipe(tar.extract());
 
-const getArchiveDir = ({ serviceId, versionId }) => `${serviceId}-${versionId}`;
+const getArchiveDir = ({ serviceId, versionId }) => `${serviceId}-${versionId}/`;
 
 module.exports = {
 	command: 'pull',
