@@ -10,7 +10,7 @@ This command is currently configured to send data to
 [New Relic Insights](https://newrelic.com/insights). In general, you will want
 to supply 2 env variables that enable API authentication
 
-- `NEW_RELIC_ACCOUNT_ID` the integer ID of your application
+- `NEW_RELIC_ACCOUNT_ID` the integer ID of your New Relic account
 - `NEW_RELIC_INSERT_KEY` the _private_ API key from New Relic
   - Get a new key at https://insights.newrelic.com/accounts/<ACCOUNT_ID>/manage/api_keys
 
