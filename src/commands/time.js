@@ -64,22 +64,30 @@ module.exports = {
 						demandOption: true,
 						default: process.env.NEW_RELIC_INSERT_KEY,
 					},
+					appName: {
+						describe: 'The name of the app reporting data',
+						default: process.env.NEW_RELIC_APP_NAME,
+					},
 				},
 				argv => {
 					// create a record based on the requested attributes
 					const current = getCurrentTimes();
-					const record = argv.attributes.reduce((acc, attribute) => {
-						if (!current[attribute]) {
-							throw new Error(`${attribute} not started`);
-						}
-						if (!current[attribute].end) {
-							throw new Error(`${attribute} not finished`);
-						}
-						const currentTime =
-							current[attribute].end - current[attribute].start;
-						acc[attribute] = currentTime / 1000; // report in seconds
-						return acc;
-					}, {});
+					const record = argv.attributes.reduce(
+						(acc, attribute) => {
+							if (!current[attribute]) {
+								throw new Error(`${attribute} not started`);
+							}
+							if (!current[attribute].end) {
+								throw new Error(`${attribute} not finished`);
+							}
+							const currentTime =
+								current[attribute].end -
+								current[attribute].start;
+							acc[attribute] = currentTime / 1000; // report in seconds
+							return acc;
+						},
+						{ appName: argv.appName }
+					);
 
 					// initialize the New Relic Insights API
 					const track = new Insights({
