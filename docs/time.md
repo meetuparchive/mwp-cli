@@ -11,9 +11,9 @@ This command is currently configured to send data to
 to supply env variables that enable API authentication, and an app name to tag
 the timing data
 
-*   `NEW_RELIC_ACCOUNT_ID` the integer ID of your application
+*   `NEW_RELIC_ACCOUNT_ID` the integer ID of your New Relic account
 *   `NEW_RELIC_INSERT_KEY` the _private_ API key from New Relic
-    *   Get a new key at https://insights.newrelic.com/accounts/<ACCOUNT_ID>/manage/api_keys
+    *   Get a new key at https://insights.newrelic.com/accounts/{ACCOUNT_ID}/manage/api_keys
 
 ### Commands
 
