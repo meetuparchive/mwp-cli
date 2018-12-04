@@ -90,6 +90,10 @@ module.exports = {
 		checkNotMaster$.subscribe();
 
 		console.log(chalk.blue('pushing content to transifex'));
-		pushContent$.subscribe(null, null, () => console.log(`content pushed`));
+		pushContent$.subscribe(
+			null,
+			(error) => console.error(`encountered error during push: ${error}`),
+			() => console.log(`content pushed`)
+		);
 	},
 };
