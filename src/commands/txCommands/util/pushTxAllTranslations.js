@@ -7,7 +7,10 @@ const pushTxAllTranslations = () => {
   txlib.updateAllTranslationsResource$
     .subscribe(
         null,
-        (error) => console.error(`encountered error during upload: ${error}`),
+        (error) => {
+            console.error(`encountered error during upload: ${error}`);
+            process.exit(1);
+        },
         () => console.log('done')
     );
 };
