@@ -11,7 +11,10 @@ const pushTxMaster = () => {
 		.concat(txlib.updateMasterContent$, txlib.updateTranslations$) // update master content before pushing translations
 		.subscribe(
 			null,
-			(error) => console.error(`encountered error during upload: ${error}`),
+			(error) => {
+				console.error(`encountered error during upload: ${error}`);
+				process.exit(1);
+			},
 			() => console.log('done')
 		);
 };
