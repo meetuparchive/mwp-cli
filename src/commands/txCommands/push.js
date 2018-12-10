@@ -20,6 +20,8 @@ const pushResource$ = poData =>
 		.zip(gitBranch$, branchResourceExists$)
 		.flatMap(([gitBranch, branchResourceExists]) => {
 			if (Object.keys(poData).length) {
+				console.log('branchResourceExists: ', branchResourceExists);
+				console.log('translation poData:', poData);
 				const pushed$ = branchResourceExists
 					? txlib.updateResource$
 					: txlib.createResource$;
