@@ -186,7 +186,7 @@ const createResource$ = (slug, content) => {
 		)
 		.do(
 			() => console.log('create', slug),
-			(error) => console.error(`Failed to create resource:`, "CONTENT:", content, "ERROR:", error)
+			(error) => console.error("ERROR: Failed to create resource. ", error)
 		);
 };
 
@@ -208,7 +208,7 @@ const updateResource$ = (slug, content, project = PROJECT) => {
 		)
 		.do(
 			() => console.log('update', slug),
-			(error) => console.error(`Failed to update resource:`, "CONTENT:", content, "ERROR:", error)
+			(error) => console.error("ERROR: Failed to update resource. ", error)
 		);
 };
 
