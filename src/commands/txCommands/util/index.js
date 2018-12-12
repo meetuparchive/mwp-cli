@@ -184,7 +184,10 @@ const createResource$ = (slug, content) => {
 				resourceContent(slug, compiledContent)
 			)
 		)
-		.do(() => console.log('create', slug));
+		.do(
+			() => console.log('create', slug),
+			(error) => console.error("ERROR: Failed to create resource. ", error)
+		);
 };
 
 const readResource$ = (slug, project = PROJECT) =>
@@ -203,7 +206,10 @@ const updateResource$ = (slug, content, project = PROJECT) => {
 				tx.uploadSourceLanguageMethod.bind(tx)
 			)(project, slug, resourceContent(slug, compiledContent))
 		)
-		.do(() => console.log('update', slug));
+		.do(
+			() => console.log('update', slug),
+			(error) => console.error("ERROR: Failed to update resource. ", error)
+		);
 };
 
 const deleteResource$ = slug =>
