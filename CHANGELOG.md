@@ -1,3 +1,9 @@
+# [8.3]
+
+*   **New feature** `mope deploy stop --versionId=...` to stop a specific deployed
+    version in the cloud - this will free resources for deployments that are not
+    expected to receive traffic
+
 # [8.2]
 
 *   **New feature** `--force` flag on `mope deploy create` will redeploy the build

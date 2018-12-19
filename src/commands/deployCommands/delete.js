@@ -1,6 +1,3 @@
-const path = require('path');
-const { paths } = require('mwp-config');
-const chalk = require('chalk');
 const apiMiddleware = require('../deployUtils/apiMiddleware');
 
 const { CI_BUILD_NUMBER } = process.env;
