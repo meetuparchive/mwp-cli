@@ -1,4 +1,4 @@
-# Deploy `mope deploy [create|migrate|clean|delete]`
+# Deploy `mope deploy [create|migrate|clean|stop|delete]`
 
 This set of commands affect the cloud-based deployments for MWP apps.
 
@@ -9,7 +9,6 @@ container to the cloud host (currently Google App Engine).
 production traffic.
 
 ### Global options
-
 
 #### `--force`
 
@@ -99,6 +98,10 @@ traffic.
 _Default: 20_. Integer number of deployments to keep 'cold', ready to be started.
 Older deployments will be deleted from GAE, although the container images will
 still be available in Google Container Registry for re-deployment.
+
+## Command: `deploy stop`
+
+Set status to 'STOPPED' on the specified version. Safely.
 
 ## Command: `deploy delete`
 
