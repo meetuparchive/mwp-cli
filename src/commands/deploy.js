@@ -27,8 +27,9 @@ module.exports = {
 				force: {
 					type: 'boolean',
 					default: false,
-					describe: 'forces deploy without checking if deployment already exists'
-				}
+					describe:
+						'forces deploy without checking if deployment already exists',
+				},
 			})
 			.commandDir('deployCommands')
 			.demandCommand(),
