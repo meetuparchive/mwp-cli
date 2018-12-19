@@ -17,7 +17,7 @@ module.exports = {
 	handler: argv => {
 		return argv
 			.getDeployApi()
-			.then(api => api.versions.stop([{ id: argv.versionId }]))
+			.then(api => api.versions.stop(argv.versionIds.map(id => ({ id }))))
 			.catch(err => console.error(err));
 		// should we wait to retry if version is currently still deploying?
 	},
