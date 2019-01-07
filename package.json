@@ -70,7 +70,7 @@
     "yargs": "11.0.0"
   },
   "peerDependencies": {
-    "mwp-config": "^18.0.2768",
+    "mwp-config": "^18.2.2819",
     "rxjs": "^5.4.2"
   },
   "devDependencies": {
