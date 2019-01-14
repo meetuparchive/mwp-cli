@@ -79,10 +79,11 @@ const fpLocale = lang => {
 	const langFile = require(require.resolve(`flatpickr/dist/l10n/${lang}`, {
 		paths: [paths.repoRoot],
 	}));
-	if (!langFile)
+	if (!langFile) {
 		console.error(
 			`Flatpickr locale data for language ${lang} cannot be returned`
 		);
+	}
 	return langFile;
 };
 
