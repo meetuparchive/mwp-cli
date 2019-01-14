@@ -78,7 +78,7 @@ const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
 const fpLocale = lang =>
 	require(require.resolve(`flatpickr/dist/l10n/${lang}`, {
 		paths: [paths.repoRoot],
-	}))[lang];
+	}));
 
 const PICKER_LOCALES = {
 	'en-US': undefined, // default
