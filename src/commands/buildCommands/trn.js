@@ -75,10 +75,16 @@ const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
 
 // Function for importing Flatpickr (fp) locale data for a particular 2-character
 // language code code - see https://flatpickr.js.org/localization/
-const fpLocale = lang =>
-	require(require.resolve(`flatpickr/dist/l10n/${lang}`, {
+const fpLocale = lang => {
+	const langFile = require(require.resolve(`flatpickr/dist/l10n/${lang}`, {
 		paths: [paths.repoRoot],
-	}))[lang];
+	}));
+	if (!langFile)
+		console.error(
+			`Flatpickr locale data for language ${lang} cannot be returned`
+		);
+	return langFile;
+};
 
 const PICKER_LOCALES = {
 	'en-US': undefined, // default
