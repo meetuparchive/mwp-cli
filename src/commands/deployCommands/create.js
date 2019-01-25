@@ -16,6 +16,8 @@ const runE2EWithRetry = id => runE2E(id).catch(() => runE2E(id));
  */
 
 const { CI_BUILD_NUMBER } = process.env;
+const ACCEPTABLE_FAILURE = 1;
+const UNACCEPTABLE_FAILURE = 2;
 
 module.exports = {
 	command: 'create',
@@ -48,7 +50,7 @@ module.exports = {
 		}),
 	middlewares: [apiMiddleware],
 	handler: argv =>
-		argv.getDeployApi().then(({ deploy, versions, migrate }) =>
+		argv.getDeployApi().then(({ deploy, versions }) =>
 			versions.validate
 				.sufficientQuota()
 				.then(deploy.create)
@@ -60,9 +62,10 @@ module.exports = {
 				.catch(error => {
 					console.log(chalk.red(`Stopping deployment: ${error}`));
 					console.log(chalk.red('Cleaning up failed deployment...'));
-					// clean up deployed versions and exit
-					return deploy.del().then(() => process.exit(1));
-				})
+
+					const exitCode = error.includes("already deployed") ? ACCEPTABLE_FAILURE : UNACCEPTABLE_FAILURE;
+					return deploy.del().then(() => process.exit(exitCode));
+				  })
 				.then(() => {
 					console.log(
 						chalk.green(
