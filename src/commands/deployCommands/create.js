@@ -48,7 +48,7 @@ module.exports = {
 		}),
 	middlewares: [apiMiddleware],
 	handler: argv =>
-		argv.getDeployApi().then(({ deploy, versions, migrate }) =>
+		argv.getDeployApi().then(({ deploy, versions }) =>
 			versions.validate
 				.sufficientQuota()
 				.then(deploy.create)
@@ -58,10 +58,24 @@ module.exports = {
 						Promise.all(argv.versionIds.map(runE2EWithRetry))
 				)
 				.catch(error => {
-					console.log(chalk.red(`Stopping deployment: ${error}`));
-					console.log(chalk.red('Cleaning up failed deployment...'));
-					// clean up deployed versions and exit
-					return deploy.del().then(() => process.exit(1));
+					if (error.includes("already deployed")) {
+						console.log(chalk.red(`Stopping deployment: ${error}`));
+						console.log(chalk.red('Cleaning up failed deployment...'));
+
+						let exitCode = 1;
+						// clean up deployed versions and exit
+						return deploy.del().then(() => process.exit(1));
+					} else {
+						console.log(chalk.red(`Stopping deployment: ${error}`));
+						console.log(chalk.red('Cleaning up failed deployment...'));
+
+						let exitCode = 2;
+						// clean up deployed versions and exit
+						return deploy.del().then(() => process.exit(1));
+					}
+
+
+
 				})
 				.then(() => {
 					console.log(
