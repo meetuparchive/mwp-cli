@@ -20,14 +20,16 @@ function injectHotReloadConfig(config) {
 	 * 		- "Option 2: Webpack Dev Server with custom server (client-side rendering only)"
 	 */
 	config.entry.app.unshift(
-		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${env.properties.asset_server.port}/`, // connect to HMR websocket
+		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${
+			env.properties.asset_server.port
+		}/`, // connect to HMR websocket
 		'webpack/hot/only-dev-server' // run the dev server
 	);
 
 	// plugins
 	config.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable module.hot
 
- 	// show HMR module filenames
+	// show HMR module filenames
 	config.optimization = {
 		namedModules: true
 	};
@@ -60,9 +62,9 @@ function getConfig(localeCode) {
 		output: {
 			path: path.resolve(paths.output.browser, localeCode),
 			filename: env.properties.isDev
-				? "[name].js" // in dev, keep the filename consistent to make reloading easier
-				: "[name].[chunkhash].js", // in prod, add hash to enable long-term caching
-			chunkFilename: "[name].[chunkhash].js",
+				? '[name].js' // in dev, keep the filename consistent to make reloading easier
+				: '[name].[chunkhash].js', // in prod, add hash to enable long-term caching
+			chunkFilename: '[name].[chunkhash].js',
 			hashDigestLength: 8,
 			publicPath
 		},
@@ -75,6 +77,7 @@ function getConfig(localeCode) {
 				rules.scssModule,
 				rules.baseScss,
 				rules.css,
+				rules.externalCss,
 				rules.js.browser,
 				rules.raw
 			]
