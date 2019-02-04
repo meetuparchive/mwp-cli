@@ -34,7 +34,7 @@ function getConfig(localeCode) {
 		mode: env.properties.isProd ? 'production' : 'development',
 
 		entry: {
-			'server-app': [paths.src.server.entry],
+			'server-app': [paths.src.server.entry]
 		},
 
 		// write a CommonJS module that can be imported into Node server scripts
@@ -42,7 +42,7 @@ function getConfig(localeCode) {
 			libraryTarget: 'commonjs2',
 			path: path.join(paths.output.server, localeCode),
 			filename: '[name].js',
-			publicPath,
+			publicPath
 		},
 
 		devtool: 'eval',
@@ -53,9 +53,10 @@ function getConfig(localeCode) {
 				rules.scssModule,
 				rules.baseScss,
 				rules.css,
+				rules.externalCss,
 				rules.js.server,
-				rules.raw,
-			],
+				rules.raw
+			]
 		},
 
 		plugins: [
@@ -68,7 +69,7 @@ function getConfig(localeCode) {
 			new webpack.EnvironmentPlugin({
 				// React relies on process.env.NODE_ENV for including dev warnings,
 				// and we use it for similar purposes in application code.
-				NODE_ENV: 'development',
+				NODE_ENV: 'development'
 			}),
 
 			/**
@@ -86,13 +87,13 @@ function getConfig(localeCode) {
 						localeCode,
 						'manifest.json'
 					)
-				),
+				)
 			}),
 
 			/**
 			 * @see https://github.com/FormidableLabs/webpack-stats-plugin
 			 */
-			new StatsPlugin({ fields: null }), // null means 'all fields in stats file'
+			new StatsPlugin({ fields: null }) // null means 'all fields in stats file'
 		],
 
 		target: 'node',
@@ -104,23 +105,24 @@ function getConfig(localeCode) {
 					: null,
 				whitelist: [
 					/^meetup-web-components/,
-					/^swarm-icons\/dist\/sprite\/sprite\.inc$/,
-				],
+					/^@meetup\//,
+					/^swarm-icons\/dist\/sprite\/sprite\.inc$/
+				]
 			}),
 			new RegExp(paths.buildPath),
-			/\.\/build\//,
+			/\.\/build\//
 		],
 
 		resolve: {
 			alias: {
 				src: paths.src.server.app,
 				trns: path.resolve(paths.src.trns, 'modules', localeCode),
-				webfont: webfontDir,
+				webfont: webfontDir
 			},
 			// module name extensions that Webpack will try if no extension provided
 			// '*' matches imports with extensions
-			extensions: ['.js', '.jsx', '.json', '*'],
-		},
+			extensions: ['.js', '.jsx', '.json', '*']
+		}
 	};
 
 	if (env.properties.isProd) {
