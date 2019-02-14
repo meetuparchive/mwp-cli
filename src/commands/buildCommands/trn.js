@@ -8,7 +8,7 @@ const mkdirp = require('mkdirp');
 const { paths, locales, package: packageConfig } = require('mwp-config');
 const {
 	allLocalPoTrnsWithFallbacks$,
-	localTrns$
+	localTrns$,
 } = require('../txCommands/util');
 
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
@@ -70,14 +70,14 @@ const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
 		paths.repoRoot,
 		trnsFromFile[0].file.replace(/\.jsx?$/, '')
 	),
-	msgids: trnsFromFile.map(({ id }) => id)
+	msgids: trnsFromFile.map(({ id }) => id),
 }));
 
 // Function for importing Flatpickr (fp) locale data for a particular 2-character
 // language code code - see https://flatpickr.js.org/localization/
 const fpLocale = lang => {
 	const langFile = require(require.resolve(`flatpickr/dist/l10n/${lang}`, {
-		paths: [paths.repoRoot]
+		paths: [paths.repoRoot],
 	}));
 	if (!langFile) {
 		console.error(
@@ -102,7 +102,7 @@ const PICKER_LOCALES = {
 	'pl-PL': fpLocale('pl'),
 	'ru-RU': fpLocale('ru'),
 	'th-TH': fpLocale('th'),
-	'tr-TR': fpLocale('tr')
+	'tr-TR': fpLocale('tr'),
 };
 const buildDateLocales = () => {
 	// in dev, we want to build a single module containing all locales
@@ -180,5 +180,5 @@ function main() {
 module.exports = {
 	command: 'trn',
 	description: 'build the trn modules',
-	handler: main
+	handler: main,
 };
