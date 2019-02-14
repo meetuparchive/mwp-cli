@@ -84,7 +84,7 @@ const fpLocale = lang => {
 			`Flatpickr locale data for language ${lang} cannot be returned`
 		);
 	}
-	return langFile.default[lang];
+	return langFile;
 };
 
 const PICKER_LOCALES = {
