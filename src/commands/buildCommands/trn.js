@@ -1,17 +1,17 @@
-const { promisify } = require("util");
-const child_process = require("child_process");
-const fs = require("fs");
-const path = require("path");
-const chalk = require("chalk");
-const mkdirp = require("mkdirp");
+const { promisify } = require('util');
+const child_process = require('child_process');
+const fs = require('fs');
+const path = require('path');
+const chalk = require('chalk');
+const mkdirp = require('mkdirp');
 
-const { paths, locales, package: packageConfig } = require("mwp-config");
+const { paths, locales, package: packageConfig } = require('mwp-config');
 const {
 	allLocalPoTrnsWithFallbacks$,
 	localTrns$
-} = require("../txCommands/util");
+} = require('../txCommands/util');
 
-const MODULES_PATH = path.resolve(paths.repoRoot, "src/trns/modules/");
+const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
 
 const writeFile = promisify(fs.writeFile);
 
@@ -39,13 +39,13 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 	// in dev, we want to build a single module containing all locales
 	if (
 		packageConfig.combineLanguages ||
-		process.env.NODE_ENV !== "production"
+		process.env.NODE_ENV !== 'production'
 	) {
 		// one trn file, all trns
 		const relPath = path.relative(paths.srcPath, filename);
 		const destFilename = path.resolve(
 			MODULES_PATH,
-			"combined",
+			'combined',
 			`${relPath}.json`
 		);
 		return writeTrnFile(destFilename, trns);
@@ -68,7 +68,7 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
 	filename: path.resolve(
 		paths.repoRoot,
-		trnsFromFile[0].file.replace(/\.jsx?$/, "")
+		trnsFromFile[0].file.replace(/\.jsx?$/, '')
 	),
 	msgids: trnsFromFile.map(({ id }) => id)
 }));
@@ -88,33 +88,33 @@ const fpLocale = lang => {
 };
 
 const PICKER_LOCALES = {
-	"en-US": undefined, // default
-	"en-AU": undefined, // default
-	"de-DE": fpLocale("de"),
-	es: fpLocale("es"),
-	"es-ES": fpLocale("es"),
-	"fr-FR": fpLocale("fr"),
-	"it-IT": fpLocale("it"),
-	"ja-JP": fpLocale("ja"),
-	"ko-KR": fpLocale("ko"),
-	"nl-NL": fpLocale("nl"),
-	"pt-BR": fpLocale("pt"),
-	"pl-PL": fpLocale("pl"),
-	"ru-RU": fpLocale("ru"),
-	"th-TH": fpLocale("th"),
-	"tr-TR": fpLocale("tr")
+	'en-US': undefined, // default
+	'en-AU': undefined, // default
+	'de-DE': fpLocale('de'),
+	es: fpLocale('es'),
+	'es-ES': fpLocale('es'),
+	'fr-FR': fpLocale('fr'),
+	'it-IT': fpLocale('it'),
+	'ja-JP': fpLocale('ja'),
+	'ko-KR': fpLocale('ko'),
+	'nl-NL': fpLocale('nl'),
+	'pt-BR': fpLocale('pt'),
+	'pl-PL': fpLocale('pl'),
+	'ru-RU': fpLocale('ru'),
+	'th-TH': fpLocale('th'),
+	'tr-TR': fpLocale('tr')
 };
 const buildDateLocales = () => {
 	// in dev, we want to build a single module containing all locales
 	if (
 		packageConfig.combineLanguages ||
-		process.env.NODE_ENV !== "production"
+		process.env.NODE_ENV !== 'production'
 	) {
 		const destFilename = path.resolve(
 			MODULES_PATH,
-			"combined",
-			"date",
-			"pickerLocale.json"
+			'combined',
+			'date',
+			'pickerLocale.json'
 		);
 		mkdirp.sync(path.dirname(destFilename));
 		return writeFile(destFilename, JSON.stringify(PICKER_LOCALES));
@@ -126,14 +126,14 @@ const buildDateLocales = () => {
 			const destFilename = path.resolve(
 				MODULES_PATH,
 				localeCode,
-				"date",
-				"pickerLocale.json"
+				'date',
+				'pickerLocale.json'
 			);
 			mkdirp.sync(path.dirname(destFilename));
 			return writeFile(
 				destFilename,
 				JSON.stringify({ [localeCode]: PICKER_LOCALES[localeCode] })
-			).then(() => console.log("Wrote", destFilename));
+			).then(() => console.log('Wrote', destFilename));
 		})
 	);
 };
@@ -152,13 +152,13 @@ const buildTrnModules = () =>
 	);
 
 function main() {
-	console.log("Cleaning TRN modules directory");
+	console.log('Cleaning TRN modules directory');
 	child_process.execSync(`rm -rf ${MODULES_PATH}`);
 
-	console.log("Writing locale data modules for datepicker");
+	console.log('Writing locale data modules for datepicker');
 	buildDateLocales()
 		.then(() => {
-			console.log("Transpiling TRN source to JSON...");
+			console.log('Transpiling TRN source to JSON...');
 			return buildTrnModules().toPromise();
 		})
 		.then(
@@ -170,7 +170,7 @@ function main() {
 				);
 			},
 			err => {
-				console.error(chalk.red("TRN module build failed"));
+				console.error(chalk.red('TRN module build failed'));
 				console.error(chalk.red(err.toString()));
 				process.exit(1);
 			}
@@ -178,7 +178,7 @@ function main() {
 }
 
 module.exports = {
-	command: "trn",
-	description: "build the trn modules",
+	command: 'trn',
+	description: 'build the trn modules',
 	handler: main
 };
