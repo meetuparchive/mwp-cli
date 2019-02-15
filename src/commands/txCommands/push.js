@@ -1,5 +1,10 @@
 const chalk = require('chalk');
 const Rx = require('rxjs');
+require('rxjs/add/observable/zip');
+require('rxjs/add/observable/if');
+require('rxjs/add/operator/mergeMap');
+require('rxjs/add/operator/map');
+require('rxjs/add/operator/do');
 const txlib = require('./util');
 
 const pushTxMaster = require('./util/pushTxMaster');
@@ -8,20 +13,26 @@ const { gitBranch$ } = require('./util/gitHelpers');
 const checkNotMaster$ = require('./util/checkNotMaster');
 
 const readParseResource$ = slug =>
-	txlib.readResource$(slug).flatMap(txlib.parsePluckTrns);
+	txlib.readResource$(slug).mergeMap(txlib.parsePluckTrns);
 
-const branchResourceExists$ = Rx.Observable
-	.zip(txlib.resources$, gitBranch$)
-	.map(([resources, branch]) => resources.indexOf(branch) > -1);
+const branchResourceExists$ = Rx.Observable.zip(
+	txlib.resources$,
+	gitBranch$
+).map(([resources, branch]) => resources.indexOf(branch) > -1);
 
 // syncs content in po format to tx
 const pushResource$ = poData =>
-	Rx.Observable
-		.zip(gitBranch$, branchResourceExists$)
-		.flatMap(([gitBranch, branchResourceExists]) => {
+	Rx.Observable.zip(gitBranch$, branchResourceExists$).mergeMap(
+		([gitBranch, branchResourceExists]) => {
 			if (Object.keys(poData).length) {
-				console.log('branch exists in transifex: ', branchResourceExists);
-				console.log('translation keys:', Object.keys(poData).join(", "));
+				console.log(
+					'branch exists in transifex: ',
+					branchResourceExists
+				);
+				console.log(
+					'translation keys:',
+					Object.keys(poData).join(', ')
+				);
 				const pushed$ = branchResourceExists
 					? txlib.updateResource$
 					: txlib.createResource$;
@@ -29,25 +40,28 @@ const pushResource$ = poData =>
 			} else {
 				return Rx.Observable.if(
 					() => branchResourceExists,
-					txlib.deleteResource$(gitBranch)
-						.do(() => console.log(`no new content - delete ${gitBranch}`))
+					txlib
+						.deleteResource$(gitBranch)
+						.do(() =>
+							console.log(`no new content - delete ${gitBranch}`)
+						)
 				);
 			}
-		});
+		}
+	);
 
 // returns 'master' content trn from tx in po format
 const txMasterTrns$ = txlib
 	.readResource$(txlib.MASTER_RESOURCE, txlib.PROJECT_MASTER)
-	.flatMap(txlib.parsePluckTrns);
+	.mergeMap(txlib.parsePluckTrns);
 
-const resourceTrns$ = Rx.Observable
-	.zip(gitBranch$, txlib.resources$)
+const resourceTrns$ = Rx.Observable.zip(gitBranch$, txlib.resources$)
 	// get resources but filter out my current resource
 	.map(([gitBranch, resources]) =>
 		resources.filter(resource => resource != gitBranch)
 	)
 	// transform resource list to resource content, maintaining order
-	.flatMap(resources =>
+	.mergeMap(resources =>
 		Rx.Observable.zip.apply({}, resources.map(readParseResource$))
 	)
 	.reduce(
@@ -55,14 +69,16 @@ const resourceTrns$ = Rx.Observable
 		{}
 	);
 
-const masterAndResourceTrns$ = Rx.Observable
-	.zip(txMasterTrns$, resourceTrns$)
-	.map(([masterTrns, resourceTrns]) =>
-		Object.assign({}, masterTrns, resourceTrns)
-	);
+const masterAndResourceTrns$ = Rx.Observable.zip(
+	txMasterTrns$,
+	resourceTrns$
+).map(([masterTrns, resourceTrns]) =>
+	Object.assign({}, masterTrns, resourceTrns)
+);
 
-const pushContent$ = txlib.diffVerbose$(masterAndResourceTrns$, txlib.localTrnsMerged$)
-	.flatMap(pushResource$);
+const pushContent$ = txlib
+	.diffVerbose$(masterAndResourceTrns$, txlib.localTrnsMerged$)
+	.mergeMap(pushResource$);
 
 module.exports = {
 	command: 'push',
@@ -94,7 +110,7 @@ module.exports = {
 		console.log(chalk.blue('pushing content to transifex'));
 		pushContent$.subscribe(
 			null,
-			(error) => {
+			error => {
 				console.error(`encountered error during push: ${error}`);
 				process.exit(1);
 			},
