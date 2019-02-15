@@ -1,4 +1,3 @@
-
 const Rx = require('rxjs');
 const transifex = require('transifex');
 const txlib = require('./index');
@@ -94,13 +93,13 @@ describe('trn utils', () => {
 
 	it('filters po content by keys', done => {
 		const keys = ['id1'];
-		txlib.filterPoContentByKeys$(keys,msg1)
-			.subscribe(val => expect(val).toMatchSnapshot(),null, done);
+		txlib
+			.filterPoContentByKeys$(keys, msg1)
+			.subscribe(val => expect(val).toMatchSnapshot(), null, done);
 	});
 
 	it('takes po file content, extract trn content', () => {
-		const fileContent =
-`msgid ""
+		const fileContent = `msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 # MW-000
@@ -108,31 +107,35 @@ msgstr "Content-Type: text/plain; charset=utf-8\n"
 msgid "event.oneMemberWent"
 msgstr "1 Mitglied ging"
 `;
-		txlib.parsePluckTrns(fileContent)
-			.subscribe( val => expect(val).toMatchSnapshot());
+		txlib
+			.parsePluckTrns(fileContent)
+			.subscribe(val => expect(val).toMatchSnapshot());
 	});
 
 	it('takes trn content, returns po file', () => {
 		const poObj = {
-			"event.oneMemberWent" : {
-				"comments": {
-					"reference": "src/components/EventCard.jsx:27:16",
-					"translator": "MW-000",
+			'event.oneMemberWent': {
+				comments: {
+					reference: 'src/components/EventCard.jsx:27:16',
+					translator: 'MW-000',
 				},
-				"msgid": "event.oneMemberWent",
-				"msgstr": [ "1 Mitglied ging" ],
-			}
+				msgid: 'event.oneMemberWent',
+				msgstr: ['1 Mitglied ging'],
+			},
 		};
 
-		txlib.wrapCompilePo$(poObj)
-			.subscribe( val => expect(val).toMatchSnapshot());
+		txlib
+			.wrapCompilePo$(poObj)
+			.subscribe(val => expect(val).toMatchSnapshot());
 	});
 
 	it('loads resource list and sorts by date modified', done => {
-		txlib.resources$
-			.subscribe( resources => {
+		txlib.resources$.subscribe(
+			resources => {
 				expect(resources).toMatchSnapshot();
 				done();
-			}, err => console.log(err));
+			},
+			err => console.log(err)
+		);
 	});
 });

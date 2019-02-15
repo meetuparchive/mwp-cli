@@ -10,6 +10,15 @@ const {
 	localesSecondary,
 } = require('mwp-config');
 const Rx = require('rxjs');
+require('rxjs/add/observable/of');
+require('rxjs/add/observable/from');
+require('rxjs/add/operator/pluck');
+require('rxjs/add/operator/toArray');
+require('rxjs/add/operator/map');
+require('rxjs/add/operator/filter');
+require('rxjs/add/operator/retry');
+require('rxjs/add/operator/reduce');
+require('rxjs/add/operator/mergeMap');
 const Transifex = require('transifex');
 const checkNotMaster$ = require('./checkNotMaster');
 
@@ -41,8 +50,7 @@ const readFile$ = filepath =>
 	);
 
 const parsePluckTrns = fileContent =>
-	Rx.Observable
-		.of(fileContent)
+	Rx.Observable.of(fileContent)
 		.map(gettextParser.po.parse)
 		.pluck('translations', '')
 		.map(trnObj => {
@@ -63,7 +71,7 @@ const parsePluckTrns = fileContent =>
 const localPoTrns$ = filename =>
 	readFile$(
 		path.resolve(paths.repoRoot, `src/trns/po/${filename}.po`)
-	).flatMap(parsePluckTrns);
+	).mergeMap(parsePluckTrns);
 
 // adds necessary header info to po formatted trn content
 const wrapPoTrns = trnObjs => ({
@@ -78,8 +86,7 @@ const wrapPoTrns = trnObjs => ({
 
 // take a set of po trns and compile a po file
 const wrapCompilePo$ = poObj =>
-	Rx.Observable
-		.of(poObj)
+	Rx.Observable.of(poObj)
 		.map(wrapPoTrns)
 		.map(gettextParser.po.compile)
 		.map(buf => `${buf.toString()}\n`); // we now have a po file
@@ -141,8 +148,9 @@ const reactIntlToPo = reactIntl =>
 			comments: {
 				extracted: trnObj.description.text,
 				translator: trnObj.description.jira,
-				reference: `${trnObj.file}:${trnObj.start.line}:${trnObj.start
-					.column}`,
+				reference: `${trnObj.file}:${trnObj.start.line}:${
+					trnObj.start.column
+				}`,
 			},
 		};
 
@@ -153,7 +161,7 @@ const reactIntlToPo = reactIntl =>
 const localTrns$ = Rx.Observable.bindNodeCallback(glob)(
 	paths.repoRoot + '/src/+(components|app)/**/!(*.test|*.story).jsx'
 )
-	.flatMap(Rx.Observable.from)
+	.mergeMap(Rx.Observable.from)
 	.map(file =>
 		babel.transformFileSync(file, {
 			plugins: [['react-intl', { extractSourceLocation: true }]],
@@ -178,7 +186,7 @@ const resourceContent = (slug, content) => ({
 
 const createResource$ = (slug, content) => {
 	return wrapCompilePo$(content)
-		.flatMap(compiledContent =>
+		.mergeMap(compiledContent =>
 			Rx.Observable.bindNodeCallback(tx.resourceCreateMethod.bind(tx))(
 				PROJECT,
 				resourceContent(slug, compiledContent)
@@ -186,7 +194,7 @@ const createResource$ = (slug, content) => {
 		)
 		.do(
 			() => console.log('create', slug),
-			(error) => console.error("ERROR: Failed to create resource. ", error)
+			error => console.error('ERROR: Failed to create resource. ', error)
 		);
 };
 
@@ -201,14 +209,14 @@ const readResource$ = (slug, project = PROJECT) =>
 const updateResource$ = (slug, content, project = PROJECT) => {
 	// allow override for push to mup-web-master
 	return wrapCompilePo$(content)
-		.flatMap(compiledContent =>
+		.mergeMap(compiledContent =>
 			Rx.Observable.bindNodeCallback(
 				tx.uploadSourceLanguageMethod.bind(tx)
 			)(project, slug, resourceContent(slug, compiledContent))
 		)
 		.do(
 			() => console.log('update', slug),
-			(error) => console.error("ERROR: Failed to update resource. ", error)
+			error => console.error('ERROR: Failed to update resource. ', error)
 		);
 };
 
@@ -231,12 +239,12 @@ const uploadTranslation$ = ([lang_tag, content]) =>
 
 const uploadTranslationsForKeys$ = keys =>
 	allLocalPoTrns$
-		.flatMap(([lang_tag, content]) =>
+		.mergeMap(([lang_tag, content]) =>
 			filterPoContentByKeys$(keys, content)
 				.map(poToUploadFormat)
 				.map(filteredTrnObj => [lang_tag, filteredTrnObj])
 		)
-		.flatMap(uploadTranslation$);
+		.mergeMap(uploadTranslation$);
 
 const poToUploadFormat = trnObj =>
 	Object.keys(trnObj).reduce(
@@ -246,8 +254,7 @@ const poToUploadFormat = trnObj =>
 	);
 
 const filterPoContentByKeys$ = (keys, poContent) =>
-	Rx.Observable
-		.of(poContent)
+	Rx.Observable.of(poContent)
 		.map(trnObj => _.pick(trnObj, keys)) // return object with specified keys only
 		.filter(obj => !_.isEmpty(obj)); // remove empty objects
 
@@ -258,24 +265,24 @@ const poPath = path.resolve(paths.repoRoot, 'src/trns/po/') + '/';
 const allLocalPoTrns$ = Rx.Observable.bindNodeCallback(glob)(
 	poPath + '!(en-US).po'
 )
-	.flatMap(Rx.Observable.from)
-	.flatMap(filename => {
+	.mergeMap(Rx.Observable.from)
+	.mergeMap(filename => {
 		const lang_tag = path.basename(filename, '.po');
 		return readFile$(filename)
-			.flatMap(parsePluckTrns)
+			.mergeMap(parsePluckTrns)
 			.map(content => [lang_tag, content]);
 	});
 
 const allLocalPoTrnsWithFallbacks$ = Rx.Observable.bindNodeCallback(glob)(
 	poPath + '*.po'
 )
-	.flatMap(Rx.Observable.from)
+	.mergeMap(Rx.Observable.from)
 	// read and parse all po files
-	.flatMap(filename => {
+	.mergeMap(filename => {
 		const lang_tag = path.basename(filename, '.po');
 		return (
 			readFile$(filename)
-				.flatMap(content => parsePluckTrns(content))
+				.mergeMap(content => parsePluckTrns(content))
 				// po obj format to key / value
 				.map(poToReactIntlFormat)
 				.map(parsedContent => [lang_tag, parsedContent])
@@ -299,7 +306,7 @@ const txMasterTrns$ = readResource$(MASTER_RESOURCE, PROJECT_MASTER)
 		() => console.log('master resource read complete'),
 		() => console.log('master resource read fail')
 	)
-	.flatMap(parsePluckTrns);
+	.mergeMap(parsePluckTrns);
 
 // sometimes we want to compare against master, sometimes master plus existing resources
 const diffVerbose$ = (master$, content$) =>
@@ -333,8 +340,8 @@ const lastUpdateComparator = (a, b) =>
 // resource slugs sorted by last modified date
 const resources$ = projectInfo$(PROJECT)
 	.pluck('resources')
-	.flatMap(Rx.Observable.from)
-	.flatMap(resource => resourceInfo$(PROJECT, resource['slug']))
+	.mergeMap(Rx.Observable.from)
+	.mergeMap(resource => resourceInfo$(PROJECT, resource['slug']))
 	.toArray()
 	.map(resourceInfo =>
 		resourceInfo
@@ -347,9 +354,9 @@ const resourceStats$ = Rx.Observable.bindNodeCallback(
 );
 
 const resourceCompletion$ = resources$
-	.flatMap(Rx.Observable.from)
+	.mergeMap(Rx.Observable.from)
 	// get resource completion percentage
-	.flatMap(resource =>
+	.mergeMap(resource =>
 		resourceStats$(PROJECT, resource)
 			// reduce the amount of data we're working with
 			.map(resourceStat =>
@@ -378,25 +385,34 @@ const resourcesComplete$ = resourceCompletion$
 // Helper to grab all local trns to be merged to a tx resource (e.g. default English messages)
 const updateAllMessages$ = (resource, project) =>
 	localTrnsMerged$
-		.flatMap(poContent =>
-			updateResource$(
-				resource,
-				poContent,
-				project,
-			).do(
+		.mergeMap(poContent =>
+			updateResource$(resource, poContent, project).do(
 				() => console.log(`update ${project} - ${resource} success`),
-				(error) => console.error(`update ${project} - ${resource} FAIL!`, error))
+				error =>
+					console.error(
+						`update ${project} - ${resource} FAIL!`,
+						error
+					)
+			)
 		)
 		.map(updateResult => [resource, updateResult]);
 
 // convenience function for updating `mup-web-master` project's master resource
-const updateMasterContent$ = updateAllMessages$(MASTER_RESOURCE, PROJECT_MASTER);
+const updateMasterContent$ = updateAllMessages$(
+	MASTER_RESOURCE,
+	PROJECT_MASTER
+);
 // convenience function for updating `mup-web` project's all_translations resource
-const updateAllTranslationsResource$ = updateAllMessages$(ALL_TRANSLATIONS_RESOURCE, PROJECT);
+const updateAllTranslationsResource$ = updateAllMessages$(
+	ALL_TRANSLATIONS_RESOURCE,
+	PROJECT
+);
 
 const uploadTrnsMaster$ = ([lang_tag, content]) => {
 	checkNotMaster$.subscribe();
-	return Rx.Observable.bindNodeCallback(tx.uploadTranslationInstanceMethod.bind(tx))(
+	return Rx.Observable.bindNodeCallback(
+		tx.uploadTranslationInstanceMethod.bind(tx)
+	)(
 		PROJECT_MASTER,
 		MASTER_RESOURCE,
 		lang_tag,
@@ -406,15 +422,16 @@ const uploadTrnsMaster$ = ([lang_tag, content]) => {
 			console.log(lang_tag);
 			console.log(response);
 		},
-		(error) => console.error(`error uploadTrnsMaster$ ${lang_tag}`, error)
+		error => console.error(`error uploadTrnsMaster$ ${lang_tag}`, error)
 	);
 };
 
 // Helper to grab all translated content (e.g. Italian, Russian, etc)
 const updateTranslations$ = allLocalPoTrns$
-	.flatMap(([lang_tag, content]) =>
-		wrapCompilePo$(content).map(content => [lang_tag, content]))
-	.flatMap(uploadTrnsMaster$);
+	.mergeMap(([lang_tag, content]) =>
+		wrapCompilePo$(content).map(content => [lang_tag, content])
+	)
+	.mergeMap(uploadTrnsMaster$);
 
 module.exports = {
 	allLocalPoTrns$,
