@@ -54,6 +54,7 @@
     "react": "^16.3.0",
     "react-dev-utils": "7.0.3",
     "react-hot-loader": "4.1.2",
+    "rxjs": "5.4.2",
     "sass-loader": "7.1.0",
     "style-loader": "0.21.0",
     "sw-precache-webpack-plugin": "0.11.5",
@@ -70,8 +71,7 @@
     "yargs": "11.0.0"
   },
   "peerDependencies": {
-    "mwp-config": "^19.0.2837",
-    "rxjs": "^5.4.2"
+    "mwp-config": "^19.0.2837"
   },
   "devDependencies": {
     "babel-eslint": "8.2.3",
