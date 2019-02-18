@@ -10,9 +10,7 @@ require('rxjs/add/observable/if');
 require('rxjs/add/observable/of');
 require('rxjs/add/observable/empty');
 require('rxjs/add/observable/defer');
-const child_process$ = Rx.Observable.defer(() =>
-	Rx.Observable.bindNodeCallback(child_process.exec)
-);
+const child_process$ = Rx.Observable.bindNodeCallback(child_process.exec);
 
 /**
  * Creates git commit of what has been staged
