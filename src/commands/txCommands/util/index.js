@@ -15,6 +15,7 @@ require('rxjs/add/observable/from');
 require('rxjs/add/operator/pluck');
 require('rxjs/add/operator/toArray');
 require('rxjs/add/operator/map');
+require('rxjs/add/operator/concat');
 require('rxjs/add/operator/filter');
 require('rxjs/add/operator/retry');
 require('rxjs/add/operator/reduce');
