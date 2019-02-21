@@ -8,7 +8,7 @@ const mkdirp = require('mkdirp');
 const { paths, locales, package: packageConfig } = require('mwp-config');
 const {
 	allLocalPoTrnsWithFallbacks$,
-	localTrns$,
+	localTrns,
 } = require('../txCommands/util');
 
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
@@ -21,7 +21,7 @@ const writeTrnFile = (destFilename, trns) => {
 	return writeFile(destFilename, `${JSON.stringify(trns, null, 2)}\n`);
 };
 
-const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
+const makeTrnModuleWriter = messagesByLocale => ({ filename, msgids }) => {
 	// create a single `{ [localeCode]: messages }` map - this routine cleans
 	// out unused metadata from `messagesByLocale`
 	const trns = locales.reduce((acc, localeCode) => {
@@ -65,13 +65,14 @@ const writeTrnModules = messagesByLocale => ({ filename, msgids }) => {
 	);
 };
 
-const componentTrnDefinitions$ = localTrns$.map(trnsFromFile => ({
-	filename: path.resolve(
-		paths.repoRoot,
-		trnsFromFile[0].file.replace(/\.jsx?$/, '')
-	),
-	msgids: trnsFromFile.map(({ id }) => id),
-}));
+const componentTrnDefinitions = () =>
+	localTrns().map(trnsFromFile => ({
+		filename: path.resolve(
+			paths.repoRoot,
+			trnsFromFile[0].file.replace(/\.jsx?$/, '')
+		),
+		msgids: trnsFromFile.map(({ id }) => id),
+	}));
 
 // Function for importing Flatpickr (fp) locale data for a particular 2-character
 // language code code - see https://flatpickr.js.org/localization/
@@ -142,14 +143,13 @@ const buildDateLocales = () => {
  * Write JSON modules for each component that defines TRN messages. Missing
  * translations will result in an empty JSON object
  *
- * @param {Array} locales the array of supported locale code strings
- * @return {Observable} an observable that emits a single array of the
- *   react-intl babel plugin output for each component that calls `defineMessages`
+ * From the 'master list' of translations, write component-specific translation
+ * modules
  */
-const buildTrnModules = () =>
-	allLocalPoTrnsWithFallbacks$.mergeMap(messagesByLocale =>
-		componentTrnDefinitions$.do(writeTrnModules(messagesByLocale)).toArray()
-	);
+const buildTrnModules = () => {
+	const write = makeTrnModuleWriter(allLocalPoTrnsWithFallbacks$());
+	return Promise.all(componentTrnDefinitions().map(write));
+};
 
 function main() {
 	console.log('Cleaning TRN modules directory');
@@ -159,7 +159,7 @@ function main() {
 	buildDateLocales()
 		.then(() => {
 			console.log('Transpiling TRN source to JSON...');
-			return buildTrnModules().toPromise();
+			return buildTrnModules();
 		})
 		.then(
 			trnDefs => {

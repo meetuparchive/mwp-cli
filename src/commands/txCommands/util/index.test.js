@@ -1,4 +1,3 @@
-const Rx = require('rxjs');
 const transifex = require('transifex');
 const txlib = require('./index');
 
@@ -78,9 +77,9 @@ describe('trn utils', () => {
 		};
 
 		// expected success
-		expect(txlib.mergeLocalTrns([msg1, msg2])).toMatchSnapshot();
+		expect(txlib.reduceUniques([msg1, msg2])).toMatchSnapshot();
 		// expected error from duplicate msgs
-		expect(() => txlib.mergeLocalTrns([msg1, msg1])).toThrow();
+		expect(() => txlib.reduceUniques([msg1, msg1])).toThrow();
 	});
 
 	it('takes po objects and returns tx upload format', () => {
@@ -129,13 +128,8 @@ msgstr "1 Mitglied ging"
 			.subscribe(val => expect(val).toMatchSnapshot());
 	});
 
-	it('loads resource list and sorts by date modified', done => {
-		txlib.resources$.subscribe(
-			resources => {
-				expect(resources).toMatchSnapshot();
-				done();
-			},
-			err => console.log(err)
-		);
-	});
+	it('loads resource list and sorts by date modified', () =>
+		txlib.getTfxResources().then(resources => {
+			expect(resources).toMatchSnapshot();
+		}));
 });
