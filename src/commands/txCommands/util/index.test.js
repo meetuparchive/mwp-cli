@@ -1,4 +1,3 @@
-const transifex = require('transifex');
 const txlib = require('./index');
 
 describe('trn utils', () => {
@@ -90,11 +89,10 @@ describe('trn utils', () => {
 		expect(txlib.poToReactIntlFormat(msg1)).toMatchSnapshot();
 	});
 
-	it('filters po content by keys', done => {
+	it('filters po content by keys', () => {
 		const keys = ['id1'];
-		txlib
-			.filterPoContentByKeys$(keys, msg1)
-			.subscribe(val => expect(val).toMatchSnapshot(), null, done);
+		const val = txlib.filterPoContentByKeys(keys, msg1);
+		expect(val).toMatchSnapshot();
 	});
 
 	it('takes po file content, extract trn content', () => {
@@ -106,9 +104,8 @@ msgstr "Content-Type: text/plain; charset=utf-8\n"
 msgid "event.oneMemberWent"
 msgstr "1 Mitglied ging"
 `;
-		txlib
-			.parsePluckTrns(fileContent)
-			.subscribe(val => expect(val).toMatchSnapshot());
+		const val = txlib.parsePluckTrns(fileContent);
+		expect(val).toMatchSnapshot();
 	});
 
 	it('takes trn content, returns po file', () => {
@@ -123,9 +120,8 @@ msgstr "1 Mitglied ging"
 			},
 		};
 
-		txlib
-			.wrapCompilePo$(poObj)
-			.subscribe(val => expect(val).toMatchSnapshot());
+		const val = txlib.compilePo(poObj);
+		expect(val).toMatchSnapshot();
 	});
 
 	it('loads resource list and sorts by date modified', () =>

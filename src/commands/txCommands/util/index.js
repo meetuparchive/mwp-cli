@@ -226,13 +226,13 @@ const pick = (obj, keys) =>
 		.reduce((acc, key) => {
 			acc[key] = obj[key];
 			return acc;
-		});
+		}, {});
 
-const filterPoContentByKeys$ = (keys, poContent) => pick(poContent, keys);
+const filterPoContentByKeys = (keys, poContent) => pick(poContent, keys);
 
 const poToReactIntlFormat = trns =>
 	Object.keys(trns).reduce((acc, key) => {
-		acc[key] = acc[key].msgstr[0];
+		acc[key] = trns[key].msgstr[0];
 		return acc;
 	}, {});
 
@@ -308,7 +308,7 @@ const getTfxResources = () =>
 		.then(projectData =>
 			Promise.all(
 				projectData.resources.map(resource =>
-					tfx.api.projectInstanceMethods$(PROJECT, resource['slug'])
+					tfx.api.resourcesInstanceMethods(PROJECT, resource['slug'])
 				)
 			)
 		)
@@ -344,13 +344,15 @@ const getResourceCompletion = () =>
 			)
 		);
 
-const resourcesIncomplete = getResourceCompletion().then(resources =>
-	resources.filter(([r, completion]) => Object.keys(completion).length)
-);
+const resourcesIncomplete = () =>
+	getResourceCompletion().then(resources =>
+		resources.filter(([r, completion]) => Object.keys(completion).length)
+	);
 
-const resourcesComplete = getResourceCompletion()
-	.filter(item => Object.keys(item[1]).length === 0)
-	.map(([resource]) => resource);
+const resourcesComplete = () =>
+	getResourceCompletion()
+		.filter(item => Object.keys(item[1]).length === 0)
+		.map(([resource]) => resource);
 
 // Helper to grab all local trns to be merged to a tx resource (e.g. default English messages)
 const updateAllMessages = (resource, project) => {
@@ -399,11 +401,12 @@ module.exports = {
 	getAllLocalPoContent,
 	allLocalPoTrnsWithFallbacks$,
 	ALL_TRANSLATIONS_RESOURCE,
+	compilePo,
 	createResource,
 	deleteTxResource,
 	diff,
 	diffVerbose,
-	filterPoContentByKeys$,
+	filterPoContentByKeys,
 	extractTrnSource,
 	getMergedLocalTrns,
 	MASTER_RESOURCE,

@@ -3,17 +3,19 @@ const util = require('util');
 const Transifex = require('transifex');
 const { package: packageConfig } = require('mwp-config');
 const PROJECT = packageConfig.txProject;
-const TX_USER = process.env.TRANSIFEX_USER;
-const TX_PW = process.env.TRANSIFEX_PW;
+const { NODE_ENV, TRANSIFEX_USER, TRANSIFEX_PW } = process.env;
 
 // TODO: memoize
 const _api = new Transifex({
 	project_slug: PROJECT,
-	credential: `${TX_USER}:${TX_PW}`,
+	credential: `${TRANSIFEX_USER}:${TRANSIFEX_PW}`,
 });
 
 const authorize = () => {
-	if (!TX_USER || !TX_PW) {
+	if (NODE_ENV === 'test') {
+		return;
+	}
+	if (!TRANSIFEX_USER || !TRANSIFEX_PW) {
 		throw new Error(
 			`TRANSIFEX_USER and TRANSIFEX_PW must be set as environment variables
 - get the values from an admin in #web-platform on Slack`
