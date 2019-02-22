@@ -42,7 +42,7 @@ const makeDeferredPull = doCommit => r => () =>
 			return;
 		}
 		const commitMessage = `tx:pull for ${resource.replace(/-/g, '_')}`;
-		return gitHelpers.commit$(commitMessage, `--no-verify`);
+		return gitHelpers.commit(commitMessage, `--no-verify`);
 	});
 
 module.exports = {

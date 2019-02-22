@@ -1,10 +1,12 @@
-const babel = require('babel-core');
 const fs = require('fs');
+const path = require('path');
+
+const babel = require('babel-core');
 const gettextParser = require('gettext-parser');
 const glob = require('glob');
-const path = require('path');
+const memoize = require('memoize-one');
 const { paths, localesSecondary } = require('mwp-config');
-const checkNotMaster$ = require('./checkNotMaster');
+const checkNotMaster = require('./checkNotMaster');
 const tfx = require('./transifex');
 
 const PROJECT = tfx.PROJECT;
@@ -243,9 +245,9 @@ const getLocalPoContent = filename => {
 	return [lang_tag, parsePluckTrns(fs.readFileSync(filename).toString())];
 };
 
-// TODO: memoize
-const getAllLocalPoContent = () =>
-	glob.sync(`${PO_PATH}!(en-US).po`).map(getLocalPoContent);
+const getAllLocalPoContent = memoize(() =>
+	glob.sync(`${PO_PATH}!(en-US).po`).map(getLocalPoContent)
+);
 
 // map of locale code to translated content formatted for React-Intl
 const allLocalPoTrnsWithFallbacks$ = () => {
@@ -300,8 +302,7 @@ const lastUpdateComparator = (a, b) =>
 	new Date(a['last_update']) - new Date(b['last_update']);
 
 // resource slugs sorted by last modified date
-// TODO: memoize
-const getTfxResources = () =>
+const getTfxResources = memoize(() =>
 	tfx.api
 		.projectInstanceMethods(PROJECT)
 		.then()
@@ -316,7 +317,8 @@ const getTfxResources = () =>
 			resourceInfo
 				.sort(lastUpdateComparator)
 				.map(resource => resource['slug'])
-		);
+		)
+);
 
 const getCompletionValue = stat =>
 	Object.keys(stat)
@@ -329,8 +331,7 @@ const getCompletionValue = stat =>
 			return localeCompletion;
 		}, {});
 
-// TODO: memoize
-const getResourceCompletion = () =>
+const getResourceCompletion = memoize(() =>
 	getTfxResources()
 		// get resource completion percentage
 		.then(resources =>
@@ -342,7 +343,8 @@ const getResourceCompletion = () =>
 						.then(localeCompletion => [resource, localeCompletion])
 				)
 			)
-		);
+		)
+);
 
 const resourcesIncomplete = () =>
 	getResourceCompletion().then(resources =>
@@ -372,20 +374,20 @@ const updateMasterContent = () =>
 const updateAllTranslationsResource = () =>
 	updateAllMessages(ALL_TRANSLATIONS_RESOURCE, PROJECT);
 
-const uploadTrnsMaster = ([lang_tag, content]) =>
-	checkNotMaster$.then(() =>
-		tfx.api
-			.uploadTranslationInstanceMethod(
-				PROJECT_MASTER,
-				MASTER_RESOURCE,
-				lang_tag,
-				resourceContent(MASTER_RESOURCE, content)
-			)
-			.then(
-				logSuccess('Uploaded master:', lang_tag),
-				logError('Error uploading master:', lang_tag)
-			)
-	);
+const uploadTrnsMaster = ([lang_tag, content]) => {
+	checkNotMaster();
+	return tfx.api
+		.uploadTranslationInstanceMethod(
+			PROJECT_MASTER,
+			MASTER_RESOURCE,
+			lang_tag,
+			resourceContent(MASTER_RESOURCE, content)
+		)
+		.then(
+			logSuccess('Uploaded master:', lang_tag),
+			logError('Error uploading master:', lang_tag)
+		);
+};
 
 // Helper to update master with all local translated content
 const updateTranslations = () =>

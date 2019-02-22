@@ -9,49 +9,47 @@ const checkNotMaster = require('./util/checkNotMaster');
 const readParseResource = slug =>
 	txlib.readTfxResource(slug).then(txlib.parsePluckTrns);
 
-const branchResourceExists$ = () =>
-	Promise.all(txlib.getTfxResources(), gitBranch()).then(
-		([resources, branch]) => resources.indexOf(branch) > -1
-	);
+// Check transifex resource exists for the supplied git branch name,
+// defaulting to checking currently-checked-out branch
+const checkTfxResourceExists = (branch = gitBranch()) =>
+	txlib.getTfxResources().then(resources => resources.indexOf(branch) > -1);
 
 // syncs content in po format to tx
 const pushResource = poData =>
-	Promise.all(gitBranch(), branchResourceExists$()).then(
-		([gitBranch, branchResourceExists]) => {
-			if (Object.keys(poData)) {
-				console.log(
-					'translation keys:',
-					Object.keys(poData).join(', ')
-				);
-				console.log(
-					branchResourceExists ? 'Updating' : 'Creating',
-					'resource'
-				);
-				const push = branchResourceExists
-					? txlib.updateResource
-					: txlib.createResource;
-				return push(gitBranch, poData);
-			}
-
-			if (branchResourceExists) {
-				return txlib
-					.deleteTxResource(gitBranch)
-					.then(() =>
-						console.log(
-							`Local branch trn data is empty - delete ${gitBranch}`
-						)
-					);
-			}
-			return; // no data, no branch, no problem
+	checkTfxResourceExists().then(branchResourceExists => {
+		const branch = gitBranch();
+		if (Object.keys(poData)) {
+			console.log('translation keys:', Object.keys(poData).join(', '));
+			console.log(
+				branchResourceExists ? 'Updating' : 'Creating',
+				'resource'
+			);
+			const push = branchResourceExists
+				? txlib.updateResource
+				: txlib.createResource;
+			return push(branch, poData);
 		}
-	);
+
+		if (branchResourceExists) {
+			return txlib
+				.deleteTxResource(branch)
+				.then(() =>
+					console.log(
+						`Local branch trn data is empty - delete ${branch}`
+					)
+				);
+		}
+		return; // no data, no branch, no problem
+	});
 
 const getTfxResourceTrns = () =>
-	Promise.all(gitBranch(), txlib.getTfxResources())
+	txlib
+		.getTfxResources()
 		// get resources but filter out my current resource
-		.then(([gitBranch, resources]) =>
-			resources.filter(resource => resource !== gitBranch)
-		)
+		.then(resources => {
+			const branch = gitBranch();
+			resources.filter(resource => resource !== branch);
+		})
 		// transform resource list to resource content, maintaining order
 		.then(resources => resources.map(readParseResource))
 		.then(resourcesContent =>
@@ -98,11 +96,10 @@ module.exports = {
 			return pushTxAllTranslations();
 		}
 
-		checkNotMaster()
-			.then(pushContent)
-			.catch(err => {
-				console.error(`Encountered error during push: ${err}`);
-				process.exit(1);
-			});
+		checkNotMaster();
+		pushContent().catch(err => {
+			console.error(`Encountered error during push: ${err}`);
+			process.exit(1);
+		});
 	},
 };
