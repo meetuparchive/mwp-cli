@@ -1,5 +1,4 @@
 const chalk = require('chalk');
-const txlib = require('./util');
 const pullResourceTrns = require('./util/pullResourceTrns');
 
 module.exports = {
@@ -14,13 +13,12 @@ module.exports = {
 			},
 		}),
 	handler: argv => {
-		txlib.checkEnvVars();
-		console.log(chalk.blue('pulling resource content from transifex'));
+		console.log(chalk.blue('Pulling resource content from transifex'));
 
 		argv.resource.forEach(resource =>
-			pullResourceTrns.pullResourceContent$(resource).subscribe(null, null, () =>
-				console.log(chalk.green(`\n${resource} done`))
-			)
+			pullResourceTrns
+				.pullResourceContent(resource)
+				.then(() => console.log(chalk.green(`\n${resource} done`)))
 		);
 	},
 };

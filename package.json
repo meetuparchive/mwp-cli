@@ -43,6 +43,7 @@
     "googleapis": "23.0.0",
     "gunzip-maybe": "1.4.1",
     "isomorphic-style-loader": "4.0.0",
+    "memoize-one": "5.0.0",
     "mkdirp": "0.5.1",
     "node-insights": "1.0.16",
     "node-sass": "4.9.3",
