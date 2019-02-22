@@ -13,16 +13,35 @@ const PROJECT = tfx.PROJECT;
 const PROJECT_MASTER = `${PROJECT}-master`; // separate project so translators don't confuse with branch content
 const MASTER_RESOURCE = 'master';
 const ALL_TRANSLATIONS_RESOURCE = 'all_translations';
+const PO_PATH = `${path.resolve(paths.repoRoot, 'src/trns/po/')}/`;
 
+/**
+ * type PoTrn = {
+ *   string: {
+ *     msgid: string,
+ *     msgstr: string,
+ *     comments: {
+ *       extracted: string,  // description.text
+ *       translator: string, // description.jira
+ *       reference: string,  // filename:start:end
+ *     }
+ *   }
+ * }
+ */
+
+// helper for logging status while passing along results of async call
 const logSuccess = (...messageArgs) => result => {
 	console.log(...messageArgs);
 	return result;
 };
+
+// helper for logging error status and re-throwing error
 const logError = (...messageArgs) => err => {
 	console.log(...messageArgs, err);
 	throw err;
 };
 
+// promise-retrying function
 const retry = (fn, retryCount) =>
 	fn().catch(err => {
 		if (!retryCount) {
@@ -32,33 +51,34 @@ const retry = (fn, retryCount) =>
 		return retry(fn, retryCount - 1);
 	});
 
-// return object that is a map of trn keys/ids to translated copy
-// fileString => Po
+// return object that is a map of trn keys/ids to translated copy - remove
+// extraneous metadata from Po file content
+// fileString => PoTrn
 const parsePluckTrns = fileContent => {
-	const trnObj = gettextParser.po.parse(fileContent).translations['']; // yes, a blank string as a key
+	const poTrn = gettextParser.po.parse(fileContent).translations['']; // yes, a blank string as a key
 	// translations object includes unusable empty string key - remove it
-	delete trnObj[''];
-	return Object.keys(trnObj).reduce((acc, key) => {
-		if (trnObj[key].msgstr[0]) {
+	delete poTrn[''];
+	return Object.keys(poTrn).reduce((acc, key) => {
+		if (poTrn[key].msgstr[0]) {
 			// effectively filtering out empty trn content
-			acc[key] = trnObj[key];
+			acc[key] = poTrn[key];
 		}
 		return acc;
 	}, {});
 };
 
-// adds necessary header info to po formatted trn content
-const wrapPoTrns = trnObjs => ({
+// adds necessary header info to PoTrns
+const wrapPoTrns = poTrns => ({
 	charset: 'utf-8',
 	headers: {
 		'content-type': 'text/plain; charset=utf-8',
 	},
 	translations: {
-		'': trnObjs,
+		'': poTrns,
 	},
 });
 
-// take a set of po trns and compile a po file
+// take a set of PoTrn and compile a po file contents string
 const compilePo = poObj =>
 	`${gettextParser.po.compile(wrapPoTrns(poObj)).toString()}\n`;
 
@@ -94,22 +114,8 @@ const mergeUnique = ({ data, errors }, toMerge) => {
 	return { data, errors };
 };
 
-/**
- * type Po = {
- *   string: {
- *     msgid: string,
- *     msgstr: string,
- *     comments: {
- *       extracted: string,  // description.text
- *       translator: string, // description.jira
- *       reference: string,  // filename:start:end
- *     }
- *   }
- * }
- */
-
 // takes array of local trns in po format, merges, and throws error if there are duplicate keys
-// Array<Po> => Po
+// Array<PoTrn> => PoTrn
 const reduceUniques = localTrns => {
 	const { data, errors } = localTrns.reduce(mergeUnique, {
 		data: {},
@@ -238,15 +244,11 @@ const poToReactIntlFormat = trns =>
 		return acc;
 	}, {});
 
-const PO_PATH = `${path.resolve(paths.repoRoot, 'src/trns/po/')}/`;
-
-const getLocalPoContent = filename => {
-	const lang_tag = path.basename(filename, '.po');
-	return [lang_tag, parsePluckTrns(fs.readFileSync(filename).toString())];
-};
-
 const getAllLocalPoContent = memoize(() =>
-	glob.sync(`${PO_PATH}!(en-US).po`).map(getLocalPoContent)
+	glob.sync(`${PO_PATH}!(en-US).po`).map(filename => {
+		const lang_tag = path.basename(filename, '.po');
+		return [lang_tag, parsePluckTrns(fs.readFileSync(filename).toString())];
+	})
 );
 
 // map of locale code to translated content formatted for React-Intl
@@ -320,6 +322,8 @@ const getTfxResources = memoize(() =>
 		)
 );
 
+// from the supplied resource statistics, create a map of locale code to
+// translation completion value if less than 100%
 const getCompletionValue = stat =>
 	Object.keys(stat)
 		// filter out secondary locale tags. they don't matter for completion
@@ -331,7 +335,8 @@ const getCompletionValue = stat =>
 			return localeCompletion;
 		}, {});
 
-const getResourceCompletion = memoize(() =>
+// () => Promise<Array<[resourceName, { LocaleCode: string }]>>
+const getTfxResourceCompletion = memoize(() =>
 	getTfxResources()
 		// get resource completion percentage
 		.then(resources =>
@@ -346,17 +351,19 @@ const getResourceCompletion = memoize(() =>
 		)
 );
 
-const resourcesIncomplete = () =>
-	getResourceCompletion().then(resources =>
+const getTfxResourcesIncomplete = () =>
+	getTfxResourceCompletion().then(resources =>
 		resources.filter(([r, completion]) => Object.keys(completion).length)
 	);
 
-const resourcesComplete = () =>
-	getResourceCompletion()
-		.filter(item => Object.keys(item[1]).length === 0)
-		.map(([resource]) => resource);
+const getTfxResourcesComplete = () =>
+	getTfxResourceCompletion().then(resources =>
+		resources
+			.filter(([r, completion]) => Object.keys(completion).length === 0)
+			.map(([r, completion]) => r)
+	);
 
-// Helper to grab all local trns to be merged to a tx resource (e.g. default English messages)
+// Helper to update tx resource with all local trns
 const updateAllMessages = (resource, project) => {
 	const poContent = getMergedLocalTrns();
 	return updateTfxResource(resource, poContent, project)
@@ -394,7 +401,10 @@ const updateTranslations = () =>
 	Promise.all(
 		getAllLocalPoContent()
 			.map(([lang_tag, content]) =>
-				compilePo(content).map(content => [lang_tag, content])
+				compilePo(content).map(compiledContent => [
+					lang_tag,
+					compiledContent,
+				])
 			)
 			.map(uploadTrnsMaster)
 	);
@@ -421,8 +431,8 @@ module.exports = {
 	reactIntlToPo,
 	readTfxResource,
 	getTfxResources,
-	resourcesComplete,
-	resourcesIncomplete,
+	getTfxResourcesComplete,
+	getTfxResourcesIncomplete,
 	getTfxMaster,
 	updateTfxResource,
 	uploadTrnsMaster,

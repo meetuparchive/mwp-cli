@@ -8,7 +8,7 @@ module.exports = {
 		console.log(chalk.blue('checking resource status'));
 
 		txlib
-			.resourcesIncomplete()
+			.getTfxResourcesIncomplete()
 			.then(resources => {
 				if (resources.length) {
 					console.log('\nIncomplete Resources');
@@ -17,7 +17,7 @@ module.exports = {
 					);
 				}
 			})
-			.then(txlib.resourcesComplete)
+			.then(txlib.getTfxResourcesComplete)
 			.then(resources => {
 				if (resources.length) {
 					console.log('\nComplete Resources');

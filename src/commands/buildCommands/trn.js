@@ -7,7 +7,7 @@ const mkdirp = require('mkdirp');
 
 const { paths, locales, package: packageConfig } = require('mwp-config');
 const {
-	allLocalPoTrnsWithFallbacks$,
+	allLocalPoTrnsWithFallbacks,
 	localTrns,
 } = require('../txCommands/util');
 
@@ -147,7 +147,7 @@ const buildDateLocales = () => {
  * modules
  */
 const buildTrnModules = () => {
-	const write = makeTrnModuleWriter(allLocalPoTrnsWithFallbacks$());
+	const write = makeTrnModuleWriter(allLocalPoTrnsWithFallbacks());
 	return Promise.all(componentTrnDefinitions().map(write));
 };
 
