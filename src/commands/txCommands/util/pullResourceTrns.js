@@ -1,52 +1,40 @@
 const fs = require('fs');
-const Rx = require('rxjs');
 const path = require('path');
 const { paths } = require('mwp-config');
 const txlib = require('./index');
+const tfx = require('./transifex');
 
-const tx = txlib.tx;
-
-const readTranslation$ = (branch, lang_tag) =>
-	Rx.Observable.bindNodeCallback(tx.translationInstanceMethod.bind(tx))(
-		branch == 'master' ? txlib.PROJECT_MASTER : txlib.PROJECT,
-		branch,
-		lang_tag
-	).map(response => response[0]);
-
-const downloadTrnUpdates$ = (branch, language) =>
-	readTranslation$(branch, language).flatMap(txlib.parsePluckTrns);
+const pullTranslations = (branch, lang_tag) =>
+	tfx.api
+		.translationInstanceMethod(
+			branch == 'master' ? txlib.PROJECT_MASTER : txlib.PROJECT,
+			branch,
+			lang_tag
+		)
+		.then(txlib.parsePluckTrns);
 
 // Write the translated message source PO files into the /src/trns directory
-// 1. load local trn content [ lang_tag, content ]
-const pullResourceContent$ = branch =>
-	txlib.allLocalPoTrns$
-		// 2. parse local trn content and grab updates
-		.flatMap(([lang_tag, content]) =>
-			Rx.Observable.zip(
-				[lang_tag], [content],
-				downloadTrnUpdates$(branch, lang_tag)
-			)
+const pullResourceContent = branch =>
+	Promise.all(
+		// 1. load local trn content [ lang_tag, content ]
+		txlib.getAllLocalPoContent().map(([lang_tag, content]) =>
+			// 2. download updates
+			pullTranslations(branch, lang_tag).then(newContent => {
+				// 3. write po files with updates merged into existing content
+				const poContent = txlib.compilePo([
+					lang_tag,
+					Object.assign(content, newContent), // overwrite with new content
+				]);
+				const filepath = path.resolve(
+					paths.repoRoot,
+					`src/trns/po/${lang_tag}.po`
+				);
+				fs.writeFileSync(filepath, poContent);
+				process.stdout.write(`${lang_tag},`); // incrementally write one-line output
+			})
 		)
-		// 3. merge new content over existing
-		.map(([lang_tag, poContent, newContent]) => [
-			lang_tag,
-			Object.assign(poContent, newContent),
-		])
-		.flatMap(([lang_tag, mergedContent]) =>
-			// 4. compile to po format
-			txlib
-				.wrapCompilePo$(mergedContent)
-				.do(poContent => {
-					// 5. save to PO files that can be transpiled to importable JSON
-					const filepath = path.resolve(
-						paths.repoRoot,
-						`src/trns/po/${lang_tag}.po`
-					);
-					fs.writeFileSync(filepath, poContent);
-				})
-				.do(() => process.stdout.write(`${lang_tag},`))
-		);
+	).then(() => process.stdout.write('\n'));
 
 module.exports = {
-	pullResourceContent$
+	pullResourceContent,
 };
