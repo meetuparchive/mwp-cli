@@ -48,7 +48,7 @@ const getTfxResourceTrns = () =>
 		// get resources but filter out my current resource
 		.then(resources => {
 			const branch = gitBranch();
-			resources.filter(resource => resource !== branch);
+			return resources.filter(resource => resource !== branch);
 		})
 		// transform resource list to resource content, maintaining order
 		.then(resources => resources.map(readParseResource))
@@ -61,7 +61,7 @@ const getTfxResourceTrns = () =>
 		);
 
 const masterAndResourceTrns = () =>
-	Promise.all(txlib.getTfxMaster(), getTfxResourceTrns()).map(
+	Promise.all([txlib.getTfxMaster(), getTfxResourceTrns()]).then(
 		([masterTrns, resourceTrns]) =>
 			Object.assign({}, masterTrns, resourceTrns)
 	);
@@ -98,7 +98,7 @@ module.exports = {
 
 		checkNotMaster();
 		pushContent().catch(err => {
-			console.error(`Encountered error during push: ${err}`);
+			console.error('Encountered error during push:', err);
 			process.exit(1);
 		});
 	},

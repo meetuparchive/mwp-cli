@@ -3,15 +3,18 @@ const txlib = require('./util');
 const pullResourceTrns = require('./util/pullResourceTrns');
 const gitHelpers = require('./util/gitHelpers');
 
-const getProjectResourcesList = txlib
-	.getTfxResources()
-	// We want to sort the array of resources so that the ALL_TRANSLATIONS_RESOURCE is
-	// downloaded first, this will allow other resources to be applied on top of
-	// any changes in that resource. Hopefully, this should prevent any changes in
-	// feature branches from being overridden by this resource
-	.then(resources =>
-		resources.sort(a => (a === txlib.ALL_TRANSLATIONS_RESOURCE ? -1 : 1))
-	);
+const getProjectResourcesList = () =>
+	txlib
+		.getTfxResources()
+		// We want to sort the array of resources so that the ALL_TRANSLATIONS_RESOURCE is
+		// downloaded first, this will allow other resources to be applied on top of
+		// any changes in that resource. Hopefully, this should prevent any changes in
+		// feature branches from being overridden by this resource
+		.then(resources =>
+			resources.sort(
+				a => (a === txlib.ALL_TRANSLATIONS_RESOURCE ? -1 : 1)
+			)
+		);
 
 /**
  * Kicks off process to downloaded an individual resources trns

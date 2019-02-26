@@ -195,9 +195,10 @@ const createResource = (slug, content) => {
 
 const readTfxResource = (slug, project = PROJECT) =>
 	retry(
-		tfx.api
-			.sourceLanguageMethods(project, slug)
-			.catch(logError(`error readTfxResource ${slug} ${project}`)),
+		() =>
+			tfx.api
+				.sourceLanguageMethods(project, slug)
+				.catch(logError(`error readTfxResource ${slug} ${project}`)),
 		5
 	);
 
@@ -252,7 +253,7 @@ const getAllLocalPoContent = memoize(() =>
 );
 
 // map of locale code to translated content formatted for React-Intl
-const allLocalPoTrnsWithFallbacks$ = () => {
+const allLocalPoTrnsWithFallbacks = () => {
 	const poContent = glob
 		.sync(`${PO_PATH}*.po`)
 		// read and parse all po files
@@ -411,7 +412,7 @@ const updateTranslations = () =>
 
 module.exports = {
 	getAllLocalPoContent,
-	allLocalPoTrnsWithFallbacks$,
+	allLocalPoTrnsWithFallbacks,
 	ALL_TRANSLATIONS_RESOURCE,
 	compilePo,
 	createResource,
