@@ -1,6 +1,91 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`trn utils convert react-intl style objects into po style objects 1`] = `
+exports[`getAllLocalPoContent returns an array of tuples of localecode (filename) and object of trns 1`] = `
+Array [
+  "en-US",
+  Object {
+    "mockMessage.id": Object {
+      "comments": Object {
+        "reference": "src/path/to/en-US.po.trns.jsx:1:2",
+        "translator": "WP-1234",
+      },
+      "msgid": "mockMessage.id",
+      "msgstr": Array [
+        "mock translated copy",
+      ],
+    },
+    "mockMessage.id.en-US.po": Object {
+      "comments": Object {
+        "reference": "src/path/to/en-US.po.trns.jsx:3:4",
+        "translator": "WP-2345",
+      },
+      "msgid": "mockMessage.id.en-US.po",
+      "msgstr": Array [
+        "mock translated copy from en-US.po",
+      ],
+    },
+  },
+]
+`;
+
+exports[`getLocalLocaleMessages returns an Object that maps locales to messages 1`] = `
+Object {
+  "en-US": Object {
+    "mockMessage.id": "mock translated copy",
+    "mockMessage.id.en-US.po": "mock translated copy from en-US.po",
+  },
+  "es": Object {
+    "mockMessage.id": "mock translated copy",
+    "mockMessage.id.es.po": "mock translated copy from es.po",
+  },
+  "es-ES": Object {
+    "mockMessage.id": "mock translated copy",
+    "mockMessage.id.es-ES.po": "mock translated copy from es-ES.po",
+    "mockMessage.id.es.po": "mock translated copy from es.po",
+  },
+  "fr-FR": Object {
+    "mockMessage.id": "mock translated copy",
+    "mockMessage.id.fr-FR.po": "mock translated copy from fr-FR.po",
+  },
+}
+`;
+
+exports[`poObjToPoString takes trn content, returns po file: 
+"msgid \\"\\"
+msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
+
+# WP-1234
+#: src/path/to/component.trns.jsx:4:45
+msgid \\"mockMessage.id\\"
+msgstr \\"mock translated copy\\"
+"
+ 1`] = `
+"msgid \\"\\"
+msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
+
+# WP-1234
+#: src/path/to/component.trns.jsx:4:45
+msgid \\"mockMessage.id\\"
+msgstr \\"mock translated copy\\"
+"
+`;
+
+exports[`poStringToPoObj parses PO-formatted file content into a plain JS object map 1`] = `
+Object {
+  "mockMessage.id": Object {
+    "comments": Object {
+      "reference": "src/path/to/component.trns.jsx:4:45",
+      "translator": "WP-1234",
+    },
+    "msgid": "mockMessage.id",
+    "msgstr": Array [
+      "mock translated copy",
+    ],
+  },
+}
+`;
+
+exports[`trn utils convert message descriptor objects into po style objects 1`] = `
 Object {
   "id1": Object {
     "comments": Object {
@@ -29,14 +114,14 @@ Object {
 
 exports[`trn utils filters po content by keys 1`] = `
 Object {
-  "id1": Object {
+  "mockMessage.id": Object {
     "comments": Object {
-      "extracted": "text for test",
-      "reference": "text.txt:2:5",
+      "reference": "src/path/to/component.trns.jsx:4:45",
+      "translator": "WP-1234",
     },
-    "msgid": "id1",
+    "msgid": "mockMessage.id",
     "msgstr": Array [
-      "id1 text",
+      "mock translated copy",
     ],
   },
 }
@@ -51,22 +136,22 @@ Array [
 
 exports[`trn utils merge objects, throw error if dupe key 1`] = `
 Object {
-  "id1": Object {
+  "mockMessage.id": Object {
     "comments": Object {
-      "extracted": "text for test",
-      "reference": "text.txt:2:5",
+      "reference": "src/path/to/component.trns.jsx:4:45",
+      "translator": "WP-1234",
     },
-    "msgid": "id1",
+    "msgid": "mockMessage.id",
     "msgstr": Array [
-      "id1 text",
+      "mock translated copy",
     ],
   },
-  "id2": Object {
+  "mockMessage.id.2": Object {
     "comments": Object {
       "extracted": "text for test v2",
       "reference": "text2.txt:10:10",
     },
-    "msgid": "id2",
+    "msgid": "mockMessage.id.2",
     "msgstr": Array [
       "id2 text",
     ],
@@ -74,58 +159,17 @@ Object {
 }
 `;
 
-exports[`trn utils takes po file content, extract trn content 1`] = `
-Object {
-  "event.oneMemberWent": Object {
-    "comments": Object {
-      "reference": "src/components/EventCard.jsx:27:16",
-      "translator": "MW-000",
-    },
-    "msgid": "event.oneMemberWent",
-    "msgstr": Array [
-      "1 Mitglied ging",
-    ],
-  },
-}
-`;
-
 exports[`trn utils takes po objects and returns react intl format 1`] = `
 Object {
-  "id1": "id1 text",
+  "mockMessage.id": "mock translated copy",
 }
 `;
 
 exports[`trn utils takes po objects and returns tx upload format 1`] = `
 Array [
   Object {
-    "key": "id1",
-    "translation": "id1 text",
+    "key": "mockMessage.id",
+    "translation": "mock translated copy",
   },
 ]
-`;
-
-exports[`trn utils takes trn content, returns po file 1`] = `
-"msgid \\"\\"
-msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
-
-# MW-000
-#: src/components/EventCard.jsx:27:16
-msgid \\"event.oneMemberWent\\"
-msgstr \\"1 Mitglied ging\\"
-"
-`;
-
-exports[`trn utils wraps Po objects 1`] = `
-Object {
-  "charset": "utf-8",
-  "headers": Object {
-    "content-type": "text/plain; charset=utf-8",
-  },
-  "translations": Object {
-    "": Array [
-      Object {},
-      Object {},
-    ],
-  },
-}
 `;
