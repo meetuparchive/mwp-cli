@@ -11,7 +11,7 @@ const pullTranslations = (branch, lang_tag) =>
 			branch,
 			lang_tag
 		)
-		.then(txlib.parsePluckTrns);
+		.then(txlib.poStringToPoObj);
 
 // Write the translated message source PO files into the /src/trns directory
 const pullResourceContent = branch =>
@@ -21,7 +21,7 @@ const pullResourceContent = branch =>
 			// 2. download updates
 			pullTranslations(branch, lang_tag).then(newContent => {
 				// 3. write po files with updates merged into existing content
-				const poContent = txlib.compilePo([
+				const poContent = txlib.poObjToPoString([
 					lang_tag,
 					Object.assign(content, newContent), // overwrite with new content
 				]);

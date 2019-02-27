@@ -6,7 +6,7 @@ const gettextParser = require('gettext-parser');
 const glob = require('glob');
 const memoize = require('memoize-one');
 const { paths, localesSecondary } = require('mwp-config');
-const checkNotMaster = require('./checkNotMaster');
+const { exitOnMaster } = require('./gitHelpers');
 const tfx = require('./transifex');
 
 const PROJECT = tfx.PROJECT;
@@ -17,7 +17,7 @@ const PO_PATH = `${path.resolve(paths.repoRoot, 'src/trns/po/')}/`;
 
 /**
  * type PoTrn = {
- *   string: {
+ *   string: {  // msgid
  *     msgid: string,
  *     msgstr: string,
  *     comments: {
@@ -26,6 +26,14 @@ const PO_PATH = `${path.resolve(paths.repoRoot, 'src/trns/po/')}/`;
  *       reference: string,  // filename:start:end
  *     }
  *   }
+ * }
+ *
+ * type MessageObj = {
+ *   [id: string]: string
+ * }
+ *
+ * type MessageMap = {
+ *   [localeCode: string ]: MessageObj
  * }
  */
 
@@ -54,7 +62,7 @@ const retry = (fn, retryCount) =>
 // return object that is a map of trn keys/ids to translated copy - remove
 // extraneous metadata from Po file content
 // fileString => PoTrn
-const parsePluckTrns = fileContent => {
+const poStringToPoObj = fileContent => {
 	const poTrn = gettextParser.po.parse(fileContent).translations['']; // yes, a blank string as a key
 	// translations object includes unusable empty string key - remove it
 	delete poTrn[''];
@@ -67,20 +75,19 @@ const parsePluckTrns = fileContent => {
 	}, {});
 };
 
-// adds necessary header info to PoTrns
-const wrapPoTrns = poTrns => ({
-	charset: 'utf-8',
-	headers: {
-		'content-type': 'text/plain; charset=utf-8',
-	},
-	translations: {
-		'': poTrns,
-	},
-});
-
 // take a set of PoTrn and compile a po file contents string
-const compilePo = poObj =>
-	`${gettextParser.po.compile(wrapPoTrns(poObj)).toString()}\n`;
+const poObjToPoString = poObj => {
+	const headerWrapped = {
+		charset: 'utf-8',
+		headers: {
+			'content-type': 'text/plain; charset=utf-8',
+		},
+		translations: {
+			'': poObj,
+		},
+	};
+	return `${gettextParser.po.compile(headerWrapped).toString()}\n`;
+};
 
 // returns keys which are not in main or have an updated value
 const diff = ([main, extracted]) =>
@@ -129,28 +136,23 @@ const reduceUniques = localTrns => {
 };
 
 // Array<MessageDescriptor> => Po
-const reactIntlToPo = reactIntl =>
-	reactIntl.reduce((obj, trnObj) => {
-		if (
-			typeof trnObj.description !== 'object' ||
-			!trnObj.description.jira
-		) {
-			throw new Error('Trn content missing jira story reference', trnObj);
+const msgDescriptorsToPoObj = messages =>
+	messages.reduce((acc, msg) => {
+		if (typeof msg.description !== 'object' || !msg.description.jira) {
+			throw new Error('Trn content missing jira story reference', msg);
 		}
 
-		obj[trnObj.id] = {
-			msgid: trnObj.id,
-			msgstr: [trnObj.defaultMessage],
+		acc[msg.id] = {
+			msgid: msg.id,
+			msgstr: [msg.defaultMessage],
 			comments: {
-				extracted: trnObj.description.text,
-				translator: trnObj.description.jira,
-				reference: `${trnObj.file}:${trnObj.start.line}:${
-					trnObj.start.column
-				}`,
+				extracted: msg.description.text,
+				translator: msg.description.jira,
+				reference: `${msg.file}:${msg.start.line}:${msg.start.column}`,
 			},
 		};
 
-		return obj;
+		return acc;
 	}, {});
 
 // extract trn source data from application, one value per file-with-content
@@ -172,8 +174,8 @@ const extractTrnSource = () =>
 		.filter(trns => trns.length);
 
 // () => Po
-const getMergedLocalTrns = () =>
-	reduceUniques(extractTrnSource().map(reactIntlToPo));
+const getLocalTrnSourcePo = () =>
+	reduceUniques(extractTrnSource().map(msgDescriptorsToPoObj));
 
 // required fields for resource creation and updating. http://docs.transifex.com/api/resources/#post
 const resourceContent = (slug, content) => ({
@@ -184,7 +186,7 @@ const resourceContent = (slug, content) => ({
 });
 
 const createResource = (slug, content) => {
-	const compiledContent = compilePo(content);
+	const compiledContent = poObjToPoString(content);
 	return tfx.api
 		.resourceCreateMethod(PROJECT, resourceContent(slug, compiledContent))
 		.then(
@@ -202,8 +204,8 @@ const readTfxResource = (slug, project = PROJECT) =>
 		5
 	);
 
-const updateTfxResource = (slug, content, project = PROJECT) => {
-	const compiledContent = compilePo(content);
+const updateTfxResource = (slug, project = PROJECT) => {
+	const compiledContent = poObjToPoString(getLocalTrnSourcePo());
 	// allow override for push to mup-web-master
 	return tfx.api
 		.uploadSourceLanguageMethod(
@@ -222,10 +224,10 @@ const deleteTxResource = slug =>
 		.resourceDeleteMethod(PROJECT, slug)
 		.then(logSuccess('deleted', slug));
 
+// PoTrn => Array<{ key: string, translation: string }>
 const poToUploadFormat = trnObj =>
 	Object.keys(trnObj).reduce(
-		(arr, key) =>
-			arr.concat({ key: key, translation: trnObj[key].msgstr[0] }),
+		(arr, key) => arr.concat({ key, translation: trnObj[key].msgstr[0] }),
 		[]
 	);
 
@@ -239,35 +241,28 @@ const pick = (obj, keys) =>
 
 const filterPoContentByKeys = (keys, poContent) => pick(poContent, keys);
 
-const poToReactIntlFormat = trns =>
+const poObjToMsgObj = trns =>
 	Object.keys(trns).reduce((acc, key) => {
 		acc[key] = trns[key].msgstr[0];
 		return acc;
 	}, {});
 
+const _fileToLocaleTuple = filename => {
+	const lang_tag = path.basename(filename, '.po');
+	return [lang_tag, poStringToPoObj(fs.readFileSync(filename).toString())];
+};
 const getAllLocalPoContent = memoize(() =>
-	glob.sync(`${PO_PATH}!(en-US).po`).map(filename => {
-		const lang_tag = path.basename(filename, '.po');
-		return [lang_tag, parsePluckTrns(fs.readFileSync(filename).toString())];
-	})
+	glob.sync(`${PO_PATH}!(en-US).po`).map(_fileToLocaleTuple)
 );
 
 // map of locale code to translated content formatted for React-Intl
-const allLocalPoTrnsWithFallbacks = () => {
+const getLocalLocaleMessages = () => {
 	const poContent = glob
 		.sync(`${PO_PATH}*.po`)
 		// read and parse all po files
-		.map(filename => {
-			const lang_tag = path.basename(filename, '.po');
-			return [
-				lang_tag,
-				poToReactIntlFormat(
-					parsePluckTrns(fs.readFileSync(filename).toString())
-				),
-			];
-		})
-		.reduce((obj, [lang_tag, content]) => {
-			obj[lang_tag] = content;
+		.map(_fileToLocaleTuple)
+		.reduce((obj, [lang_tag, poObj]) => {
+			obj[lang_tag] = poObjToMsgObj(poObj);
 			return obj;
 		}, {});
 	// assign es-ES fallbacks - extend base 'es' translations with
@@ -282,7 +277,7 @@ const getTfxMaster = () =>
 			logSuccess('master resource read complete'),
 			logError('master resource read fail')
 		)
-		.then(parsePluckTrns);
+		.then(poStringToPoObj);
 
 // sometimes we want to compare against master, sometimes master plus existing resources
 const diffVerbose = (master, content) =>
@@ -366,8 +361,7 @@ const getTfxResourcesComplete = () =>
 
 // Helper to update tx resource with all local trns
 const updateAllMessages = (resource, project) => {
-	const poContent = getMergedLocalTrns();
-	return updateTfxResource(resource, poContent, project)
+	return updateTfxResource(resource, project)
 		.then(
 			logSuccess(`update ${project} - ${resource} success`),
 			logError(`update ${project} - ${resource} FAIL!`)
@@ -383,7 +377,7 @@ const updateAllTranslationsResource = () =>
 	updateAllMessages(ALL_TRANSLATIONS_RESOURCE, PROJECT);
 
 const uploadTrnsMaster = ([lang_tag, content]) => {
-	checkNotMaster();
+	exitOnMaster();
 	return tfx.api
 		.uploadTranslationInstanceMethod(
 			PROJECT_MASTER,
@@ -402,7 +396,7 @@ const updateTranslations = () =>
 	Promise.all(
 		getAllLocalPoContent()
 			.map(([lang_tag, content]) =>
-				compilePo(content).map(compiledContent => [
+				poObjToPoString(content).map(compiledContent => [
 					lang_tag,
 					compiledContent,
 				])
@@ -412,24 +406,24 @@ const updateTranslations = () =>
 
 module.exports = {
 	getAllLocalPoContent,
-	allLocalPoTrnsWithFallbacks,
+	getLocalLocaleMessages,
 	ALL_TRANSLATIONS_RESOURCE,
-	compilePo,
+	poObjToPoString,
 	createResource,
 	deleteTxResource,
 	diff,
 	diffVerbose,
 	filterPoContentByKeys,
 	extractTrnSource,
-	getMergedLocalTrns,
+	getLocalTrnSourcePo,
 	MASTER_RESOURCE,
 	reduceUniques,
-	parsePluckTrns,
-	poToReactIntlFormat,
+	poStringToPoObj,
+	poObjToMsgObj,
 	poToUploadFormat,
 	PROJECT,
 	PROJECT_MASTER,
-	reactIntlToPo,
+	msgDescriptorsToPoObj,
 	readTfxResource,
 	getTfxResources,
 	getTfxResourcesComplete,
@@ -437,7 +431,6 @@ module.exports = {
 	getTfxMaster,
 	updateTfxResource,
 	uploadTrnsMaster,
-	wrapPoTrns,
 	updateMasterContent,
 	updateAllTranslationsResource,
 	updateTranslations,

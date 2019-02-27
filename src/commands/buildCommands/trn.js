@@ -6,10 +6,7 @@ const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 
 const { paths, locales, package: packageConfig } = require('mwp-config');
-const {
-	allLocalPoTrnsWithFallbacks,
-	localTrns,
-} = require('../txCommands/util');
+const { getLocalLocaleMessages, localTrns } = require('../txCommands/util');
 
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
 
@@ -147,7 +144,7 @@ const buildDateLocales = () => {
  * modules
  */
 const buildTrnModules = () => {
-	const write = makeTrnModuleWriter(allLocalPoTrnsWithFallbacks());
+	const write = makeTrnModuleWriter(getLocalLocaleMessages());
 	return Promise.all(componentTrnDefinitions().map(write));
 };
 

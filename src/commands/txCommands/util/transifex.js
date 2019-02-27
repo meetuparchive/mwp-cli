@@ -36,7 +36,7 @@ const promisifyTxMethods = [
 	'translationInstanceMethod',
 ];
 
-module.exports = {
+const publicInterface = {
 	api: promisifyTxMethods.reduce((acc, key) => {
 		acc[key] = memoize((...args) => {
 			authorize();
@@ -46,3 +46,5 @@ module.exports = {
 	}, {}),
 	PROJECT,
 };
+
+module.exports = publicInterface;

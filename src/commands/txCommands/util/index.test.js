@@ -1,17 +1,128 @@
-const txlib = require('./index');
+jest.mock('mwp-config');
+jest.mock('glob');
+jest.mock('fs', () => ({
+	readFileSync: filename => `# WP-1234
+	#: src/path/to/${filename}.trns.jsx:1:2
+	msgid "mockMessage.id"
+	msgstr "mock translated copy"
+	
+	# WP-2345
+	#: src/path/to/${filename}.trns.jsx:3:4
+	msgid "mockMessage.id.${filename}"
+	msgstr "mock translated copy from ${filename}"`,
+	existsSync: () => true,
+}));
+
+const glob = require('glob');
+
+const {
+	getAllLocalPoContent,
+	getLocalLocaleMessages,
+	poObjToPoString,
+	diff,
+	filterPoContentByKeys,
+	getLocalTrnSourcePo,
+	MASTER_RESOURCE,
+	reduceUniques,
+	poStringToPoObj,
+	poObjToMsgObj,
+	poToUploadFormat,
+	PROJECT,
+	PROJECT_MASTER,
+	msgDescriptorsToPoObj,
+	readTfxResource,
+	getTfxResources,
+	getTfxResourcesComplete,
+	getTfxResourcesIncomplete,
+	getTfxMaster,
+	updateTfxResource,
+	uploadTrnsMaster,
+	updateMasterContent,
+	updateAllTranslationsResource,
+	updateTranslations,
+} = require('./index');
+
+const LOCALES = ['en-US', 'fr-FR', 'es', 'es-ES'];
+const PO_FILE_CONTENT = `# WP-1234
+#: src/path/to/component.trns.jsx:4:45
+msgid "mockMessage.id"
+msgstr "mock translated copy"`;
+
+const PO_OBJ = {
+	'mockMessage.id': {
+		comments: {
+			reference: 'src/path/to/component.trns.jsx:4:45',
+			translator: 'WP-1234',
+		},
+		msgid: 'mockMessage.id',
+		msgstr: ['mock translated copy'],
+	},
+};
+
+const PO_OBJ_SECONDARY = {
+	'mockMessage.id.2': {
+		comments: {
+			extracted: 'text for test v2',
+			reference: 'text2.txt:10:10',
+		},
+		msgid: 'mockMessage.id.2',
+		msgstr: ['id2 text'],
+	},
+};
+
+describe('poStringToPoObj', () => {
+	it('parses PO-formatted file content into a plain JS object map', () => {
+		expect(poStringToPoObj(PO_FILE_CONTENT)).toMatchSnapshot();
+	});
+	it('does not return empty trn content', () => {
+		const PO_EMPTY_TRN = `# WP-1234
+#: src/path/to/component.trns.jsx:4:45
+msgid "mockMessage.id"
+msgstr "" # this is intentionally empty - edge case`;
+		expect(poStringToPoObj(PO_EMPTY_TRN)).toEqual({});
+	});
+});
+
+describe('poObjToPoString', () => {
+	it('takes trn content, returns po file', () => {
+		const val = poObjToPoString(PO_OBJ);
+		expect(val).toMatchSnapshot(`
+"msgid \\"\\"
+msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
+
+# WP-1234
+#: src/path/to/component.trns.jsx:4:45
+msgid \\"mockMessage.id\\"
+msgstr \\"mock translated copy\\"
+"
+`);
+	});
+});
+
+test('poObjToPoString -> poStringToPoObj', () => {
+	// ensure these functions are reciprocal
+	const poString = poObjToPoString(PO_OBJ);
+	const poObj = poStringToPoObj(poString);
+	expect(poObj).toEqual(PO_OBJ);
+});
+
+describe('getAllLocalPoContent', () => {
+	glob.__setMockFiles(LOCALES.map(l => `${l}.po`));
+	it('returns an array of tuples of localecode (filename) and object of trns', () => {
+		const output = getAllLocalPoContent();
+		expect(output.length).toBe(LOCALES.length);
+		expect(output[0]).toMatchSnapshot();
+	});
+});
+
+describe('getLocalLocaleMessages', () => {
+	it('returns an Object that maps locales to messages', () => {
+		const output = getLocalLocaleMessages();
+		expect(output).toMatchSnapshot();
+	});
+});
 
 describe('trn utils', () => {
-	const msg1 = {
-		id1: {
-			msgid: 'id1',
-			msgstr: ['id1 text'],
-			comments: {
-				extracted: 'text for test',
-				reference: 'text.txt:2:5',
-			},
-		},
-	};
-
 	it('compares two objects, returning an object composed of new keys or existing keys with changed msgstr values', () => {
 		const same = { msgstr: 'same' };
 		const different = { msgstr: 'abc' };
@@ -34,16 +145,11 @@ describe('trn utils', () => {
 			newEntry,
 		};
 
-		expect(txlib.diff(mock)).toEqual(expected);
+		expect(diff(mock)).toEqual(expected);
 	});
 
-	it('wraps Po objects', () => {
-		const trnObjs = [{}, {}];
-		expect(txlib.wrapPoTrns(trnObjs)).toMatchSnapshot();
-	});
-
-	it('convert react-intl style objects into po style objects', () => {
-		const trnObjs = [
+	it('convert message descriptor objects into po style objects', () => {
+		const messageDescriptors = [
 			{
 				id: 'id1',
 				defaultMessage: 'id1 text',
@@ -60,72 +166,32 @@ describe('trn utils', () => {
 			},
 		];
 
-		expect(txlib.reactIntlToPo(trnObjs)).toMatchSnapshot();
+		expect(msgDescriptorsToPoObj(messageDescriptors)).toMatchSnapshot();
 	});
 
 	it('merge objects, throw error if dupe key', () => {
-		const msg2 = {
-			id2: {
-				msgid: 'id2',
-				msgstr: ['id2 text'],
-				comments: {
-					extracted: 'text for test v2',
-					reference: 'text2.txt:10:10',
-				},
-			},
-		};
-
 		// expected success
-		expect(txlib.reduceUniques([msg1, msg2])).toMatchSnapshot();
+		expect(reduceUniques([PO_OBJ, PO_OBJ_SECONDARY])).toMatchSnapshot();
 		// expected error from duplicate msgs
-		expect(() => txlib.reduceUniques([msg1, msg1])).toThrow();
+		expect(() => reduceUniques([PO_OBJ, PO_OBJ])).toThrow();
 	});
 
 	it('takes po objects and returns tx upload format', () => {
-		expect(txlib.poToUploadFormat(msg1)).toMatchSnapshot();
+		expect(poToUploadFormat(PO_OBJ)).toMatchSnapshot();
 	});
 
 	it('takes po objects and returns react intl format', () => {
-		expect(txlib.poToReactIntlFormat(msg1)).toMatchSnapshot();
+		expect(poObjToMsgObj(PO_OBJ)).toMatchSnapshot();
 	});
 
 	it('filters po content by keys', () => {
-		const keys = ['id1'];
-		const val = txlib.filterPoContentByKeys(keys, msg1);
-		expect(val).toMatchSnapshot();
-	});
-
-	it('takes po file content, extract trn content', () => {
-		const fileContent = `msgid ""
-msgstr "Content-Type: text/plain; charset=utf-8\n"
-
-# MW-000
-#: src/components/EventCard.jsx:27:16
-msgid "event.oneMemberWent"
-msgstr "1 Mitglied ging"
-`;
-		const val = txlib.parsePluckTrns(fileContent);
-		expect(val).toMatchSnapshot();
-	});
-
-	it('takes trn content, returns po file', () => {
-		const poObj = {
-			'event.oneMemberWent': {
-				comments: {
-					reference: 'src/components/EventCard.jsx:27:16',
-					translator: 'MW-000',
-				},
-				msgid: 'event.oneMemberWent',
-				msgstr: ['1 Mitglied ging'],
-			},
-		};
-
-		const val = txlib.compilePo(poObj);
+		const keys = ['mockMessage.id'];
+		const val = filterPoContentByKeys(keys, PO_OBJ);
 		expect(val).toMatchSnapshot();
 	});
 
 	it('loads resource list and sorts by date modified', () =>
-		txlib.getTfxResources().then(resources => {
+		getTfxResources().then(resources => {
 			expect(resources).toMatchSnapshot();
 		}));
 });

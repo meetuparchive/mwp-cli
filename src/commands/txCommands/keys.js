@@ -12,7 +12,7 @@ module.exports = {
 				resources.map(resource =>
 					txlib
 						.readResource(resource)
-						.then(txlib.parsePluckTrns)
+						.then(txlib.poStringToPoObj)
 						.then(Object.keys)
 						.then(keys => {
 							console.log(resource);

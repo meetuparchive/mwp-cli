@@ -3,11 +3,10 @@ const txlib = require('./util');
 
 const pushTxMaster = require('./util/pushTxMaster');
 const pushTxAllTranslations = require('./util/pushTxAllTranslations');
-const { gitBranch } = require('./util/gitHelpers');
-const checkNotMaster = require('./util/checkNotMaster');
+const { gitBranch, exitOnMaster } = require('./util/gitHelpers');
 
 const readParseResource = slug =>
-	txlib.readTfxResource(slug).then(txlib.parsePluckTrns);
+	txlib.readTfxResource(slug).then(txlib.poStringToPoObj);
 
 // Check transifex resource exists for the supplied git branch name,
 // defaulting to checking currently-checked-out branch
@@ -69,7 +68,7 @@ const masterAndResourceTrns = () =>
 const pushContent = () => {
 	console.log(chalk.blue('pushing content to transifex'));
 	return txlib
-		.diffVerbose(masterAndResourceTrns(), txlib.getMergedLocalTrns())
+		.diffVerbose(masterAndResourceTrns(), txlib.getLocalTrnSourcePo())
 		.then(pushResource);
 };
 
@@ -96,7 +95,7 @@ module.exports = {
 			return pushTxAllTranslations();
 		}
 
-		checkNotMaster();
+		exitOnMaster();
 		pushContent().catch(err => {
 			console.error('Encountered error during push:', err);
 			process.exit(1);
