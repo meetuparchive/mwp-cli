@@ -1,21 +1,17 @@
 const chalk = require('chalk');
-const Rx = require('rxjs');
-require('rxjs/add/observable/concat');
 const txlib = require('./index');
 
 // push content to transifex master
 const pushTxMaster = () => {
-	txlib.checkEnvVars();
-	console.log(chalk.blue('pushing content to transifex master'));
+	console.log(chalk.blue('Pushing content to transifex master'));
 
-	Rx.Observable.concat(txlib.updateMasterContent$, txlib.updateTranslations$) // update master content before pushing translations
-		.subscribe(
-			null,
-			error => {
-				console.error(`encountered error during upload: ${error}`);
-				process.exit(1);
-			},
-			() => console.log('done')
-		);
+	return txlib
+		.updateMasterContent() // update master content before pushing translations
+		.then(txlib.updateTranslations)
+		.catch(err => {
+			console.error('Encountered error during upload:', err);
+			process.exit(1);
+		});
 };
+
 module.exports = pushTxMaster;
