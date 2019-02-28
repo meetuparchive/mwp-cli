@@ -30,6 +30,9 @@ const pullResource = resource => {
 	});
 };
 
+// Utility function to execute Promise-returning functions one at a time.
+// Useful for cases where parallel execution might result in throttling
+// or fragile race conditions
 const promiseSerial = funcs =>
 	funcs.reduce(
 		(promise, func) =>
@@ -39,6 +42,9 @@ const promiseSerial = funcs =>
 		Promise.resolve([])
 	);
 
+// create a function that creates a resource 'pull' Promise. This can be
+// composed with `resource.map` and `promiseSerial` in order to pull an
+// array of resources sequentially
 const makeDeferredPull = doCommit => r => () =>
 	pullResource(r).then(resource => {
 		if (!doCommit) {
