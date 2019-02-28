@@ -8,7 +8,7 @@ const { gitBranch, exitOnMaster } = require('./util/gitHelpers');
 const readParseResource = slug =>
 	txlib.readTfxResource(slug).then(txlib.poStringToPoObj);
 
-// Check transifex resource exists for the supplied git branch name,
+// Check if transifex resource exists for the supplied git branch name,
 // defaulting to checking currently-checked-out branch
 const checkTfxResourceExists = (branch = gitBranch()) =>
 	txlib.getTfxResources().then(resources => resources.indexOf(branch) > -1);
