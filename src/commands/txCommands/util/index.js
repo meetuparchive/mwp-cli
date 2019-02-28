@@ -395,12 +395,10 @@ const uploadTrnsMaster = ([lang_tag, content]) => {
 const updateTranslations = () =>
 	Promise.all(
 		getAllLocalPoContent()
-			.map(([lang_tag, content]) =>
-				poObjToPoString(content).map(compiledContent => [
-					lang_tag,
-					compiledContent,
-				])
-			)
+			.map(([lang_tag, poContent]) => [
+				lang_tag,
+				poObjToPoString(poContent),
+			])
 			.map(uploadTrnsMaster)
 	);
 
