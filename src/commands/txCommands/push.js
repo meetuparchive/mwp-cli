@@ -28,7 +28,7 @@ const pushResource = poData =>
 				: txlib.createResource;
 			return push(branch, poData);
 		}
-
+// If there's no translation `po` data but the branch resource exists (in transifex), delete it from transifex
 		if (branchResourceExists) {
 			return txlib
 				.deleteTxResource(branch)
