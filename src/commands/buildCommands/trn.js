@@ -6,7 +6,10 @@ const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 
 const { paths, locales, package: packageConfig } = require('mwp-config');
-const { getLocalLocaleMessages, localTrns } = require('../txCommands/util');
+const {
+	getLocalLocaleMessages,
+	extractTrnSource,
+} = require('../txCommands/util');
 
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
 
@@ -63,7 +66,7 @@ const makeTrnModuleWriter = messagesByLocale => ({ filename, msgids }) => {
 };
 
 const componentTrnDefinitions = () =>
-	localTrns().map(trnsFromFile => ({
+	extractTrnSource().map(trnsFromFile => ({
 		filename: path.resolve(
 			paths.repoRoot,
 			trnsFromFile[0].file.replace(/\.jsx?$/, '')
