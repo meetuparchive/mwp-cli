@@ -8,6 +8,7 @@ const child_process = require('child_process');
  * @return {Observable} Observable of tx process
  */
 const commit = (commitMessage, args) => {
+	console.log('Committing local changes...');
 	const stdout = child_process.execSync('git status');
 	if (!stdout.includes('modified:')) {
 		console.log(chalk.grey('no changes to commit'));
@@ -16,8 +17,9 @@ const commit = (commitMessage, args) => {
 
 	child_process.execSync('git add .');
 	const command = `git commit -m ${JSON.stringify(commitMessage)} ${args}`;
-	child_process.execSync(command);
 	console.log(chalk.grey(command));
+	child_process.execSync(command);
+	console.log('Done.');
 	return;
 };
 
@@ -37,10 +39,12 @@ const gitBranch = () => {
 };
 
 const exitOnMaster = () => {
+	console.log('Confirming this command is not being run on "master"');
 	const branchName = gitBranch();
 	if (branchName === 'master') {
 		console.log(
-			'do not run this script on master. it will kill the master resource on Transifex.'
+			'ERROR: Do not run this script on master.',
+			'It will corrupt the master resource on Transifex.'
 		);
 		process.exit(0);
 	}
