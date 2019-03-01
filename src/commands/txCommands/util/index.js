@@ -392,6 +392,7 @@ const uploadTrnsMaster = ([lang_tag, content]) => {
 };
 
 // Helper to update master with all local translated content
+// TODO: unit test when tfx can be mocked
 const updateTranslations = () =>
 	Promise.all(
 		getAllLocalPoContent()
