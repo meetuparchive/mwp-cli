@@ -185,10 +185,10 @@ const resourceContent = (slug, content) => ({
 	content,
 });
 
-const createTfxResource = (slug, content) => {
+const createTfxResource = (slug, content, project = PROJECT) => {
 	const compiledContent = poObjToPoString(content);
 	return tfx.api
-		.resourceCreateMethod(PROJECT, resourceContent(slug, compiledContent))
+		.resourceCreateMethod(project, resourceContent(slug, compiledContent))
 		.then(
 			logSuccess('create', slug),
 			logError('Failed to create resource.', slug)
@@ -204,20 +204,18 @@ const readTfxResource = (slug, project = PROJECT) =>
 		5
 	);
 
-const updateTfxResource = (slug, project = PROJECT) => {
-	const compiledContent = poObjToPoString(getLocalTrnSourcePo());
+const updateTfxResource = (slug, content, project = PROJECT) =>
 	// allow override for push to mup-web-master
-	return tfx.api
+	tfx.api
 		.uploadSourceLanguageMethod(
 			project,
 			slug,
-			resourceContent(slug, compiledContent)
+			resourceContent(slug, content)
 		)
 		.then(
 			logSuccess('update', slug),
 			logError('ERROR: Failed to update resource.')
 		);
-};
 
 const deleteTxResource = slug =>
 	tfx.api
@@ -361,7 +359,8 @@ const getTfxResourcesComplete = () =>
 
 // Helper to update tx resource with all local trns
 const updateAllMessages = (resource, project) => {
-	return updateTfxResource(resource, project)
+	const allCompiledContent = poObjToPoString(getLocalTrnSourcePo());
+	return updateTfxResource(resource, allCompiledContent, project)
 		.then(
 			logSuccess(`update ${project} - ${resource} success`),
 			logError(`update ${project} - ${resource} FAIL!`)
