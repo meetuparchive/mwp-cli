@@ -185,7 +185,7 @@ const resourceContent = (slug, content) => ({
 	content,
 });
 
-const createResource = (slug, content) => {
+const createTfxResource = (slug, content) => {
 	const compiledContent = poObjToPoString(content);
 	return tfx.api
 		.resourceCreateMethod(PROJECT, resourceContent(slug, compiledContent))
@@ -408,7 +408,7 @@ module.exports = {
 	getLocalLocaleMessages,
 	ALL_TRANSLATIONS_RESOURCE,
 	poObjToPoString,
-	createResource,
+	createTfxResource,
 	deleteTxResource,
 	diff,
 	diffVerbose,

@@ -24,11 +24,11 @@ const pushResource = poData =>
 				'resource'
 			);
 			const push = branchResourceExists
-				? txlib.updateResource
-				: txlib.createResource;
+				? txlib.updateTfxResource
+				: txlib.createTfxResource;
 			return push(branch, poData);
 		}
-// If there's no translation `po` data but the branch resource exists (in transifex), delete it from transifex
+		// If there's no translation `po` data but the branch resource exists (in transifex), delete it from transifex
 		if (branchResourceExists) {
 			return txlib
 				.deleteTxResource(branch)
