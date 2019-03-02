@@ -17,14 +17,13 @@ const pullTranslations = (branch, lang_tag) =>
 const pullResourceContent = branch =>
 	Promise.all(
 		// 1. load local trn content [ lang_tag, content ]
-		txlib.getAllLocalPoContent().map(([lang_tag, content]) =>
+		txlib.getAllLocalPoContent().map(([lang_tag, localContent]) =>
 			// 2. download updates
-			pullTranslations(branch, lang_tag).then(newContent => {
-				// 3. write po files with updates merged into existing content
-				const poContent = txlib.poObjToPoString([
-					lang_tag,
-					Object.assign(content, newContent), // overwrite with new content
-				]);
+			pullTranslations(branch, lang_tag).then(remoteContent => {
+				// 3. write po files with updates merged into existing localContent
+				const poContent = txlib.poObjToPoString(
+					Object.assign(localContent, remoteContent)
+				);
 				const filepath = path.resolve(
 					paths.repoRoot,
 					`src/trns/po/${lang_tag}.po`
