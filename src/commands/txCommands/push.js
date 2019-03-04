@@ -17,7 +17,7 @@ const checkTfxResourceExists = (branch = gitBranch()) =>
 const pushResource = poData =>
 	checkTfxResourceExists().then(branchResourceExists => {
 		const branch = gitBranch();
-		if (Object.keys(poData)) {
+		if (Object.keys(poData).length) {
 			console.log('translation keys:', Object.keys(poData).join(', '));
 			console.log(
 				branchResourceExists ? 'Updating' : 'Creating',
