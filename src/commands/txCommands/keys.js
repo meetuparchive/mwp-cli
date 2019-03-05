@@ -1,18 +1,17 @@
-const txlib = require('./util');
 const chalk = require('chalk');
+const tfx = require('./util/transifex');
 
 module.exports = {
 	command: 'keys',
 	description: 'Get list of resources and their keys',
 	handler: argv => {
-		console.log(chalk.blue('Downloading resource data\n'));
+		console.log(chalk.blue('Downloading resource data'));
 
-		return txlib.getTfxResources().then(resources =>
+		return tfx.resource.list().then(resources =>
 			Promise.all(
 				resources.map(resource =>
-					txlib
-						.readResource(resource)
-						.then(txlib.poStringToPoObj)
+					tfx.resource
+						.pullAll(resource)
 						.then(Object.keys)
 						.then(keys => {
 							console.log(resource);

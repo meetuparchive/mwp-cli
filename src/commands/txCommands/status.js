@@ -1,4 +1,4 @@
-const txlib = require('./util');
+const tfx = require('./util/transifex');
 const chalk = require('chalk');
 
 module.exports = {
@@ -7,8 +7,8 @@ module.exports = {
 	handler: argv => {
 		console.log(chalk.blue('checking resource status'));
 
-		txlib
-			.getTfxResourcesIncomplete()
+		tfx.resource
+			.listInComplete()
 			.then(resources => {
 				if (resources.length) {
 					console.log('\nIncomplete Resources');
@@ -17,7 +17,7 @@ module.exports = {
 					);
 				}
 			})
-			.then(txlib.getTfxResourcesComplete)
+			.then(tfx.resource.listComplete)
 			.then(resources => {
 				if (resources.length) {
 					console.log('\nComplete Resources');

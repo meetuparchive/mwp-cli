@@ -4,8 +4,8 @@ const pullResourceTrns = require('./util/pullResourceTrns');
 const gitHelpers = require('./util/gitHelpers');
 
 const getProjectResourcesList = () =>
-	txlib
-		.getTfxResources()
+	txlib.resource
+		.list()
 		// We want to sort the array of resources so that the ALL_TRANSLATIONS_RESOURCE is
 		// downloaded first, this will allow other resources to be applied on top of
 		// any changes in that resource. Hopefully, this should prevent any changes in
