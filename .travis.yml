@@ -17,7 +17,6 @@ env:
 
 before_install:
   - openssl aes-256-cbc -K $encrypted_8360855577e2_key -iv $encrypted_8360855577e2_iv -in '.travis/github_deploy_key.enc' -out github_deploy_key -d
-  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
 
 before_script:
   - git diff --exit-code yarn.lock
@@ -40,6 +39,13 @@ after_script:
     export NPM_TAG=beta
   - echo "GIT_TAG=$GIT_TAG"
   - echo "NPM_TAG=$NPM_TAG"
-  - npm version $GIT_TAG -m "Version $GIT_TAG built by Travis CI - https://travis-ci.com/$TRAVIS_REPO_SLUG/builds/$TRAVIS_JOB_ID"
   - git push --tags git@github.com:$TRAVIS_REPO_SLUG.git
-  - npm publish --tag $NPM_TAG
+deploy:
+  provider: npm
+  email: web-platform-bot@meetup.com
+  tag: $NPM_TAG
+  api_key:
+    secure: j0LMwZNnOMAM5wMRvWh/GH2zsxioYxhRtwywUDB1jhWlbW84QHNlA0AKJPNWlDKka+SOLUqoQKs4Ax/awxNlyjPCvolusCf5LDoObn56H+MS5sW4Gt8R7w/X9wGpkS8xrQZ4amyFQejcMuIEUzj61aix1HR0k6g+fB4VJpzWIHgsbbYv1Txb8ncFUJPg2N5Gl4lgSKSCCLvSsqFfnFf0bYA8Ci8RG0gHUK2nscZPfvKCP4Jpp+zVo9fahu1F/wwCwisg6Hq6h+/gXK+36r9aPx7Fz3efmllnGTBOThUkgJPkOZU5hWolEQ2lzzmT0iIlKNYjijpCxKe2MGnQIA9Nyxb9mxwjh1M0bzWJaZteZTKcgv47RDL9toHgTRfp9klV52zWXTdl/f1efVIBKef4167PmCvA44blUZ8pfCdBqrrWl50IcH/vLm3ctIGCpAh7yK6yBSaqT1WxCr3rO/37rkKDc8UzEcj5Xuc782UwqHe7ctn5tpGHbsXJwgpPUneLXlrEQyTQ15B6yCqWBhbLrdyquYb1AHPqMlgxANYY+54VpMICkldP1wQv5rS7+cwzQv+/7/NeNaDwj3SVy/f374LxBmGMIbuIXaAvRtnvtKmcvCf+tUuBfoUQTmHEryTz2VWp4nkeQNpi0uZ/9Ip8/U7CPKh2dxZuh6JmcJxGHYA=
+  on:
+    tags: true
+    repo: meetup/mwp-cli
