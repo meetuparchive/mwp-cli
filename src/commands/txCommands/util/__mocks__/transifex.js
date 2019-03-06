@@ -29,9 +29,9 @@ transifex.prototype.resourcesInstanceMethods = (project, slug, cb) => {
 };
 
 const todo = [
-	'sourceLanguageMethods',
-	'resourceCreateMethod',
-	'uploadSourceLanguageMethod',
+	'sourceLanguageMethods', // poString
+	'resourceCreateMethod', // => null
+	'uploadSourceLanguageMethod', // (project, slug, PoResource) => null
 	'resourceDeleteMethod',
 	'statisticsMethods',
 	'uploadTranslationInstanceMethod',

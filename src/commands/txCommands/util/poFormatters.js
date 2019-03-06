@@ -13,18 +13,16 @@ const gettextParser = require('gettext-parser');
  *   }
  * }
  *
+ * type MessageDescriptor (defined by react-intl)
+ *
  * type MessageObj = {
  *   [id: string]: string
- * }
- *
- * type MessageMap = {
- *   [localeCode: string ]: MessageObj
  * }
  */
 
 // return object that is a map of trn keys/ids to translated copy - remove
 // extraneous metadata from Po file content
-// fileString =>
+// fileString => PoObj
 const poStringToPoObj = fileContent => {
 	const poTrn = gettextParser.po.parse(fileContent).translations['']; // yes, a blank string as a key
 	// translations object includes unusable empty string key - remove it
@@ -82,7 +80,7 @@ const poStringToPoResource = (slug, content) => ({
 
 const poObjToMsgObj = trns =>
 	Object.keys(trns).reduce((acc, key) => {
-		acc[key] = trns[key].msgstr[0];
+		acc[key] = trns[key].sgstr[0];
 		return acc;
 	}, {});
 

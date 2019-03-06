@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`msgDescriptorsToPoObj 1`] = `
+Object {
+  "msg.mock.id": Object {
+    "comments": Object {
+      "extracted": "foo description text",
+      "reference": "/src/path/to/source/file.jsx:10:11",
+      "translator": "WP-1234",
+    },
+    "msgid": "msg.mock.id",
+    "msgstr": Array [
+      "test defaultMessage",
+    ],
+  },
+}
+`;
+
+exports[`poObjToPoString takes trn content, returns po file: 
+"msgid \\"\\"
+msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
+
+# WP-1234
+#: src/path/to/component.trns.jsx:4:45
+msgid \\"mockMessage.id\\"
+msgstr \\"mock translated copy\\"
+"
+ 1`] = `
+"msgid \\"\\"
+msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
+
+# WP-1234
+#: src/path/to/component.trns.jsx:4:45
+msgid \\"mockMessage.id\\"
+msgstr \\"mock translated copy\\"
+"
+`;
+
+exports[`poStringToPoObj parses PO-formatted file content into a plain JS object map 1`] = `
+Object {
+  "mockMessage.id": Object {
+    "comments": Object {
+      "reference": "src/path/to/component.trns.jsx:4:45",
+      "translator": "WP-1234",
+    },
+    "msgid": "mockMessage.id",
+    "msgstr": Array [
+      "mock translated copy",
+    ],
+  },
+}
+`;

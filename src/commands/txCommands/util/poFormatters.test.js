@@ -1,4 +1,10 @@
-const { poStringToPoObj, poObjToPoString } = require('./poFormatters');
+const {
+	poStringToPoObj,
+	poObjToPoString,
+	msgDescriptorsToPoObj,
+	poStringToPoResource,
+	poObjToMsgObj,
+} = require('./poFormatters');
 
 const PO_FILE_CONTENT = `# WP-1234
 #: src/path/to/component.trns.jsx:4:45
@@ -52,6 +58,41 @@ test('poObjToPoString -> poStringToPoObj', () => {
 	expect(poObj).toEqual(PO_OBJ);
 });
 
-test.todo('msgDescriptorsToPoObj');
-test.todo('poStringToPoResource');
-test.todo('poObjToMsgObj');
+test('msgDescriptorsToPoObj', () => {
+	// output of react-intl babel plugin
+	const msgDescriptors = [
+		{
+			id: 'msg.mock.id',
+			description: { text: 'foo description text', jira: 'WP-1234' },
+			file: '/src/path/to/source/file.jsx',
+			defaultMessage: 'test defaultMessage',
+			start: {
+				line: 10,
+				column: 11,
+			},
+		},
+	];
+	const output = msgDescriptorsToPoObj(msgDescriptors);
+	expect(output).toMatchSnapshot();
+});
+test('poStringToPoResource', () => {
+	expect(poStringToPoResource('WP_slug_example', PO_FILE_CONTENT))
+		.toMatchInlineSnapshot(`
+Object {
+  "content": "# WP-1234
+#: src/path/to/component.trns.jsx:4:45
+msgid \\"mockMessage.id\\"
+msgstr \\"mock translated copy\\"",
+  "i18n_type": "PO",
+  "name": "WP_slug_example",
+  "slug": "WP_slug_example",
+}
+`);
+});
+test('poObjToMsgObj', () => {
+	expect(poObjToMsgObj(PO_OBJ)).toMatchInlineSnapshot(`
+Object {
+  "mockMessage.id": "mock translated copy",
+}
+`);
+});
