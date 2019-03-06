@@ -1,15 +1,14 @@
 const chalk = require('chalk');
 const txlib = require('./util');
-const pullResourceTrns = require('./util/pullResourceTrns');
 const gitHelpers = require('./util/gitHelpers');
 
 const getProjectResourcesList = () =>
-	txlib
-		.getTfxResources()
+	txlib.resource
+		.list()
 		// We want to sort the array of resources so that the ALL_TRANSLATIONS_RESOURCE is
 		// downloaded first, this will allow other resources to be applied on top of
-		// any changes in that resource. Hopefully, this should prevent any changes in
-		// feature branches from being overridden by this resource
+		// any changes in that resource. This should prevent any changes in
+		// feature branches from being overwritten by this resource
 		.then(resources =>
 			resources.sort(
 				a => (a === txlib.ALL_TRANSLATIONS_RESOURCE ? -1 : 1)
@@ -17,16 +16,15 @@ const getProjectResourcesList = () =>
 		);
 
 /**
- * Kicks off process to downloaded an individual resources trns
+ * Download individual resources trns
  * @param  {String} resource resource slug to be used when we downloaded translations
- * @return {Observable} Observable of tx process
  */
-const pullResource = resource => {
-	console.log(chalk.cyan(`Starting tx:pull for '${resource}'`));
-	return pullResourceTrns.pullResourceContent(resource).then(() => {
+const pullResource = slug => {
+	console.log(chalk.cyan(`Starting tx:pull for '${slug}'`));
+	return txlib.pullResourceContent(slug).then(() => {
 		// wait until all content has been downloaded before moving on to next tasks
-		console.log(chalk.green(`\nCompleted tx:pull for '${resource}'`));
-		return resource;
+		console.log(chalk.green(`\nCompleted tx:pull for '${slug}'`));
+		return slug;
 	});
 };
 

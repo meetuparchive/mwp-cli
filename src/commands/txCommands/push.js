@@ -1,85 +1,66 @@
 const chalk = require('chalk');
 const txlib = require('./util');
+const tfx = require('./util/transifex');
 
 const pushTxMaster = require('./util/pushTxMaster');
-const pushTxAllTranslations = require('./util/pushTxAllTranslations');
 const { gitBranch, exitOnMaster } = require('./util/gitHelpers');
 
-const readParseResource = slug =>
-	txlib.readTfxResource(slug).then(txlib.poStringToPoObj);
-
-// Check if transifex resource exists for the supplied git branch name,
-// defaulting to checking currently-checked-out branch
-const checkTfxResourceExists = (branch = gitBranch()) =>
-	txlib.getTfxResources().then(resources => resources.indexOf(branch) > -1);
-
-// syncs content in po format to tx
-const pushResource = poData =>
-	checkTfxResourceExists().then(branchResourceExists => {
-		const branch = gitBranch();
+// syncs content in po format to Transifex
+const pushSrcDiff = poData => {
+	const branch = gitBranch();
+	return tfx.resource.exists(branch).then(branchResourceExists => {
 		if (Object.keys(poData).length) {
-			console.log('translation keys:', Object.keys(poData).join(', '));
+			console.log(chalk.blue('Pushing new source content to Transifex'));
+			console.log('keys:', Object.keys(poData).join(', '));
 			console.log(
 				branchResourceExists ? 'Updating' : 'Creating',
 				'resource'
 			);
 			const push = branchResourceExists
-				? txlib.updateTfxResource
-				: txlib.createTfxResource;
+				? tfx.resource.updateSrc
+				: tfx.resource.create;
 			return push(branch, poData);
 		}
-		// If there's no translation `po` data but the branch resource exists (in transifex), delete it from transifex
+		// If there's no translation `po` data but the branch resource exists in Transifex,
+		// delete it from Transifex
 		if (branchResourceExists) {
-			return txlib
-				.deleteTxResource(branch)
+			return tfx.resource
+				.del(branch)
 				.then(() =>
 					console.log(
-						`Local branch trn data is empty - delete ${branch}`
+						'Local branch trn data is empty',
+						` - deleted ${tfx.PROJECT}/${branch}`
 					)
 				);
 		}
 		return; // no data, no branch, no problem
 	});
-
-const getTfxResourceTrns = () =>
-	txlib
-		.getTfxResources()
-		// get resources but filter out my current resource
-		.then(resources => {
-			const branch = gitBranch();
-			return resources.filter(resource => resource !== branch);
-		})
-		// transform resource list to resource content, maintaining order
-		.then(resources => resources.map(readParseResource))
-		.then(resourcesContent =>
-			resourcesContent.reduce(
-				(joinedTrns, resourceTrns) =>
-					Object.assign(joinedTrns, resourceTrns),
-				{}
-			)
-		);
+};
 
 const masterAndResourceTrns = () =>
-	Promise.all([txlib.getTfxMaster(), getTfxResourceTrns()]).then(
-		([masterTrns, resourceTrns]) =>
-			Object.assign({}, masterTrns, resourceTrns)
+	Promise.all([
+		tfx.resource.pullAll(tfx.MASTER_RESOURCE, tfx.PROJECT_MASTER),
+		tfx.project.pullAll(resource => resource !== gitBranch()),
+	]).then(([masterTrns, resourceTrns]) =>
+		Object.assign({}, masterTrns, resourceTrns)
 	);
 
-const pushContent = () => {
-	console.log(chalk.blue('pushing content to transifex'));
+// Upload any TRN source content that is defined locally but _not_ present on
+// any other resource in Transifex
+const pushTrnSrc = () => {
 	return txlib
-		.diffVerbose(masterAndResourceTrns(), txlib.getLocalTrnSourcePo())
-		.then(pushResource);
+		.trnSrcDiffVerbose(masterAndResourceTrns(), txlib.getLocalTrnSourcePo())
+		.then(pushSrcDiff);
 };
 
 module.exports = {
 	command: 'push',
-	description: 'push content to transifex',
+	description: 'Push new TRN source content to transifex',
 	builder: yarg =>
 		yarg.option({
 			project: {
 				alias: 'p',
-				default: txlib.PROJECT,
+				default: tfx.PROJECT,
 			},
 			all: {
 				alias: 'a',
@@ -87,17 +68,22 @@ module.exports = {
 			},
 		}),
 	handler: argv => {
-		if (argv.project === txlib.MASTER_RESOURCE) {
+		if (argv.project === tfx.MASTER_RESOURCE) {
 			return pushTxMaster();
 		}
 
 		if (argv.all) {
-			return pushTxAllTranslations();
+			console.log(chalk.blue('Pushing content to all_translations'));
+			return txlib.updateTfxSrcAllTranslations().catch(error => {
+				console.error('ERROR:', error);
+				process.exit(1);
+			});
 		}
 
+		// all other commands should not be run on master
 		exitOnMaster();
-		pushContent().catch(err => {
-			console.error('Encountered error during push:', err);
+		pushTrnSrc().catch(err => {
+			console.error('ERROR:', err);
 			process.exit(1);
 		});
 	},

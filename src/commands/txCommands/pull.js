@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const pullResourceTrns = require('./util/pullResourceTrns');
+const { pullResourceContent } = require('./util');
 
 module.exports = {
 	command: 'pull',
@@ -16,9 +16,9 @@ module.exports = {
 		console.log(chalk.blue('Pulling resource content from transifex'));
 
 		argv.resource.forEach(resource =>
-			pullResourceTrns
-				.pullResourceContent(resource)
-				.then(() => console.log(chalk.green(`\n${resource} done`)))
+			pullResourceContent(resource).then(() =>
+				console.log(chalk.green(`\n${resource} done`))
+			)
 		);
 	},
 };
