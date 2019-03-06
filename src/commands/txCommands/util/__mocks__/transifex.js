@@ -28,4 +28,14 @@ transifex.prototype.resourcesInstanceMethods = (project, slug, cb) => {
 	cb(null, response[slug]);
 };
 
+const todo = [
+	'sourceLanguageMethods',
+	'resourceCreateMethod',
+	'uploadSourceLanguageMethod',
+	'resourceDeleteMethod',
+	'statisticsMethods',
+	'uploadTranslationInstanceMethod',
+	'translationInstanceMethod',
+];
+
 module.exports = transifex;

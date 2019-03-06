@@ -9,7 +9,7 @@ const poFormatters = require('./poFormatters');
 const tfx = require('./transifex');
 const { logSuccess, logError } = require('./logger');
 
-const PO_PATH = `${path.resolve(paths.repoRoot, 'src/trns/po/')}/`;
+const PO_DIR = path.resolve(paths.repoRoot, 'src/trns/po/');
 
 /**
  * This modules connects local file system content to the Transifex API,
@@ -41,7 +41,8 @@ const mergeUnique = ({ data, errors }, toMerge) => {
 	return { data, errors };
 };
 
-// takes array of local trns in po format, merges, and throws error if there are duplicate keys
+// takes array of local trns in po format, merges, and throws error if there
+// are duplicate keys
 // Array<PoTrn> => PoTrn
 const reduceUniques = localTrns => {
 	const { data, errors } = localTrns.reduce(mergeUnique, {
@@ -55,7 +56,9 @@ const reduceUniques = localTrns => {
 	return data;
 };
 
-// extract trn source data from application, one value per file-with-content
+/* END UTILITIES */
+
+// extract trn source data from local application, one value per file-with-content
 // () => Array<MessageDescriptor>
 const extractTrnSource = () =>
 	glob
@@ -84,13 +87,13 @@ const _fileToLocaleTuple = filename => {
 	return [lang_tag, poFormatters.poStringToPoObj(fileContent)];
 };
 const getAllLocalPoContent = memoize(() =>
-	glob.sync(`${PO_PATH}!(en-US).po`).map(_fileToLocaleTuple)
+	glob.sync(`${PO_DIR}/!(en-US).po`).map(_fileToLocaleTuple)
 );
 
 // map of locale code to translated content formatted for React-Intl
 const getLocalLocaleMessages = () => {
 	const poContent = glob
-		.sync(`${PO_PATH}*.po`)
+		.sync(`${PO_DIR}/*.po`)
 		// read and parse all po files
 		.map(_fileToLocaleTuple)
 		.reduce((obj, [lang_tag, poObj]) => {
@@ -167,6 +170,24 @@ const updateTfxCopyMaster = () =>
 		})
 	);
 
+// Merge remote translated PO content into local content /src/trns directory
+const pullResourceContent = (branch, poDir = PO_DIR) =>
+	Promise.all(
+		// 1. load local trn content [ lang_tag, content ]
+		getAllLocalPoContent().map(([lang_tag, localContent]) =>
+			// 2. download updates
+			tfx.resource.pullLang(branch, lang_tag).then(remoteContent => {
+				// 3. write po files with updates merged into existing localContent
+				const poContent = poFormatters.poObjToPoString(
+					Object.assign(localContent, remoteContent)
+				);
+				const filepath = path.resolve(poDir, `${lang_tag}.po`);
+				fs.writeFileSync(filepath, poContent);
+				process.stdout.write(`${lang_tag},`); // incrementally write one-line log
+			})
+		)
+	).then(() => process.stdout.write('\n'));
+
 module.exports = {
 	getAllLocalPoContent,
 	getLocalLocaleMessages,
@@ -174,6 +195,7 @@ module.exports = {
 	trnSrcDiffVerbose,
 	extractTrnSource,
 	getLocalTrnSourcePo,
+	pullResourceContent,
 	reduceUniques,
 	updateTfxSrcMaster,
 	updateTfxSrcAllTranslations,

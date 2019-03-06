@@ -51,3 +51,7 @@ test('poObjToPoString -> poStringToPoObj', () => {
 	const poObj = poStringToPoObj(poString);
 	expect(poObj).toEqual(PO_OBJ);
 });
+
+test.todo('msgDescriptorsToPoObj');
+test.todo('poStringToPoResource');
+test.todo('poObjToMsgObj');

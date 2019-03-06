@@ -8,7 +8,6 @@ const {
 
 const poFormatters = require('./poFormatters');
 const { logSuccess, logError } = require('./logger');
-const { gitBranch } = require('./gitHelpers');
 
 const { NODE_ENV, TRANSIFEX_USER, TRANSIFEX_PW } = process.env;
 
