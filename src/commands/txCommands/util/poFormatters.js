@@ -80,7 +80,7 @@ const poStringToPoResource = (slug, content) => ({
 
 const poObjToMsgObj = trns =>
 	Object.keys(trns).reduce((acc, key) => {
-		acc[key] = trns[key].sgstr[0];
+		acc[key] = trns[key].msgstr[0];
 		return acc;
 	}, {});
 

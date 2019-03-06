@@ -22,7 +22,9 @@ module.exports = {
 				if (resources.length) {
 					console.log('\nComplete Resources');
 					resources.forEach(console.log);
+					return;
 				}
+				console.log('0 complete resources');
 			});
 	},
 };

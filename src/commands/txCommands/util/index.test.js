@@ -18,12 +18,8 @@ const glob = require('glob');
 const {
 	getAllLocalPoContent,
 	getLocalLocaleMessages,
-	diff,
-	filterPoContentByKeys,
+	objDiff,
 	reduceUniques,
-	poObjToMsgObj,
-	poToUploadFormat,
-	msgDescriptorsToPoObj,
 } = require('./index');
 
 const LOCALES = ['en-US', 'fr-FR', 'es', 'es-ES'];
@@ -88,28 +84,7 @@ describe('trn utils', () => {
 			newEntry,
 		};
 
-		expect(diff(mock)).toEqual(expected);
-	});
-
-	it('convert message descriptor objects into po style objects', () => {
-		const messageDescriptors = [
-			{
-				id: 'id1',
-				defaultMessage: 'id1 text',
-				description: { text: 'text for test', jira: 'MW-001' },
-				file: 'text.txt',
-				start: { line: 2, column: 5 },
-			},
-			{
-				id: 'id2',
-				defaultMessage: 'id2 text',
-				description: { text: 'text for test v2', jira: 'MW-002' },
-				file: 'text2.txt',
-				start: { line: 10, column: 10 },
-			},
-		];
-
-		expect(msgDescriptorsToPoObj(messageDescriptors)).toMatchSnapshot();
+		expect(objDiff(mock)).toEqual(expected);
 	});
 
 	it('merge objects, throw error if dupe key', () => {
@@ -118,23 +93,4 @@ describe('trn utils', () => {
 		// expected error from duplicate msgs
 		expect(() => reduceUniques([PO_OBJ, PO_OBJ])).toThrow();
 	});
-
-	it('takes po objects and returns tx upload format', () => {
-		expect(poToUploadFormat(PO_OBJ)).toMatchSnapshot();
-	});
-
-	it('takes po objects and returns react intl format', () => {
-		expect(poObjToMsgObj(PO_OBJ)).toMatchSnapshot();
-	});
-
-	it('filters po content by keys', () => {
-		const keys = ['mockMessage.id'];
-		const val = filterPoContentByKeys(keys, PO_OBJ);
-		expect(val).toMatchSnapshot();
-	});
-
-	it('loads resource list and sorts by date modified', () =>
-		getTfxResources().then(resources => {
-			expect(resources).toMatchSnapshot();
-		}));
 });

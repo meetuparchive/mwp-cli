@@ -112,7 +112,7 @@ const create = (slug, poObj, project = PROJECT) => {
 			poFormatters.poStringToPoResource(slug, compiledContent)
 		)
 		.then(
-			logSuccess('create', slug),
+			logSuccess(`Created ${project}/${slug}`),
 			logError('Failed to create resource.', slug)
 		);
 };
@@ -124,10 +124,11 @@ const getCompletionValue = stat =>
 		// filter out secondary locale tags. they don't matter for completion
 		.filter(key => localesSecondary.indexOf(key) === -1)
 		// reduce to object that only has incomplete languages
-		.reduce((localeCompletion, locale_tag) => {
-			stat[locale_tag].completed !== '100%' &&
-				(localeCompletion[locale_tag] = stat[locale_tag].completed);
-			return localeCompletion;
+		.reduce((acc, locale_tag) => {
+			if (stat[locale_tag].completed !== '100%') {
+				acc[locale_tag] = stat[locale_tag].completed;
+			}
+			return acc;
 		}, {});
 
 // () => Promise<Array<[resourceName, { LocaleCode: string }]>>
@@ -202,7 +203,7 @@ const exists = branch => list().then(list => list.includes(branch));
 const projectPullAll = (filter = () => true, project = PROJECT) =>
 	list()
 		// transform resource list to resource content, maintaining order
-		.then(resources => resources.filter(filter).map(pullAll))
+		.then(resources => Promise.all(resources.filter(filter).map(pullAll)))
 		.then(resourcesContent =>
 			resourcesContent.reduce(
 				(acc, resourceTrns) => Object.assign(acc, resourceTrns),

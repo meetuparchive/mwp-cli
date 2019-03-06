@@ -83,7 +83,6 @@ const getLocalTrnSourcePo = () =>
 const _fileToLocaleTuple = filename => {
 	const lang_tag = path.basename(filename, '.po');
 	const fileContent = fs.readFileSync(filename).toString();
-	console.log('file', filename, fileContent.length);
 	return [lang_tag, poFormatters.poStringToPoObj(fileContent)];
 };
 const getAllLocalPoContent = memoize(() =>
