@@ -5,25 +5,13 @@ const tfx = require('./util/transifex');
 const pushTxMaster = require('./util/pushTxMaster');
 const { gitBranch, exitOnMaster } = require('./util/gitHelpers');
 
-const pushTxAllTranslations = () => {
-	console.log(chalk.blue('pushing content to all_translations in mup-web'));
-	txlib.updateTfxSrcAllTranslations().catch(error => {
-		console.error(`encountered error during upload: ${error}`);
-		process.exit(1);
-	});
-};
-
-// Check if transifex resource exists for the supplied git branch name,
-// defaulting to checking currently-checked-out branch
-const checkTfxResourceExists = (branch = gitBranch()) =>
-	tfx.resource.list().then(resources => resources.indexOf(branch) > -1);
-
-// syncs content in po format to tx
-const pushSrcDiff = poData =>
-	checkTfxResourceExists().then(branchResourceExists => {
-		const branch = gitBranch();
+// syncs content in po format to Transifex
+const pushSrcDiff = poData => {
+	const branch = gitBranch();
+	return tfx.resource.exists(branch).then(branchResourceExists => {
 		if (Object.keys(poData)) {
-			console.log('translation keys:', Object.keys(poData).join(', '));
+			console.log(chalk.blue('Pushing new source content to Transifex'));
+			console.log('keys:', Object.keys(poData).join(', '));
 			console.log(
 				branchResourceExists ? 'Updating' : 'Creating',
 				'resource'
@@ -33,45 +21,33 @@ const pushSrcDiff = poData =>
 				: tfx.resource.create;
 			return push(branch, poData);
 		}
-		// If there's no translation `po` data but the branch resource exists (in transifex), delete it from transifex
+		// If there's no translation `po` data but the branch resource exists in Transifex,
+		// delete it from Transifex
 		if (branchResourceExists) {
 			return tfx.resource
-				.delete(branch)
+				.del(branch)
 				.then(() =>
 					console.log(
-						`Local branch trn data is empty - delete ${branch}`
+						'Local branch trn data is empty',
+						` - deleted ${tfx.PROJECT}/${branch}`
 					)
 				);
 		}
 		return; // no data, no branch, no problem
 	});
-
-const getTfxResourceTrns = () =>
-	txlib.resource
-		.list()
-		// get resources but filter out my current resource
-		.then(resources => {
-			const branch = gitBranch();
-			return resources.filter(resource => resource !== branch);
-		})
-		// transform resource list to resource content, maintaining order
-		.then(resources => resources.map(txlib.resource.pullAll))
-		.then(resourcesContent =>
-			resourcesContent.reduce(
-				(joinedTrns, resourceTrns) =>
-					Object.assign(joinedTrns, resourceTrns),
-				{}
-			)
-		);
+};
 
 const masterAndResourceTrns = () =>
-	Promise.all([txlib.getTfxMaster(), getTfxResourceTrns()]).then(
-		([masterTrns, resourceTrns]) =>
-			Object.assign({}, masterTrns, resourceTrns)
+	Promise.all([
+		tfx.resource.pullAll(tfx.MASTER_RESOURCE, tfx.PROJECT_MASTER),
+		tfx.project.pullAll(resource => resource !== gitBranch()),
+	]).then(([masterTrns, resourceTrns]) =>
+		Object.assign({}, masterTrns, resourceTrns)
 	);
 
+// Upload any TRN source content that is defined locally but _not_ present on
+// any other resource in Transifex
 const pushTrnSrc = () => {
-	console.log(chalk.blue('pushing content to transifex'));
 	return txlib
 		.trnSrcDiffVerbose(masterAndResourceTrns(), txlib.getLocalTrnSourcePo())
 		.then(pushSrcDiff);
@@ -79,7 +55,7 @@ const pushTrnSrc = () => {
 
 module.exports = {
 	command: 'push',
-	description: 'push content to transifex',
+	description: 'Push new TRN source content to transifex',
 	builder: yarg =>
 		yarg.option({
 			project: {
@@ -92,17 +68,22 @@ module.exports = {
 			},
 		}),
 	handler: argv => {
-		if (argv.project === txlib.MASTER_RESOURCE) {
+		if (argv.project === tfx.MASTER_RESOURCE) {
 			return pushTxMaster();
 		}
 
 		if (argv.all) {
-			return pushTxAllTranslations();
+			console.log(chalk.blue('Pushing content to all_translations'));
+			return txlib.updateTfxSrcAllTranslations().catch(error => {
+				console.error('ERROR:', error);
+				process.exit(1);
+			});
 		}
 
+		// all other commands should not be run on master
 		exitOnMaster();
 		pushTrnSrc().catch(err => {
-			console.error('Encountered error during push:', err);
+			console.error('ERROR:', err);
 			process.exit(1);
 		});
 	},

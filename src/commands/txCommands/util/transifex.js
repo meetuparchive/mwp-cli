@@ -8,6 +8,7 @@ const {
 
 const poFormatters = require('./poFormatters');
 const { logSuccess, logError } = require('./logger');
+const { gitBranch } = require('./gitHelpers');
 
 const { NODE_ENV, TRANSIFEX_USER, TRANSIFEX_PW } = process.env;
 
@@ -194,16 +195,29 @@ const updateSrc = (
 			logError(`ERROR: Failed to update source: ${project}/${slug}`)
 		);
 
-const delete = (slug, project = PROJECT) =>
-	api
-		.resourceDeleteMethod(project, slug)
-		.then(logSuccess('Deleted', slug))
+const del = (slug, project = PROJECT) =>
+	api.resourceDeleteMethod(project, slug).then(logSuccess('Deleted', slug));
+
+const exists = branch => list().then(list => list.includes(branch));
+
+const projectPullAll = (filter = () => true, project = PROJECT) =>
+	list()
+		// transform resource list to resource content, maintaining order
+		.then(resources => resources.filter(filter).map(pullAll))
+		.then(resourcesContent =>
+			resourcesContent.reduce(
+				(acc, resourceTrns) => Object.assign(acc, resourceTrns),
+				{}
+			)
+		);
 
 const publicInterface = {
 	PROJECT,
 	PROJECT_MASTER,
 	ALL_TRANSLATIONS_RESOURCE,
-	api,
+	project: {
+		pullAll: projectPullAll,
+	},
 	resource: {
 		pullLang,
 		pullAll,
@@ -213,7 +227,8 @@ const publicInterface = {
 		create,
 		updateCopy,
 		updateSrc,
-		delete
+		del,
+		exists,
 	},
 };
 

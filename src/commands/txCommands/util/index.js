@@ -12,33 +12,18 @@ const { logSuccess, logError } = require('./logger');
 const PO_PATH = `${path.resolve(paths.repoRoot, 'src/trns/po/')}/`;
 
 /**
- * type PoTrn = {
- *   string: {  // msgid
- *     msgid: string,
- *     msgstr: string,
- *     comments: {
- *       extracted: string,  // description.text
- *       translator: string, // description.jira
- *       reference: string,  // filename:start:end
- *     }
- *   }
- * }
- *
- * type MessageObj = {
- *   [id: string]: string
- * }
- *
- * type MessageMap = {
- *   [localeCode: string ]: MessageObj
- * }
+ * This modules connects local file system content to the Transifex API,
+ * providing logic to search for specific local content and merge it with
+ * related remote content
  */
 
-/* *** LOCAL FILE READING **** */
+/* Utilities */
 
 // Given an array of objects, merge them into a 'data' property, and keep track
 // of duplicate keys in an 'errors' property
 // Useful for finding duplicate keys across different files
-// Array<{ key: { comments: { reference: filename } }, ... }> => { data: Object, errors: { string: Array<filename> }
+// Array<{ key: { comments: { reference: filename } }, ... }> =>
+//   { data: PoObj, errors: { string: Array<filename> }
 const mergeUnique = ({ data, errors }, toMerge) => {
 	Object.keys(toMerge).forEach(key => {
 		if (data[key] === undefined) {
@@ -120,9 +105,6 @@ const getLocalLocaleMessages = () => {
 
 /* *** END LOCAL FILE READING *** */
 
-const getTfxMaster = () =>
-	tfx.resource.pullAll(tfx.MASTER_RESOURCE, tfx.PROJECT_MASTER);
-
 // returns keys which are not in main or have an updated value
 const objDiff = ([main, extracted]) =>
 	Object.keys(extracted)
@@ -193,7 +175,6 @@ module.exports = {
 	extractTrnSource,
 	getLocalTrnSourcePo,
 	reduceUniques,
-	getTfxMaster,
 	updateTfxSrcMaster,
 	updateTfxSrcAllTranslations,
 	updateTfxCopyMaster,

@@ -12,6 +12,14 @@ const gettextParser = require('gettext-parser');
  *     }
  *   }
  * }
+ *
+ * type MessageObj = {
+ *   [id: string]: string
+ * }
+ *
+ * type MessageMap = {
+ *   [localeCode: string ]: MessageObj
+ * }
  */
 
 // return object that is a map of trn keys/ids to translated copy - remove

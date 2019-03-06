@@ -8,7 +8,7 @@ module.exports = {
 		console.log(chalk.blue('checking resource status'));
 
 		tfx.resource
-			.listInComplete()
+			.listIncomplete()
 			.then(resources => {
 				if (resources.length) {
 					console.log('\nIncomplete Resources');
