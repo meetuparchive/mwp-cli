@@ -9,7 +9,7 @@ const { gitBranch, exitOnMaster } = require('./util/gitHelpers');
 const pushSrcDiff = poData => {
 	const branch = gitBranch();
 	return tfx.resource.exists(branch).then(branchResourceExists => {
-		if (Object.keys(poData)) {
+		if (Object.keys(poData).length) {
 			console.log(chalk.blue('Pushing new source content to Transifex'));
 			console.log('keys:', Object.keys(poData).join(', '));
 			console.log(
