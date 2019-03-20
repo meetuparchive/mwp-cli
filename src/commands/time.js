@@ -46,7 +46,7 @@ module.exports = {
 					type: {
 						alias: 't',
 						demandOption: true,
-						describe: 'The record type',
+						describe: 'The New Relic custom event type name',
 					},
 					attributes: {
 						describe:
