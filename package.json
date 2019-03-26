@@ -73,7 +73,7 @@
     "yargs": "11.0.0"
   },
   "peerDependencies": {
-    "mwp-config": "^20.0.2885"
+    "mwp-config": "^21.0.2897"
   },
   "devDependencies": {
     "babel-eslint": "8.2.3",
