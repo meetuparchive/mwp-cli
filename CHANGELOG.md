@@ -1,4 +1,4 @@
-# [8.4]
+# [8.5]
 
 *   **New feature** `mope deploy time track` Sending deploy metrics to Datadog 
 instead of New Relic Insights.
