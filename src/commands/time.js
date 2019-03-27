@@ -2,7 +2,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const Insights = require('node-insights');
+const dogapi = require('dogapi');
 
 const TIMER_FILE = path.resolve(os.tmpdir(), '__mwp-timers.json');
 const attribute = {
@@ -17,6 +17,19 @@ const getCurrentTimes = () => {
 		setCurrentTimes({});
 	}
 	return require(TIMER_FILE);
+};
+
+// logging function to be called when all metrics are available
+// You can find the API key here: https://app.datadoghq.com/account/settings#api
+const logMetrics = (datadogApiKey, metrics) => {
+	dogapi.initialize({ api_key: datadogApiKey });
+
+	dogapi.metric.send_all(metrics, (err, results) => {
+		if (err) {
+			throw err;
+		}
+		console.log(results);
+	});
 };
 
 module.exports = {
@@ -53,16 +66,15 @@ module.exports = {
 							'the set of attributes to send with this record',
 						type: 'array',
 					},
-					accountId: {
-						alias: 'id',
-						describe: 'The New Relic account ID',
-						demandOption: true,
-						default: process.env.NEW_RELIC_ACCOUNT_ID,
-					},
 					key: {
-						describe: 'The New Relic API insert key',
+						describe: 'The Datadog API key',
 						demandOption: true,
-						default: process.env.NEW_RELIC_INSERT_KEY,
+						default: process.env.DATADOG_API_KEY,
+					},
+					build: {
+						describe: 'The build number',
+						demandOption: false,
+						default: process.env.TRAVIS_BUILD_NUMBER,
 					},
 					appName: {
 						describe: 'The name of the app reporting data',
@@ -70,33 +82,27 @@ module.exports = {
 					},
 				},
 				argv => {
+					const NOW = new Date().getTime() / 1000; // one timestamp in seconds for all reported metrics
 					// create a record based on the requested attributes
 					const current = getCurrentTimes();
-					const record = argv.attributes.reduce(
-						(acc, attribute) => {
-							if (!current[attribute]) {
-								throw new Error(`${attribute} not started`);
-							}
-							if (!current[attribute].end) {
-								throw new Error(`${attribute} not finished`);
-							}
-							const currentTime =
-								current[attribute].end -
-								current[attribute].start;
-							acc[attribute] = currentTime / 1000; // report in seconds
-							return acc;
-						},
-						{ appName: argv.appName }
-					);
-
-					// initialize the New Relic Insights API
-					const track = new Insights({
-						insertKey: argv.key,
-						accountId: argv.accountId,
-						defaultEventType: argv.type,
+					const metrics = argv.attributes.map(attr => {
+						if (!current[attr]) {
+							throw new Error(`${attr} not started`);
+						}
+						if (!current[attr].end) {
+							throw new Error(`${attr} not finished`);
+						}
+						const currentTime =
+							current[attr].end -
+							current[attr].start;
+						return {
+							metric: `mwp.${argv.type}.time`,
+							points: [[NOW, currentTime/1000]],
+							tags: [`application:${argv.appName}`, `build:${argv.build}`, `attribute:${attr}`]
+						};
 					});
-					track.add(record);
-					track.finish();
+
+					logMetrics(argv.key, metrics);
 				}
 			),
 };
