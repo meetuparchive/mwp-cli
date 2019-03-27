@@ -85,20 +85,20 @@ module.exports = {
 					const NOW = new Date().getTime() / 1000; // one timestamp in seconds for all reported metrics
 					// create a record based on the requested attributes
 					const current = getCurrentTimes();
-					const metrics = argv.attributes.map(attribute => {
-						if (!current[attribute]) {
-							throw new Error(`${attribute} not started`);
+					const metrics = argv.attributes.map(attr => {
+						if (!current[attr]) {
+							throw new Error(`${attr} not started`);
 						}
-						if (!current[attribute].end) {
-							throw new Error(`${attribute} not finished`);
+						if (!current[attr].end) {
+							throw new Error(`${attr} not finished`);
 						}
 						const currentTime =
-							current[attribute].end -
-							current[attribute].start;
+							current[attr].end -
+							current[attr].start;
 						return {
 							metric: `mwp.${argv.type}.time`,
 							points: [[NOW, currentTime/1000]],
-							tags: [`application:${argv.appName}`, `build:${argv.build}`, `attribute:${argv.attribute}`]
+							tags: [`application:${argv.appName}`, `build:${argv.build}`, `attribute:${attr}`]
 						};
 					});
 
