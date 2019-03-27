@@ -1,3 +1,8 @@
+# [8.4]
+
+*   **New feature** `mope deploy time track` Sending deploy metrics to Datadog 
+instead of New Relic Insights.
+
 # [8.3]
 
 *   **New feature** `mope deploy stop --versionId=...` to stop a specific deployed

@@ -20,10 +20,11 @@ const getCurrentTimes = () => {
 };
 
 // logging function to be called when all metrics are available
+// You can find the API key here: https://app.datadoghq.com/account/settings#api
 const logMetrics = (datadogApiKey, metrics) => {
 	dogapi.initialize({ api_key: datadogApiKey });
 
-	dogapi.send_all(metrics, (err, results) => {
+	dogapi.metric.send_all(metrics, (err, results) => {
 		if (err) {
 			throw err;
 		}
@@ -84,7 +85,7 @@ module.exports = {
 					const NOW = new Date().getTime() / 1000; // one timestamp in seconds for all reported metrics
 					// create a record based on the requested attributes
 					const current = getCurrentTimes();
-					const metrics = argv.attributes.map(attr => {
+					const metrics = argv.attributes.map(attribute => {
 						if (!current[attribute]) {
 							throw new Error(`${attribute} not started`);
 						}
@@ -95,9 +96,9 @@ module.exports = {
 							current[attribute].end -
 							current[attribute].start;
 						return {
-							metric: `mwp.build.${attribute}.time`,
+							metric: `mwp.${argv.type}.time`,
 							points: [[NOW, currentTime/1000]],
-							tags: [`application:${argv.appName}`, `build:${argv.build}`]
+							tags: [`application:${argv.appName}`, `build:${argv.build}`, `attribute:${argv.attribute}`]
 						};
 					});
 
