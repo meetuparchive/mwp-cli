@@ -6,39 +6,41 @@ const path = require('path');
 const { env, paths } = require('mwp-config');
 const prodPlugins = require('./prodPlugins');
 
-const dllName = "[name]_lib";
+const dllName = '[name]_lib';
 
 const config = {
-	mode: env.properties.isProd ? "production" : "development",
+	mode: env.properties.isProd ? 'production' : 'development',
 	entry: {
 		react: [
-			"react",
-			"react-dom",
-			"react-facebook-login",
-			"react-helmet",
-			"react-intl",
-			"react-redux",
-			"react-router",
-			"react-router-dom",
-			"react-waypoint"
+			'react',
+			'react-dom',
+			'react-facebook-login',
+			'react-helmet',
+			'react-intl',
+			'react-redux',
+			'react-router',
+			'react-router-dom',
+			'react-waypoint',
 		],
 		vendor: [
-			"autosize",
-			"consolidated-events",
-			"fbjs",
-			"flatpickr",
-			"history",
-			"intl-messageformat",
-			"intl-relativeformat",
-			"prop-types",
-			"qs",
-			"redux",
-			"rison"
+			'autosize',
+			'consolidated-events',
+			'fbjs',
+			'flatpickr',
+			'history',
+			'intl-messageformat',
+			'intl-relativeformat',
+			'js-joda',
+			'js-joda-timezone',
+			'prop-types',
+			'qs',
+			'redux',
+			'rison',
 		],
 	},
 	output: {
 		path: paths.output.browser,
-		filename: "[name].[chunkhash].js",
+		filename: '[name].[chunkhash].js',
 		hashDigestLength: 8,
 		library: dllName,
 	},
@@ -52,7 +54,7 @@ const config = {
 		new webpack.EnvironmentPlugin({
 			// React relies on process.env.NODE_ENV for including dev warnings,
 			// and we use it for similar purposes in application code.
-			NODE_ENV: "development", // required for prod build of React
+			NODE_ENV: 'development', // required for prod build of React
 		}),
 
 		/**
@@ -62,7 +64,7 @@ const config = {
 			// The path to the manifest file which maps between
 			// modules included in a bundle and the internal IDs
 			// within that bundle
-			path: path.resolve(paths.output.vendor, "[name]-dll-manifest.json"),
+			path: path.resolve(paths.output.vendor, '[name]-dll-manifest.json'),
 			// The name of the global variable which the library's
 			// require function has been assigned to. This must match the
 			// output.library option above
@@ -74,7 +76,7 @@ const config = {
 		 */
 		new ManifestPlugin({
 			publicPath: `${env.properties.asset_server.path}/`,
-		})
+		}),
 	],
 
 	optimization: {
@@ -92,7 +94,7 @@ const config = {
 					},
 				},
 				sourceMap: true,
-			})
+			}),
 		],
 	},
 };
