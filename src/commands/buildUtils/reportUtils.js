@@ -31,7 +31,6 @@ const BUNDLE_PATH = './build/browser-app/en-US';
 const STATS_PATH = `${BUNDLE_PATH}/stats.json`;
 
 const NOW = new Date().getTime() / 1000; // one timestamp in seconds for all reported metrics
-const { TRAVIS_BUILD_NUMBER } = process.env;
 const vendorBundleGlobs = [
 	'./build/browser-app/react.*.js',
 	'./build/browser-app/vendor.*.js',
@@ -81,7 +80,7 @@ const getStatsMetrics = (application, build) => {
 };
 
 // get total size of all js files in the supplied directory
-const getTotalMetric = (dirPath, application) => {
+const getTotalMetric = (dirPath, application, build) => {
 	const jsFiles = glob.sync(`${dirPath}/*.js`);
 	const totalSize = jsFiles.reduce((acc, filename) => {
 		acc = acc + fs.statSync(filename).size;
@@ -90,14 +89,14 @@ const getTotalMetric = (dirPath, application) => {
 	return {
 		metric: 'mwp.bundle.size',
 		points: [[NOW, totalSize]],
-		tags: [`application:${application}`, `build:${TRAVIS_BUILD_NUMBER}`],
+		tags: [`application:${application}`, `build:${build}`],
 	};
 };
 
 // Collect all metrics
 const getMetrics = (application, build) =>
 	getStatsMetrics(application, build).then(statsMetrics => {
-		const totalMetric = getTotalMetric(BUNDLE_PATH);
+		const totalMetric = getTotalMetric(BUNDLE_PATH, application, build);
 		const vendorMetrics = vendorBundleGlobs.map(globaPattern =>
 			getBundleSizeMetric(globaPattern, application, build)
 		);
