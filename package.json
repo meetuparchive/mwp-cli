@@ -65,6 +65,7 @@
     "transifex": "1.5.0",
     "uglifyjs-webpack-plugin": "1.3.0",
     "webpack": "4.17.1",
+    "webpack-bundle-diff": "0.4.0",
     "webpack-dev-middleware": "3.1.3",
     "webpack-dev-server": "3.1.14",
     "webpack-manifest-plugin": "2.0.2",
