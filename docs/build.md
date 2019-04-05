@@ -2,10 +2,10 @@
 
 We currently have 4 builds:
 
-1. Browser renderer (React)
-2. Server renderer (React)
-3. Vendor lib bundle (DLL)
-4. TRN module generation
+1.  Browser renderer (React)
+2.  Server renderer (React)
+3.  Vendor lib bundle (DLL)
+4.  TRN module generation
 
 Browser and server builds vary between dev and production, e.g. the dev
 build supports hot module reloading, while the prod build is minified.
@@ -19,14 +19,14 @@ managed by the CLI consumer.
 $ mope build [browser|server|vendor|trn]
 ```
 
-1. Browser target: (`mope build browser`): Browser renderer to
-   `/build/browser-app/*/app.js`
-2. Server renderer target (`mope build server`): Server renderer to
-   `/build/server-app/*/server-app.js`
-3. Vendor target (`mope build vendor`): Javascript DDL bundles to
-   `/build/browser-app/*` and manifest files to `build/vendor`
-4. Trn target (`mope build trn`): Generate trn content modules to
-   `/src/trns/modules/`
+1.  Browser target: (`mope build browser`): Browser renderer to
+    `/build/browser-app/*/app.js`
+2.  Server renderer target (`mope build server`): Server renderer to
+    `/build/server-app/*/server-app.js`
+3.  Vendor target (`mope build vendor`): Javascript DDL bundles to
+    `/build/browser-app/*` and manifest files to `build/vendor`
+4.  Trn target (`mope build trn`): Generate trn content modules to
+    `/src/trns/modules/`
 
 [Browser and server targets also support specifying locales](locales.md)
 
@@ -57,6 +57,23 @@ the build if another one has started within the `min-interval`. Defaults for mos
 options come from standard Travis environment variables - `auto-cancel` defaults
 to `false`.
 
+#### Synopsis (build report)
+
+```
+$ mope build report --application=myapplication --build=mybuildID --key=DDAPIKey
+```
+
+When a web platform application is built (using `mope build [browser|vendor]`),
+run this command to log built asset size statistics to DataDog.
+
+The reported metrics are
+
+*   `mwp.bundle.size` (total JS asset size)
+*   `mwp.bundle.chunk_size` (individual chunk size)
+
+Use the metric tags to filter by chunk name, application (e.g. mup-web or pro-web),
+and build number
+
 # The build
 
 We are using [Webpack](https://webpack.js.org) to bundle our static assets.
@@ -70,10 +87,10 @@ object.
 
 The application comprises 4 basic components:
 
-1. The browser-executed React rendering bundle (Browser-Render)
-2. The server-executed React rendering bundle (Server-Render)
-3. The application server bundle (App-Server)
-4. The asset file server (Asset-Server)
+1.  The browser-executed React rendering bundle (Browser-Render)
+2.  The server-executed React rendering bundle (Server-Render)
+3.  The application server bundle (App-Server)
+4.  The asset file server (Asset-Server)
 
 The isomorphic/universal codebase is part of 1 and 2, but each bundle includes
 some wrapping logic to package it for the target execution environment.
@@ -113,13 +130,13 @@ bundles that can be defined programmatically (more info below).
 
 At a high level, the build routine does the following:
 
-1. Build a Browser-Render bundle for a single language
-2. Pass the resulting bundle filename to step 3
-3. Build a Server-Render bundle that injects the Browser-Render filename into
-   the built files so that they will render the corresponding `<script>`/
-   `<link>` tags.
-4. (in parallel with 1) Build the server, which will consume the Server-Render
-   bundles from an import path defined as a constant before the build.
+1.  Build a Browser-Render bundle for a single language
+2.  Pass the resulting bundle filename to step 3
+3.  Build a Server-Render bundle that injects the Browser-Render filename into
+    the built files so that they will render the corresponding `<script>`/
+    `<link>` tags.
+4.  (in parallel with 1) Build the server, which will consume the Server-Render
+    bundles from an import path defined as a constant before the build.
 
 Steps 1-3 are run multiple times in parallel child processes - once for each
 supported language.
@@ -132,19 +149,19 @@ internally.
 
 #### Possible optimizations
 
-1. Consolidate the separate language-specific build processes into a single
-   process that still produces separate bundles, but can leverage in-process
-   build caching to improve overall performance while (potentially) simplifying
-   the build script, which would no longer have to coordinate spawned child
-   processes. [WP-364](https://meetup.atlassian.net/browse/WP-364)
+1.  Consolidate the separate language-specific build processes into a single
+    process that still produces separate bundles, but can leverage in-process
+    build caching to improve overall performance while (potentially) simplifying
+    the build script, which would no longer have to coordinate spawned child
+    processes. [WP-364](https://meetup.atlassian.net/browse/WP-364)
 
 ### Bundling translated message modules
 
 We have 2 primary requirements for bundling translated message content:
 
-1. Only load translated messages for the current `localeCode`.
-2. Only load translated messages that the currently-loaded app code can render,
-   i.e. avoid loading translations for components that are not available.
+1.  Only load translated messages for the current `localeCode`.
+2.  Only load translated messages that the currently-loaded app code can render,
+    i.e. avoid loading translations for components that are not available.
 
 The first challenge is defining the translated message import path in a way that
 is localeCode-aware.
@@ -172,15 +189,15 @@ import messages from 'trns/path/to/messages';
 There are 3 strategies for bundling in a way that allows the correct language to
 be imported using this 'static' import syntax;
 
-1. Build the application once for each language, and use a different
-`resolve.alias` rule for each build, bundling the language dependencies into the
-app code.
-2. Build language-specific 'external' bundles that each export the same global
-`'trns/path/to/messages'` variable, tell Webpack to look for
-`'trns/path/to/messages'` imports in the global namespace, and ensure that only
-the relevant language bundle has been loaded.
-3. Build app-independent language bundles, but import them all dynamically using
-async `import()` calls.
+1.  Build the application once for each language, and use a different
+    `resolve.alias` rule for each build, bundling the language dependencies into the
+    app code.
+2.  Build language-specific 'external' bundles that each export the same global
+    `'trns/path/to/messages'` variable, tell Webpack to look for
+    `'trns/path/to/messages'` imports in the global namespace, and ensure that only
+    the relevant language bundle has been loaded.
+3.  Build app-independent language bundles, but import them all dynamically using
+    async `import()` calls.
 
 We are using **option 1**, using `resolve.alias` to resolve the language-
 specific modules for each build.
@@ -207,23 +224,23 @@ rendering throughout the application.
 
 There are three ways to build translated message modules:
 
-1. **Standalone trns module** - assume that all existing translated messages in
-   all languages can be bundle together into a single chunk
+1.  **Standalone trns module** - assume that all existing translated messages in
+    all languages can be bundle together into a single chunk
 
     **Problem: huge bundle** - tens of thousands of translated messages per
     chunk
 
-2. **Standalone language-specific module bundle** - assume all translated
-   messages for each language can be bundled together into language-specific
-   chunks
+2.  **Standalone language-specific module bundle** - assume all translated
+    messages for each language can be bundled together into language-specific
+    chunks
 
     **Problem: large bundle** - thousands of translated messages per chunk
 
-3. **Bundle trn modules with app code** - split translated messages by language
-   and follow application-defined code split points
+3.  **Bundle trn modules with app code** - split translated messages by language
+    and follow application-defined code split points
 
     **Problem: must bundle the app once-per-language** in order to correctly
-      bundle the chunks
+    bundle the chunks
 
 We are bundling trn modules with the app code (option 3), which again is slower
 than 1 or 2, but produces the optimal chunk contents.
@@ -272,31 +289,31 @@ a new bundle is created.
 
 This script manages all aspects of the dev server:
 
-1. Start the Webpack Dev Server for the Browser application bundle (A)\*
-2. Start the Webpack watch-mode compiler for the Server application (B)
-3. Start the Webpack watch-mode compiler for the Node app server (C)
-4. Start the Node app server when (B) is built\*
-5. Start the Node app server when (C) is built\*
-6. _Re_-start the Node app server when (B) is _re_-built
-7. _Re_-start the Node app server when (C) is _re_-built
+1.  Start the Webpack Dev Server for the Browser application bundle (A)\*
+2.  Start the Webpack watch-mode compiler for the Server application (B)
+3.  Start the Webpack watch-mode compiler for the Node app server (C)
+4.  Start the Node app server when (B) is built\*
+5.  Start the Node app server when (C) is built\*
+6.  _Re_-start the Node app server when (B) is _re_-built
+7.  _Re_-start the Node app server when (C) is _re_-built
 
 _\*: **Child process**_
 
 ### Assumptions
 
-1. You only want to build a single language (This could probably be enabled)
-2. The bundle filenames are not hashed (This might be allowable if we work out
-   ManifestPlugin)
-3. You will not be adding new translations (not relevant to the starter kit, but
-   we'll need to account for it in mup-web - shouldn't be too difficult)
-4. You don't want to build the service worker script (fine for now, and
-   relatively easy to enable in the future)
+1.  You only want to build a single language (This could probably be enabled)
+2.  The bundle filenames are not hashed (This might be allowable if we work out
+    ManifestPlugin)
+3.  You will not be adding new translations (not relevant to the starter kit, but
+    we'll need to account for it in mup-web - shouldn't be too difficult)
+4.  You don't want to build the service worker script (fine for now, and
+    relatively easy to enable in the future)
 
 ### References
 
-- Webpack Node API for compiling in watch mode: https://webpack.js.org/api/node/#watching
-- Configuring watch mode behavior: https://webpack.js.org/configuration/watch/#watchoptions
-- Webpack Dev Server: https://webpack.js.org/configuration/dev-server/
+*   Webpack Node API for compiling in watch mode: https://webpack.js.org/api/node/#watching
+*   Configuring watch mode behavior: https://webpack.js.org/configuration/watch/#watchoptions
+*   Webpack Dev Server: https://webpack.js.org/configuration/dev-server/
 
 ## Analyzing the bundle
 
@@ -307,6 +324,6 @@ various tools.
 
 ### References
 
-- Webpack stats config docs: https://webpack.js.org/api/cli/#common-options
-- Summary of webpack build analyzers:
-  https://survivejs.com/webpack/optimizing/analyzing-build-statistics/
+*   Webpack stats config docs: https://webpack.js.org/api/cli/#common-options
+*   Summary of webpack build analyzers:
+    https://survivejs.com/webpack/optimizing/analyzing-build-statistics/

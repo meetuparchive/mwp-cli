@@ -1,7 +1,18 @@
+# [8.6]
+
+*   **New feature** `mope build report` - reads from the stats.json output of a
+    webpack build and reports chunk sizes to DataDog. The reported metrics are
+
+    *   `mwp.bundle.size` (total JS asset size)
+    *   `mwp.bundle.chunk_size` (individual chunk size)
+
+    Use the metric tags to filter by chunk name, application (e.g. mup-web or pro-web),
+    and build number
+
 # [8.5]
 
-*   **New feature** `mope deploy time track` Sending deploy metrics to Datadog 
-instead of New Relic Insights.
+*   **New feature** `mope deploy time track` Sending deploy metrics to Datadog
+    instead of New Relic Insights.
 
 # [8.3]
 
