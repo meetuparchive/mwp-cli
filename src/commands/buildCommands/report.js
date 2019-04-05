@@ -25,7 +25,7 @@ module.exports = {
 				describe: 'application name that will be used to tag the data',
 			},
 			build: {
-				default: process.env.TRAVIS_BUILD_ID,
+				default: process.env.TRAVIS_BUILD_NUMBER,
 				demandOption: true,
 				describe: 'The build ID that will be used to tag the data',
 			},
