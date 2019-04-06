@@ -15,7 +15,7 @@ const getProjectResourcesList = () =>
 
 /**
  * Download individual resources trns
- * @param  {String} resource resource slug to be used when we downloaded translations
+ * @param  {String} slug resource name/slug that Tx uses as a unique resource identifier
  */
 const pullResource = slug => {
 	console.log(chalk.cyan(`Starting tx:pull for '${slug}'`));
