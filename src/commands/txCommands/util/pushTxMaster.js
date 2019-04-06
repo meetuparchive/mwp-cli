@@ -6,10 +6,9 @@ const pushTxMaster = () => {
 	console.log(chalk.blue('Pushing content to transifex master'));
 
 	return txlib
-		.updateMasterContent() // update master content before pushing translations
-		.then(txlib.updateTranslations)
+		.updateTfxSrcMaster() // update Master with all _input strings_
+		.then(txlib.updateTfxCopyMaster) // update Master with all existing _translated strings_
 		.catch(err => {
-			console.error('Encountered error during upload:', err);
 			process.exit(1);
 		});
 };

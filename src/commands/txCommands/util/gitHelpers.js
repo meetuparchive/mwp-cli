@@ -32,7 +32,7 @@ const devGitBranch = () => {
 
 // Branch whether in dev or CI. Replaces forward slashes because
 // branch names are used as transifex resource names and resource
-// names need to work as valid url paths
+// names need to work as valid url paths (slugs)
 const gitBranch = () => {
 	const branchName = process.env.TRAVIS_PULL_REQUEST_BRANCH || devGitBranch();
 	return branchName.replace(/\//g, '_');
