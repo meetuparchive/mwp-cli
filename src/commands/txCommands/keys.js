@@ -3,18 +3,18 @@ const tfx = require('./util/transifex');
 
 module.exports = {
 	command: 'keys',
-	description: 'Get list of resources and their keys',
+	description: 'Get list of resource slugs and their keys',
 	handler: argv => {
 		console.log(chalk.blue('Downloading resource data'));
 
-		return tfx.resource.list().then(resources =>
+		return tfx.resource.list().then(slugs =>
 			Promise.all(
-				resources.map(resource =>
+				slugs.map(slug =>
 					tfx.resource
-						.pullAll(resource)
+						.pullAll(slug)
 						.then(Object.keys)
 						.then(keys => {
-							console.log(resource);
+							console.log(slug);
 							keys.forEach(key => console.log(`\t${key}`));
 						})
 				)

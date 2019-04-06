@@ -9,15 +9,16 @@ module.exports = {
 			resource: {
 				alias: 'r',
 				demandOption: true,
+				describe: 'slugs (names) for each resource to pull',
 				type: 'array',
 			},
 		}),
 	handler: argv => {
 		console.log(chalk.blue('Pulling resource content from transifex'));
 
-		argv.resource.forEach(resource =>
-			pullResourceContent(resource).then(() =>
-				console.log(chalk.green(`\n${resource} done`))
+		argv.resource.forEach(slug =>
+			pullResourceContent(slug).then(() =>
+				console.log(chalk.green(`\n${slug} done`))
 			)
 		);
 	},

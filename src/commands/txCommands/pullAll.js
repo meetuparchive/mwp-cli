@@ -9,10 +9,8 @@ const getProjectResourcesList = () =>
 		// downloaded first, this will allow other resources to be applied on top of
 		// any changes in that resource. This should prevent any changes in
 		// feature branches from being overwritten by this resource
-		.then(resources =>
-			resources.sort(
-				a => (a === txlib.ALL_TRANSLATIONS_RESOURCE ? -1 : 1)
-			)
+		.then(slugs =>
+			slugs.sort(a => (a === txlib.ALL_TRANSLATIONS_RESOURCE ? -1 : 1))
 		);
 
 /**
@@ -43,12 +41,12 @@ const promiseSerial = funcs =>
 // create a function that creates a resource 'pull' Promise. This can be
 // composed with `resource.map` and `promiseSerial` in order to pull an
 // array of resources sequentially
-const makeDeferredPull = doCommit => r => () =>
-	pullResource(r).then(resource => {
+const makeDeferredPull = doCommit => slug => () =>
+	pullResource(slug).then(slug => {
 		if (!doCommit) {
 			return;
 		}
-		const commitMessage = `tx:pull for ${resource.replace(/-/g, '_')}`;
+		const commitMessage = `tx:pull for ${slug.replace(/-/g, '_')}`;
 		return gitHelpers.commit(commitMessage, `--no-verify`);
 	});
 
@@ -60,6 +58,8 @@ module.exports = {
 		yarg.option({
 			commit: {
 				alias: 'c',
+				describe:
+					'automatically commit the downloaded translations to the current branch',
 				default: false,
 			},
 		}),
@@ -67,8 +67,8 @@ module.exports = {
 		console.log(chalk.magenta('Pulling all resources...'));
 
 		getProjectResourcesList()
-			.then(resources =>
-				promiseSerial(resources.map(makeDeferredPull(argv.commit)))
+			.then(slugs =>
+				promiseSerial(slugs.map(makeDeferredPull(argv.commit)))
 			)
 			.then(
 				() => console.log(chalk.green('All resources pulled.')),

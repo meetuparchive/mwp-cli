@@ -131,30 +131,32 @@ const getCompletionValue = stat =>
 			return acc;
 		}, {});
 
-// () => Promise<Array<[resourceName, { LocaleCode: string }]>>
+// () => Promise<Array<[resourceSlug, { LocaleCode: string }]>>
 const getTfxResourceCompletion = memoize(() =>
 	list()
 		// get resource completion percentage
-		.then(resources =>
+		.then(slugs =>
 			Promise.all(
-				resources.map(resource =>
+				slugs.map(slug =>
 					api
-						.statisticsMethods(PROJECT, resource)
+						.statisticsMethods(PROJECT, slug)
 						.then(getCompletionValue)
-						.then(localeCompletion => [resource, localeCompletion])
+						.then(localeCompletion => [slug, localeCompletion])
 				)
 			)
 		)
 );
 
 const listIncomplete = () =>
-	getTfxResourceCompletion().then(resources =>
-		resources.filter(([r, completion]) => Object.keys(completion).length)
+	getTfxResourceCompletion().then(completionTuple =>
+		completionTuple.filter(
+			([r, completion]) => Object.keys(completion).length
+		)
 	);
 
 const listComplete = () =>
-	getTfxResourceCompletion().then(resources =>
-		resources
+	getTfxResourceCompletion().then(completionTuple =>
+		completionTuple
 			.filter(([r, completion]) => Object.keys(completion).length === 0)
 			.map(([r, completion]) => r)
 	);
@@ -203,7 +205,7 @@ const exists = branch => list().then(list => list.includes(branch));
 const projectPullAll = (filter = () => true, project = PROJECT) =>
 	list()
 		// transform resource list to resource content, maintaining order
-		.then(resources => Promise.all(resources.filter(filter).map(pullAll)))
+		.then(slugs => Promise.all(slugs.filter(filter).map(pullAll)))
 		.then(resourcesContent =>
 			resourcesContent.reduce(
 				(acc, resourceTrns) => Object.assign(acc, resourceTrns),
