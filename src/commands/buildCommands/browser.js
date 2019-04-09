@@ -1,8 +1,5 @@
 const chalk = require('chalk');
-const {
-	package: packageConfig,
-	paths,
-} = require('mwp-config');
+const { package: packageConfig, paths } = require('mwp-config');
 
 const getBrowserAppConfig = require('./configs/browserAppConfig');
 const addLocalesOption = require('../../util/addLocalesOption');
@@ -18,7 +15,14 @@ const buildBrowserApp = localeCode => () => {
 	console.log(
 		chalk.blue(`building browser app (${chalk.yellow(localeCode)})...`)
 	);
-	return compile(getBundlePath, localeCode, getBrowserAppConfig(localeCode));
+	return compile(
+		getBundlePath,
+		localeCode,
+		getBrowserAppConfig(localeCode)
+	).catch(error => {
+		console.error(error);
+		process.exit(1);
+	});
 };
 
 module.exports = {

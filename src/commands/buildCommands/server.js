@@ -21,7 +21,14 @@ const writeServerAppBundle = localeCode => () => {
 		chalk.blue(`building server app (${chalk.yellow(localeCode)})...`)
 	);
 
-	return compile(getBundlePath, localeCode, getServerAppConfig(localeCode));
+	return compile(
+		getBundlePath,
+		localeCode,
+		getServerAppConfig(localeCode)
+	).catch(error => {
+		console.error(error);
+		process.exit(1);
+	});
 };
 
 /*
