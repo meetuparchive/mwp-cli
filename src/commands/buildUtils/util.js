@@ -7,18 +7,19 @@ const { paths } = require('mwp-config');
 const webpackPromise = promisify(webpack);
 
 const compile = (getBundlePath, localeCode, config) => {
-	return webpackPromise(config).then(stats => {
-		const relativeBundlePath = getBundlePath(stats, localeCode);
+	return webpackPromise(config)
+		.then(stats => {
+			if ((((stats || {}).compilation || {}).errors || []).length) {
+				throw new Error(stats.compilation.errors.join('\n'));
+			}
+			const relativeBundlePath = getBundlePath(stats, localeCode);
 
-		console.log(
-			chalk.blue(`built ${relativeBundlePath}`)
-		);
-	}).catch((error) => {
-		console.error(
-			chalk.red('server bundle webpack error:')
-		);
-		console.error(error);
-	});
+			console.log(chalk.blue(`built ${relativeBundlePath}`));
+		})
+		.catch(error => {
+			console.error(chalk.red('webpack compile error'));
+			throw error;
+		});
 };
 
 // utility function to allow us to execute builds sequentially
