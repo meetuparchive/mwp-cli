@@ -17,8 +17,7 @@ const compile = (getBundlePath, localeCode, config) => {
 			console.log(chalk.blue(`built ${relativeBundlePath}`));
 		})
 		.catch(error => {
-			console.error(chalk.red('webpack compile error:'));
-			console.error(error);
+			console.error(chalk.red('webpack compile error'));
 			throw error;
 		});
 };
