@@ -216,6 +216,7 @@ const projectPullAll = (filter = () => true, project = PROJECT) =>
 const publicInterface = {
 	PROJECT,
 	PROJECT_MASTER,
+	MASTER_RESOURCE,
 	ALL_TRANSLATIONS_RESOURCE,
 	project: {
 		pullAll: projectPullAll,
