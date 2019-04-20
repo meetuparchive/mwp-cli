@@ -205,7 +205,9 @@ const exists = branch => list().then(list => list.includes(branch));
 const projectPullAll = (filter = () => true, project = PROJECT) =>
 	list()
 		// transform resource list to resource content, maintaining order
-		.then(slugs => Promise.all(slugs.filter(filter).map(pullAll)))
+		.then(slugs =>
+			Promise.all(slugs.filter(filter).map(slug => pullAll(slug)))
+		)
 		.then(resourcesContent =>
 			resourcesContent.reduce(
 				(acc, resourceTrns) => Object.assign(acc, resourceTrns),
