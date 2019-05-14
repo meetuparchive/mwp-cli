@@ -1,12 +1,10 @@
 const path = require('path');
 const { paths } = require('mwp-config');
 const chalk = require('chalk');
-const runE2E = require('../deployUtils/e2e');
 const apiMiddleware = require('../deployUtils/apiMiddleware');
 
 const baseConfig = require(path.resolve(paths.repoRoot, 'app.json'));
 
-const runE2EWithRetry = id => runE2E(id).catch(() => runE2E(id));
 /*
  * Automated migration for gcloud deployments
  * https://cloud.google.com/appengine/docs/admin-api/getting-started/
@@ -54,18 +52,15 @@ module.exports = {
 			versions.validate
 				.sufficientQuota()
 				.then(deploy.create)
-				.then(
-					() =>
-						argv.noCanary ||
-						Promise.all(argv.versionIds.map(runE2EWithRetry))
-				)
 				.catch(error => {
 					console.log(chalk.red(`Stopping deployment: ${error}`));
 					console.log(chalk.red('Cleaning up failed deployment...'));
 
-					const exitCode = error.includes("already deployed") ? ACCEPTABLE_FAILURE : UNACCEPTABLE_FAILURE;
+					const exitCode = error.includes('already deployed')
+						? ACCEPTABLE_FAILURE
+						: UNACCEPTABLE_FAILURE;
 					return deploy.del().then(() => process.exit(exitCode));
-				  })
+				})
 				.then(() => {
 					console.log(
 						chalk.green(

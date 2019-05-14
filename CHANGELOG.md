@@ -1,3 +1,8 @@
+# [9.0]
+
+*   **Removed** unused 'e2e' tests that had a heavy dependency we don't need
+    to maintain
+
 # [8.6]
 
 *   **New feature** `mope build report` - reads from the stats.json output of a
