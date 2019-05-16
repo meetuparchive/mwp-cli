@@ -63,7 +63,9 @@ const reduceUniques = localTrns => {
 const extractTrnSource = () =>
 	glob
 		.sync(
-			`${paths.repoRoot}/src/+(components|app)/**/!(*.test|*.story).jsx`
+			`${
+				paths.repoRoot
+			}/src/+(components|app|route-*)/**/!(*.test|*.story).jsx`
 		)
 		.map(file =>
 			babel.transformFileSync(file, {
