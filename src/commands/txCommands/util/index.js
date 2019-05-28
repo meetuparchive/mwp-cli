@@ -196,6 +196,7 @@ module.exports = {
 	getLocalTrnSourcePo,
 	pullResourceContent,
 	reduceUniques,
+	tfx,
 	updateTfxSrcMaster,
 	updateTfxSrcAllTranslations,
 	updateTfxCopyMaster,
