@@ -10,7 +10,7 @@ const getProjectResourcesList = () =>
 		// any changes in that resource. This should prevent any changes in
 		// feature branches from being overwritten by this resource
 		.then(slugs =>
-			slugs.sort(a => (a === txlib.ALL_TRANSLATIONS_RESOURCE ? -1 : 1))
+			slugs.sort(a => (a === txlib.tfx.ALL_TRANSLATIONS_RESOURCE ? -1 : 1))
 		);
 
 /**
