@@ -3,14 +3,14 @@ const txlib = require('./util');
 const gitHelpers = require('./util/gitHelpers');
 
 const getProjectResourcesList = () =>
-	txlib.resource
+	txlib.tfx.resource
 		.list()
 		// We want to sort the array of resources so that the ALL_TRANSLATIONS_RESOURCE is
 		// downloaded first, this will allow other resources to be applied on top of
 		// any changes in that resource. This should prevent any changes in
 		// feature branches from being overwritten by this resource
 		.then(slugs =>
-			slugs.sort(a => (a === txlib.ALL_TRANSLATIONS_RESOURCE ? -1 : 1))
+			slugs.sort(a => (a === txlib.tfx.ALL_TRANSLATIONS_RESOURCE ? -1 : 1))
 		);
 
 /**
