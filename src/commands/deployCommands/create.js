@@ -42,9 +42,6 @@ module.exports = {
 				describe:
 					'The maximum number of available instances in a GAE deployment',
 			},
-			noCanary: {
-				describe: 'Disable canary test',
-			},
 		}),
 	middlewares: [apiMiddleware],
 	handler: argv =>
