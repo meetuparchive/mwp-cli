@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@alrra/travis-scripts": "3.0.1",
-    "@google-cloud/storage": "1.6.0",
+    "@google-cloud/storage": "2.5.0",
     "@octokit/rest": "15.9.5",
     "ajv": "6.6.2",
     "babel-core": "6.26.3",
@@ -45,7 +45,7 @@
     "isomorphic-style-loader": "4.0.0",
     "memoize-one": "5.0.0",
     "mkdirp": "0.5.1",
-    "node-sass": "4.9.3",
+    "node-sass": "4.12.0",
     "postcss": "7.0.2",
     "postcss-css-variables": "0.9.0",
     "postcss-loader": "3.0.0",
