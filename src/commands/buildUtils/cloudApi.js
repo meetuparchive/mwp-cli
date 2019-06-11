@@ -1,5 +1,5 @@
-const Storage = require('@google-cloud/storage');
-const bucket = Storage({
+const { Storage } = require('@google-cloud/storage');
+const bucket = new Storage({
 	projectId: 'meetup-prod-east4',
 	keyFilename: `${process.cwd()}/client-secret.json`,
 }).bucket('mwp-app-build');
