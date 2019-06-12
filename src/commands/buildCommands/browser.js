@@ -11,14 +11,14 @@ const {
 
 const getBundlePath = getRelativeBundlePath('app', paths.output.browser);
 
-const buildBrowserApp = localeCode => () => {
+const buildBrowserApp = (localeCode, babel) => () => {
 	console.log(
 		chalk.blue(`building browser app (${chalk.yellow(localeCode)})...`)
 	);
 	return compile(
 		getBundlePath,
 		localeCode,
-		getBrowserAppConfig(localeCode)
+		getBrowserAppConfig(localeCode, babel)
 	).catch(error => {
 		console.error(error);
 		process.exit(1);
