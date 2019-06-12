@@ -18,7 +18,7 @@ const buildBrowserApp = localeCode => () => {
 	return compile(
 		getBundlePath,
 		localeCode,
-		getBrowserAppConfig(localeCode)
+		getBrowserAppConfig(localeCode, babel)
 	).catch(error => {
 		console.error(error);
 		process.exit(1);
