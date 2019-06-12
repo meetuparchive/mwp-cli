@@ -11,7 +11,7 @@ const {
 
 const getBundlePath = getRelativeBundlePath('app', paths.output.browser);
 
-const buildBrowserApp = localeCode => () => {
+const buildBrowserApp = (localeCode, babel) => () => {
 	console.log(
 		chalk.blue(`building browser app (${chalk.yellow(localeCode)})...`)
 	);
