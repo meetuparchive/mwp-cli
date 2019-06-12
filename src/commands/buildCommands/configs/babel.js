@@ -1,6 +1,6 @@
 const core = {
 	compact: true,
-	presets: ['@babel/preset-env', 'flow', 'react'],
+	presets: ['@babel/preset-env', '@babel/preset-flow', '@babel/preset-react'],
 	plugins: [
 		'transform-class-properties',
 		['react-intl', { extractSourceLocation: true }],
