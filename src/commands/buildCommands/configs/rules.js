@@ -1,5 +1,6 @@
 const path = require('path');
-const { babel, env, paths } = require('mwp-config');
+const { env, paths } = require('mwp-config');
+const babel = require('./babel.js');
 const postCssLoaderConfig = require('./postCssLoaderConfig.js');
 
 /**
