@@ -25,20 +25,34 @@ const buildBrowserApp = (localeCode, babel) => () => {
 	});
 };
 
+const addBabelOption = yargs => {
+	yargs.option('babel', {
+		alias: 'config',
+		description: 'path for babel config',
+		demandOption: true,
+		type: 'string'
+	});
+};
+
 module.exports = {
 	command: 'browser',
 	aliases: 'client',
 	description: 'build the client-side renderer bundle',
-	builder: yargs => addLocalesOption(yargs),
+	builder: yargs => {
+		addLocalesOption(yargs);
+		addBabelOption(yargs);
+	},
 	handler: argv => {
 		console.log(
 			chalk.blue('building browser bundle using current vendor bundles')
 		);
 
+		const babel = require(argv.babel);
+
 		if (packageConfig.combineLanguages) {
 			return buildBrowserApp('combined')();
 		}
 
-		return promiseSerial(argv.locales.map(buildBrowserApp));
+		return promiseSerial(argv.locales.map(locale => buildBrowserApp(locale, babel)));
 	},
 };
