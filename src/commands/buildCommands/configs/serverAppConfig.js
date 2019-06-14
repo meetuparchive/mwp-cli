@@ -7,7 +7,6 @@ const { env, paths } = require('mwp-config');
 
 // Build settings
 const prodPlugins = require('./prodPlugins');
-const rules = require('./rules');
 
 /*
  * Webpack config object determined by passed-in localeCode. The language is
@@ -16,8 +15,14 @@ const rules = require('./rules');
  *
  * The server app is a module that exports a rendering function that can be
  * imported by the server and used to render requests to the app route.
+ *
+ * babelConfig is a file specified by the consumer app that supplies options
+ * to babel-loader and webpack
+ *
+ * e.g. `mope build browser --babelConfig=./babel.config.browser.js
  */
-function getConfig(localeCode) {
+function getConfig(localeCode, babelConfig) {
+	const rules = require('./rules')(babelConfig);
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
 	const baseWebfontDir = path.resolve(
