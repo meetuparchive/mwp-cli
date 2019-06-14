@@ -7,6 +7,7 @@ const { env, paths } = require('mwp-config');
 
 // Build settings
 const prodPlugins = require('./prodPlugins');
+const getModuleRules = require('./rules');
 
 /*
  * Webpack config object determined by passed-in localeCode. The language is
@@ -22,7 +23,7 @@ const prodPlugins = require('./prodPlugins');
  * e.g. `mope build browser --babelConfig=./babel.config.browser.js
  */
 function getConfig(localeCode, babelConfig) {
-	const rules = require('./rules')(babelConfig);
+	const rules = getModuleRules(babelConfig);
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
 	const baseWebfontDir = path.resolve(

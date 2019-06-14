@@ -6,6 +6,7 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const { env, paths } = require('mwp-config');
 
 const prodPlugins = require('./prodPlugins');
+const getModuleRules = require('./rules');
 
 /**
  * When in dev, we need to manually inject some configuration to enable HMR
@@ -49,7 +50,7 @@ function injectHotReloadConfig(config) {
  *
  */
 function getConfig(localeCode, babelConfig) {
-	const rules = require('./rules')(babelConfig);
+	const rules = getModuleRules(babelConfig);
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
 	const baseWebfontDir = path.resolve(paths.src.asset, 'fonts');
