@@ -5,6 +5,8 @@ const { package: packageConfig, paths } = require('mwp-config');
 
 const getBrowserAppConfig = require('./configs/browserAppConfig');
 const addLocalesOption = require('../../util/addLocalesOption');
+const addBabelOption = require('../../util/addBabelOption');
+
 const {
 	compile,
 	getRelativeBundlePath,
@@ -24,15 +26,6 @@ const buildBrowserApp = (localeCode, babel) => () => {
 	).catch(error => {
 		console.error(error);
 		process.exit(1);
-	});
-};
-
-const addBabelOption = yargs => {
-	yargs.option('babel', {
-		alias: 'config',
-		description: 'path for babel config',
-		demandOption: true,
-		type: 'string'
 	});
 };
 

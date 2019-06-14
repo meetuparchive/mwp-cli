@@ -8,6 +8,8 @@ const { locales, package: packageConfig, paths } = require('mwp-config');
 
 const getServerAppConfig = require('./configs/serverAppConfig');
 const addLocalesOption = require('../../util/addLocalesOption');
+const addBabelOption = require('../../util/addBabelOption');
+
 const {
 	compile,
 	getRelativeBundlePath,
@@ -64,15 +66,6 @@ function writeServerAppMap(localeCodes, isCombined) {
 		`module.exports = ${serverAppMapString};`
 	);
 }
-
-const addBabelOption = yargs => {
-	yargs.option('babel', {
-		alias: 'config',
-		description: 'path for babel config',
-		demandOption: true,
-		type: 'string'
-	});
-};
 
 module.exports = {
 	command: 'server',
