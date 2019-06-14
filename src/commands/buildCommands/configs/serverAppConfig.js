@@ -7,7 +7,6 @@ const { env, paths } = require('mwp-config');
 
 // Build settings
 const prodPlugins = require('./prodPlugins');
-const rules = require('./rules');
 
 /*
  * Webpack config object determined by passed-in localeCode. The language is
@@ -17,7 +16,8 @@ const rules = require('./rules');
  * The server app is a module that exports a rendering function that can be
  * imported by the server and used to render requests to the app route.
  */
-function getConfig(localeCode) {
+function getConfig(localeCode, babel) {
+	const rules = require('./rules')(babel);
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
 	const baseWebfontDir = path.resolve(

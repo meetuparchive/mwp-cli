@@ -19,18 +19,12 @@
   },
   "dependencies": {
     "@alrra/travis-scripts": "3.0.1",
+    "@babel/core": "7.4.5",
     "@google-cloud/storage": "2.5.0",
     "@octokit/rest": "15.9.5",
     "ajv": "6.6.2",
-    "babel-core": "6.26.3",
-    "babel-loader": "7.1.4",
-    "babel-plugin-react-intl": "2.3.1",
-    "babel-plugin-transform-class-properties": "6.24.1",
-    "babel-plugin-transform-flow-strip-types": "6.22.0",
-    "babel-preset-env": "1.7.0",
-    "babel-preset-flow": "6.23.0",
-    "babel-preset-react": "6.24.1",
-    "babel-preset-stage-2": "6.24.1",
+    "babel-loader": "8.0.6",
+    "babel-plugin-react-intl": "3.2.1",
     "chalk": "2.4.1",
     "convict": "4.0.1",
     "css-loader": "1.0.0",
@@ -73,17 +67,18 @@
     "yargs": "11.0.0"
   },
   "peerDependencies": {
-    "mwp-config": "^21.0.2897"
+    "mwp-config": "^21.3.2977-beta"
   },
   "devDependencies": {
-    "babel-eslint": "8.2.3",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "10.0.1",
+    "babel-jest": "23.4.2",
     "eslint": "4.19.1",
     "eslint-config-prettier": "2.9.0",
     "eslint-plugin-flowtype": "2.40.1",
     "eslint-plugin-react": "7.5.1",
     "jest": "24.1.0",
     "lint-staged": "7.0.5",
-    "mwp-config": "20.0.2885",
     "prettier": "1.12.1"
   },
   "lint-staged": {
