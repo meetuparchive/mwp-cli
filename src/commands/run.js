@@ -32,11 +32,6 @@ module.exports = {
 			process.env.DEBUG = 'express:router';
 		}
 
-		/*
-		const babelPath = path.resolve(process.cwd, argv.babel);
-		const babel = require(babelPath);
-		*/
-
 		// execute the start-dev script
 		startDev(argv.babel);
 
