@@ -15,9 +15,14 @@ const prodPlugins = require('./prodPlugins');
  *
  * The server app is a module that exports a rendering function that can be
  * imported by the server and used to render requests to the app route.
+ *
+ * babelConfig is a file specified by the consumer app that supplies options
+ * to babel-loader and webpack
+ *
+ * e.g. `mope build browser --babelConfig=./babel.config.browser.js
  */
-function getConfig(localeCode, babel) {
-	const rules = require('./rules')(babel);
+function getConfig(localeCode, babelConfig) {
+	const rules = require('./rules')(babelConfig);
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
 	const baseWebfontDir = path.resolve(

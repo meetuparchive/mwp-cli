@@ -41,9 +41,15 @@ function injectHotReloadConfig(config) {
  * used to resolve the translated message module paths in applications that
  * support translations (currently not supported by starter kit), but also
  * to determine the output path
+ *
+ * babelConfig is a file specified by the consumer app that supplies options
+ * to babel-loader and webpack
+ *
+ * e.g. `mope build browser --babelConfig=./babel.config.browser.js`
+ *
  */
-function getConfig(localeCode, babel) {
-	const rules = require('./rules')(babel);
+function getConfig(localeCode, babelConfig) {
+	const rules = require('./rules')(babelConfig);
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
 	const baseWebfontDir = path.resolve(paths.src.asset, 'fonts');

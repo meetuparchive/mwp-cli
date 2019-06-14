@@ -18,7 +18,7 @@ const {
 
 const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 
-const writeServerAppBundle = (localeCode, babel) => () => {
+const writeServerAppBundle = (localeCode, babelConfig) => () => {
 	console.log(
 		chalk.blue(`building server app (${chalk.yellow(localeCode)})...`)
 	);
@@ -26,7 +26,7 @@ const writeServerAppBundle = (localeCode, babel) => () => {
 	return compile(
 		getBundlePath,
 		localeCode,
-		getServerAppConfig(localeCode, babel)
+		getServerAppConfig(localeCode, babelConfig)
 	).catch(error => {
 		console.error(error);
 		process.exit(1);
@@ -79,15 +79,23 @@ module.exports = {
 			chalk.blue('building server bundle using current vendor bundles')
 		);
 
-		const babel = require(argv.babel);
+		/**
+		 * babelConfig is a file specified by the consumer app
+		 * that supplies options to babel-loader and webpack
+		 *
+		 * e.g. `mope build browser --babelConfig=./babel.config.browser.js`
+		 *
+		 * @see mwp-cli/src/commands/buildCommands/configs/rules.js
+		 */
+		const babelConfig = require(path.resolve(process.cwd(), argv.babelConfig));
 
 		if (packageConfig.combineLanguages) {
-			return writeServerAppBundle('combined', babel)().then(() => {
+			return writeServerAppBundle('combined', babelConfig)().then(() => {
 				writeServerAppMap(locales, true); // write an app map that covers _all_ locales
 			});
 		}
 
-		return promiseSerial(argv.locales.map(locale => writeServerAppBundle(locale, babel))).then(() =>
+		return promiseSerial(argv.locales.map(locale => writeServerAppBundle(locale, babelConfig))).then(() =>
 			writeServerAppMap(argv.locales)
 		);
 	},

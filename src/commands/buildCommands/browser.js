@@ -15,14 +15,15 @@ const {
 
 const getBundlePath = getRelativeBundlePath('app', paths.output.browser);
 
-const buildBrowserApp = (localeCode, babel) => () => {
+const buildBrowserApp = (localeCode, babelConfig) => () => {
 	console.log(
 		chalk.blue(`building browser app (${chalk.yellow(localeCode)})...`)
 	);
+
 	return compile(
 		getBundlePath,
 		localeCode,
-		getBrowserAppConfig(localeCode, babel)
+		getBrowserAppConfig(localeCode, babelConfig)
 	).catch(error => {
 		console.error(error);
 		process.exit(1);
@@ -42,13 +43,20 @@ module.exports = {
 			chalk.blue('building browser bundle using current vendor bundles')
 		);
 
-		const babelPath = path.resolve(process.cwd(), argv.babel);
-		const babel = require(babelPath);
+		/**
+		 * babelConfig is a file specified by the consumer app
+		 * that supplies options to babel-loader and webpack
+		 *
+		 * e.g. `mope build browser --babelConfig=./babel.config.browser.js`
+		 *
+		 * @see mwp-cli/src/commands/buildCommands/configs/rules.js
+		 */
+		const babelConfig = require(path.resolve(process.cwd(), argv.babelConfig));
 
 		if (packageConfig.combineLanguages) {
-			return buildBrowserApp('combined', babel)();
+			return buildBrowserApp('combined', babelConfig)();
 		}
 
-		return promiseSerial(argv.locales.map(locale => buildBrowserApp(locale, babel)));
+		return promiseSerial(argv.locales.map(locale => buildBrowserApp(locale, babelConfig)));
 	},
 };

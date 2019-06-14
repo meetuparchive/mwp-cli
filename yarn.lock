@@ -1110,11 +1110,6 @@ babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
     esutils "^2.0.2"
     js-tokens "^3.0.2"
 
-babel-core@^7.0.0-bridge.0:
-  version "7.0.0-bridge.0"
-  resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-7.0.0-bridge.0.tgz#95a492ddd90f9b4e9a4a1da14eb335b87b634ece"
-  integrity sha512-poPX9mZH/5CSanm50Q+1toVci6pv5KSRv/5TWCwtzQS5XEwn40BcCrgIeMFWP9CKKIniKXNxoIOnOq4VVlGXhg==
-
 babel-eslint@10.0.1:
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-10.0.1.tgz#919681dc099614cd7d31d45c8908695092a1faed"
@@ -6897,7 +6892,7 @@ mute-stream@0.0.7:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
   integrity sha1-MHXOk7whuPq0PhvE2n6BFe0ee6s=
 
-mwp-config@^21.3.2977-beta:
+mwp-config@21.3.2977-beta:
   version "21.3.2977-beta"
   resolved "https://registry.yarnpkg.com/mwp-config/-/mwp-config-21.3.2977-beta.tgz#7723c05b76427e6d91e62153b2a025ecb4daad15"
   integrity sha512-YoJHWobbGtMA3d/Cz8f9ORhdSkUJKiiEEIGOTqpaJQmDV2k4jwhpQVdYO8D6XxPdC5Om5g78cYJLU3vKitUbUw==

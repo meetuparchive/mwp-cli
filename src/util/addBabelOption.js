@@ -1,7 +1,6 @@
 const addBabelOption = yargs => {
-	yargs.option('babel', {
-		alias: 'config',
-		description: 'path for babel config',
+	yargs.option('babelConfig', {
+		description: 'path to file for babel-loader options',
 		demandOption: true,
 		type: 'string'
 	});

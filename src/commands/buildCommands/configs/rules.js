@@ -3,9 +3,14 @@ const { env, paths } = require('mwp-config');
 const postCssLoaderConfig = require('./postCssLoaderConfig.js');
 
 /**
+ * babelConfig is a file specified by the consumer app
+ * that supplies options to babel-loader and webpack
+ *
+ * e.g. `mope build browser --babelConfig=./babel.config.browser.js`
+ *
  * @see https://webpack.js.org/configuration/module/#module-rules
  */
-module.exports = babel => {
+module.exports = babelConfig => {
 	return {
 		scssModule: {
 			test: /\.module\.scss$/,
@@ -69,11 +74,11 @@ module.exports = babel => {
 						options: {
 							cacheDirectory: true,
 							plugins: env.properties.isDev
-								? babel.plugins.browser.concat([
+								? babelConfig.plugins.browser.concat([
 										'react-hot-loader/babel'
 								])
-								: babel.plugins.browser,
-							presets: babel.presets.browser
+								: babelConfig.plugins.browser,
+							presets: babelConfig.presets.browser
 						}
 					}
 				]
@@ -87,8 +92,8 @@ module.exports = babel => {
 						loader: 'babel-loader',
 						options: {
 							cacheDirectory: true,
-							plugins: babel.plugins.server,
-							presets: babel.presets.server
+							plugins: babelConfig.plugins.server,
+							presets: babelConfig.presets.server
 						}
 					}
 				]

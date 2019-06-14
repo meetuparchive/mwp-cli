@@ -28,7 +28,7 @@ module.exports = {
 		}
 
 		// execute the start-dev script
-		startDev(argv.babel);
+		startDev(argv.babelConfig);
 
 		return;
 	},
