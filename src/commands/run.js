@@ -1,10 +1,19 @@
 const chalk = require('chalk');
+const path = require('path');
 const startDev = require('./runScripts/start-dev');
 
 module.exports = {
 	command: 'run',
 	description: 'run the application server',
-	builder: yargs => yargs.option('log-static'),
+	builder: yargs => {
+		yargs.option('log-static');
+		yargs.option('babel', {
+			alias: 'config',
+			description: 'path for babel config',
+			demandOption: true,
+			type: 'string'
+		});
+	},
 	handler: argv => {
 		const { NODE_ENV } = process.env;
 		const envString = NODE_ENV || 'development';
@@ -24,7 +33,7 @@ module.exports = {
 		}
 
 		// execute the start-dev script
-		startDev();
+		startDev(argv.babel);
 
 		return;
 	},
