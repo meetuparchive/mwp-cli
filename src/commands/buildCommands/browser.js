@@ -50,7 +50,7 @@ module.exports = {
 		const babel = require(argv.babel);
 
 		if (packageConfig.combineLanguages) {
-			return buildBrowserApp('combined')();
+			return buildBrowserApp('combined', babel)();
 		}
 
 		return promiseSerial(argv.locales.map(locale => buildBrowserApp(locale, babel)));
