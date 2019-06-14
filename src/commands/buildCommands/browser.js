@@ -1,4 +1,6 @@
 const chalk = require('chalk');
+const path = require('path');
+
 const { package: packageConfig, paths } = require('mwp-config');
 
 const getBrowserAppConfig = require('./configs/browserAppConfig');
@@ -47,7 +49,8 @@ module.exports = {
 			chalk.blue('building browser bundle using current vendor bundles')
 		);
 
-		const babel = require(argv.babel);
+		const babelPath = path.resolve(process.cwd(), argv.babel);
+		const babel = require(babelPath);
 
 		if (packageConfig.combineLanguages) {
 			return buildBrowserApp('combined', babel)();

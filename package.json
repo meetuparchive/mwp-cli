@@ -79,6 +79,7 @@
     "eslint-plugin-react": "7.5.1",
     "jest": "24.1.0",
     "lint-staged": "7.0.5",
+    "mwp-config": "^21.3.2977-beta",
     "prettier": "1.12.1"
   },
   "lint-staged": {
