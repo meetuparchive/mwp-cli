@@ -67,11 +67,12 @@
     "yargs": "11.0.0"
   },
   "peerDependencies": {
-    "mwp-config": "^21.3.2977-beta"
+    "mwp-config": "^21.3.2977-beta",
+    "react-dom": "^16.8.6"
   },
   "devDependencies": {
     "babel-eslint": "10.0.1",
-    "babel-jest": "23.4.2",
+    "babel-jest": "24.8.0",
     "eslint": "4.19.1",
     "eslint-config-prettier": "2.9.0",
     "eslint-plugin-flowtype": "2.40.1",
