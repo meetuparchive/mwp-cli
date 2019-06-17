@@ -9,9 +9,51 @@ const postCssLoaderConfig = require('./postCssLoaderConfig.js');
  * e.g. `mope build browser --babelConfig=./babel.config.browser.js`
  *
  * @see https://webpack.js.org/configuration/module/#module-rules
+ *
+ * @param buildtype string one of [browser|server]
  */
-module.exports = babelConfig => {
+module.exports = (babelConfig, buildType) => {
+	const browserJSRules = {
+		// standard ES5 transpile through Babel
+		test: /\.jsx?$/,
+		include: [paths.src.browser.app, paths.packages.webComponents.src],
+		exclude: paths.src.asset,
+		use: [
+			{
+				loader: 'babel-loader',
+				options: {
+					cacheDirectory: true,
+					plugins: env.properties.isDev
+						? babelConfig.plugins.concat([
+								'react-hot-loader/babel'
+						])
+						: babelConfig.plugins,
+					presets: babelConfig.presets
+				}
+			}
+		]
+	};
+
+	const serverJSRules = {
+		test: /\.jsx?$/,
+		include: [paths.src.server.app, paths.packages.webComponents.src],
+		exclude: paths.src.asset,
+		use: [
+			{
+				loader: 'babel-loader',
+				options: {
+					cacheDirectory: true,
+					plugins: babelConfig.plugins,
+					presets: babelConfig.presets
+				}
+			}
+		]
+	};
+
+	const jsRules = buildType === 'browser' ? browserJSRules : serverJSRules;
+
 	return {
+		js: jsRules,
 		scssModule: {
 			test: /\.module\.scss$/,
 			include: [paths.srcPath],
@@ -61,43 +103,6 @@ module.exports = babelConfig => {
 					}
 				}
 			]
-		},
-		js: {
-			browser: {
-				// standard ES5 transpile through Babel
-				test: /\.jsx?$/,
-				include: [paths.src.browser.app, paths.packages.webComponents.src],
-				exclude: paths.src.asset,
-				use: [
-					{
-						loader: 'babel-loader',
-						options: {
-							cacheDirectory: true,
-							plugins: env.properties.isDev
-								? babelConfig.plugins.browser.concat([
-										'react-hot-loader/babel'
-								])
-								: babelConfig.plugins.browser,
-							presets: babelConfig.presets.browser
-						}
-					}
-				]
-			},
-			server: {
-				test: /\.jsx?$/,
-				include: [paths.src.server.app, paths.packages.webComponents.src],
-				exclude: paths.src.asset,
-				use: [
-					{
-						loader: 'babel-loader',
-						options: {
-							cacheDirectory: true,
-							plugins: babelConfig.plugins.server,
-							presets: babelConfig.presets.server
-						}
-					}
-				]
-			}
 		},
 		file: {
 			test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|mp4|m4a|aac|oga)$/,

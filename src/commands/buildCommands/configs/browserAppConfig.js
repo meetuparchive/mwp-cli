@@ -50,7 +50,7 @@ function injectHotReloadConfig(config) {
  *
  */
 function getConfig(localeCode, babelConfig) {
-	const rules = getModuleRules(babelConfig);
+	const rules = getModuleRules(babelConfig, 'browser');
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
 	const baseWebfontDir = path.resolve(paths.src.asset, 'fonts');
@@ -85,7 +85,7 @@ function getConfig(localeCode, babelConfig) {
 				rules.baseScss,
 				rules.css,
 				rules.externalCss,
-				rules.js.browser,
+				rules.js,
 				rules.raw
 			]
 		},

@@ -23,7 +23,7 @@ const getModuleRules = require('./rules');
  * e.g. `mope build browser --babelConfig=./babel.config.browser.js
  */
 function getConfig(localeCode, babelConfig) {
-	const rules = getModuleRules(babelConfig);
+	const rules = getModuleRules(babelConfig, 'server');
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
 	const baseWebfontDir = path.resolve(
@@ -60,7 +60,7 @@ function getConfig(localeCode, babelConfig) {
 				rules.baseScss,
 				rules.css,
 				rules.externalCss,
-				rules.js.server,
+				rules.js,
 				rules.raw,
 			],
 		},
