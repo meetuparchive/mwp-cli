@@ -4,7 +4,19 @@ const startDev = require('./runScripts/start-dev');
 module.exports = {
 	command: 'run',
 	description: 'run the application server',
-	builder: yargs => yargs.option('log-static'),
+	builder: yargs => {
+		yargs.option('log-static');
+		yargs.option('babelConfigServer', {
+			description: 'path to file for babel-loader server options',
+			demandOption: true,
+			type: 'string'
+		});
+		yargs.option('babelConfigBrowser', {
+			description: 'path to file for babel-loader browser options',
+			demandOption: true,
+			type: 'string'
+		});
+	},
 	handler: argv => {
 		const { NODE_ENV } = process.env;
 		const envString = NODE_ENV || 'development';
@@ -24,7 +36,7 @@ module.exports = {
 		}
 
 		// execute the start-dev script
-		startDev();
+		startDev(argv.babelConfigServer, argv.babelConfigBrowser);
 
 		return;
 	},
