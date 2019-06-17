@@ -6,8 +6,8 @@ const { env } = require('mwp-config');
 const getBrowserAppConfig = require('../buildCommands/configs/browserAppConfig');
 
 // Set up webpack multicompiler - one for each localeCode specified in CLI args
-const babelConfig = require(process.argv[2]);
-const compiler = webpack(getBrowserAppConfig('combined', babelConfig));
+const babelConfigBrowser = require(process.argv[2]);
+const compiler = webpack(getBrowserAppConfig('combined', babelConfigBrowser));
 if (process.send) {
 	// we are in a child process. communicate with parent through `process.send`
 	compiler.plugin('done', stats => process.send('done'));

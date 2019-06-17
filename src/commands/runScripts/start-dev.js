@@ -118,9 +118,10 @@ const startServer = () => {
 	ready.appServer = true;
 };
 
-function run(babelConfigFile) {
-	const babelConfigFullPath = path.resolve(process.cwd(), babelConfigFile);
-	const babelConfig = require(babelConfigFullPath);
+function run(babelConfigServerPath, babelConfigBrowserPath) {
+	const babelConfigServerFullPath = path.resolve(process.cwd(), babelConfigServerPath);
+	const babelConfigBrowserFullPath = path.resolve(process.cwd(), babelConfigBrowserPath);
+	const babelConfigServer = require(babelConfigServerFullPath);
 
 	const scriptName = path.basename(__filename, path.extname(__filename));
 	log(chalk.blue(`${scriptName}: Preparing the Dev App Server using existing vendor bundle...`));
@@ -129,7 +130,7 @@ function run(babelConfigFile) {
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
 	 */
 	const browserAppCompileLogger = getCompileLogger('browserApp');
-	wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'), [babelConfigFullPath]);
+	wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'), [babelConfigBrowserFullPath]);
 
 	// the dev server compiler will send a message each time it completes a build
 	wdsProcess.on('message', message => {
@@ -150,7 +151,7 @@ function run(babelConfigFile) {
 	 * error messages whenever there is something wrong.
 	 */
 	const serverAppCompileLogger = getCompileLogger('serverApp');
-	const serverAppCompiler = webpack(getServerAppConfig('combined', babelConfig));
+	const serverAppCompiler = webpack(getServerAppConfig('combined', babelConfigServer));
 
 	serverAppCompiler.watch(
 		{
