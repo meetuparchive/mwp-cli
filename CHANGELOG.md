@@ -1,3 +1,7 @@
+# [10.0]
+
+* **BREAKING CHANGE** Babel 7 upgrade
+
 # [9.0]
 
 *   **Removed** unused 'e2e' tests that had a heavy dependency we don't need
