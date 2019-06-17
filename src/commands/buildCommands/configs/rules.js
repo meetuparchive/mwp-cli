@@ -1,111 +1,123 @@
 const path = require('path');
-const { babel, env, paths } = require('mwp-config');
+const { env, paths } = require('mwp-config');
 const postCssLoaderConfig = require('./postCssLoaderConfig.js');
 
 /**
+ * babelConfig is a file specified by the consumer app
+ * that supplies options to babel-loader and webpack
+ *
+ * e.g. `mope build browser --babelConfig=./babel.config.browser.js`
+ *
  * @see https://webpack.js.org/configuration/module/#module-rules
+ *
+ * @param buildtype string one of [browser|server]
  */
-module.exports = {
-	scssModule: {
-		test: /\.module\.scss$/,
-		include: [paths.srcPath],
-		use: [
-			'isomorphic-style-loader',
-			{
-				loader: 'css-loader',
-				options: {
-					importLoaders: 2,
-					modules: true,
-					localIdentName: '_[name]_[local]__[hash:base64:5]'
-				}
-			},
-			postCssLoaderConfig,
-			'sass-loader'
-		]
-	},
-	baseScss: {
-		test: /main\.scss$/,
-		include: [paths.srcPath],
+module.exports = (babelConfig, buildType) => {
+	const browserJSRules = {
+		// standard ES5 transpile through Babel
+		test: /\.jsx?$/,
+		include: [paths.src.browser.app, paths.packages.webComponents.src],
+		exclude: paths.src.asset,
 		use: [
 			{
-				loader: 'file-loader',
+				loader: 'babel-loader',
 				options: {
-					name: '[name].[hash:8].css'
-				}
-			},
-			'extract-loader',
-			'css-loader',
-			postCssLoaderConfig,
-			'sass-loader'
-		]
-	},
-	css: {
-		test: /\.css$/,
-		include: [path.resolve(paths.src.asset, 'css')],
-		use: ['style-loader', 'css-loader']
-	},
-	externalCss: {
-		test: /\.css$/,
-		include: [path.resolve(paths.repoRoot, 'node_modules')],
-		use: [
-			{
-				loader: 'file-loader',
-				options: {
-					name: '[name].[hash:8].css'
+					cacheDirectory: true,
+					plugins: env.properties.isDev
+						? babelConfig.plugins.concat([
+								'react-hot-loader/babel'
+						])
+						: babelConfig.plugins,
+					presets: babelConfig.presets
 				}
 			}
 		]
-	},
-	js: {
-		browser: {
-			// standard ES5 transpile through Babel
-			test: /\.jsx?$/,
-			include: [paths.src.browser.app, paths.packages.webComponents.src],
-			exclude: paths.src.asset,
+	};
+
+	const serverJSRules = {
+		test: /\.jsx?$/,
+		include: [paths.src.server.app, paths.packages.webComponents.src],
+		exclude: paths.src.asset,
+		use: [
+			{
+				loader: 'babel-loader',
+				options: {
+					cacheDirectory: true,
+					plugins: babelConfig.plugins,
+					presets: babelConfig.presets
+				}
+			}
+		]
+	};
+
+	const jsRules = buildType === 'browser' ? browserJSRules : serverJSRules;
+
+	return {
+		js: jsRules,
+		scssModule: {
+			test: /\.module\.scss$/,
+			include: [paths.srcPath],
+			use: [
+				'isomorphic-style-loader',
+				{
+					loader: 'css-loader',
+					options: {
+						importLoaders: 2,
+						modules: true,
+						localIdentName: '_[name]_[local]__[hash:base64:5]'
+					}
+				},
+				postCssLoaderConfig,
+				'sass-loader'
+			]
+		},
+		baseScss: {
+			test: /main\.scss$/,
+			include: [paths.srcPath],
 			use: [
 				{
-					loader: 'babel-loader',
+					loader: 'file-loader',
 					options: {
-						cacheDirectory: true,
-						plugins: env.properties.isDev
-							? babel.plugins.browser.concat([
-									'react-hot-loader/babel'
-							  ])
-							: babel.plugins.browser,
-						presets: babel.presets.browser
+						name: '[name].[hash:8].css'
+					}
+				},
+				'extract-loader',
+				'css-loader',
+				postCssLoaderConfig,
+				'sass-loader'
+			]
+		},
+		css: {
+			test: /\.css$/,
+			include: [path.resolve(paths.src.asset, 'css')],
+			use: ['style-loader', 'css-loader']
+		},
+		externalCss: {
+			test: /\.css$/,
+			include: [path.resolve(paths.repoRoot, 'node_modules')],
+			use: [
+				{
+					loader: 'file-loader',
+					options: {
+						name: '[name].[hash:8].css'
 					}
 				}
 			]
 		},
-		server: {
-			test: /\.jsx?$/,
-			include: [paths.src.server.app, paths.packages.webComponents.src],
-			exclude: paths.src.asset,
+		file: {
+			test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|mp4|m4a|aac|oga)$/,
 			use: [
 				{
-					loader: 'babel-loader',
+					loader: 'file-loader',
 					options: {
-						cacheDirectory: true,
-						plugins: babel.plugins.server,
-						presets: babel.presets.server
+						name: '[name].[hash:8].[ext]'
 					}
 				}
 			]
+		},
+		raw: {
+			test: /\.inc?$/,
+			use: ['raw-loader']
 		}
-	},
-	file: {
-		test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|mp4|m4a|aac|oga)$/,
-		use: [
-			{
-				loader: 'file-loader',
-				options: {
-					name: '[name].[hash:8].[ext]'
-				}
-			}
-		]
-	},
-	raw: {
-		test: /\.inc?$/,
-		use: ['raw-loader']
-	}
+	};
 };
