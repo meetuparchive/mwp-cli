@@ -8,6 +8,8 @@ const { locales, package: packageConfig, paths } = require('mwp-config');
 
 const getServerAppConfig = require('./configs/serverAppConfig');
 const addLocalesOption = require('../../util/addLocalesOption');
+const addBabelOption = require('../../util/addBabelOption');
+
 const {
 	compile,
 	getRelativeBundlePath,
@@ -16,7 +18,7 @@ const {
 
 const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 
-const writeServerAppBundle = localeCode => () => {
+const writeServerAppBundle = (localeCode, babelConfig) => () => {
 	console.log(
 		chalk.blue(`building server app (${chalk.yellow(localeCode)})...`)
 	);
@@ -24,7 +26,7 @@ const writeServerAppBundle = localeCode => () => {
 	return compile(
 		getBundlePath,
 		localeCode,
-		getServerAppConfig(localeCode)
+		getServerAppConfig(localeCode, babelConfig)
 	).catch(error => {
 		console.error(error);
 		process.exit(1);
@@ -68,18 +70,32 @@ function writeServerAppMap(localeCodes, isCombined) {
 module.exports = {
 	command: 'server',
 	description: 'build the server-side renderer bundle',
-	builder: yargs => addLocalesOption(yargs),
+	builder: yargs => {
+		addLocalesOption(yargs);
+		addBabelOption(yargs);
+	},
 	handler: argv => {
 		console.log(
 			chalk.blue('building server bundle using current vendor bundles')
 		);
+
+		/**
+		 * babelConfig is a file specified by the consumer app
+		 * that supplies options to babel-loader and webpack
+		 *
+		 * e.g. `mope build browser --babelConfig=./babel.config.browser.js`
+		 *
+		 * @see mwp-cli/src/commands/buildCommands/configs/rules.js
+		 */
+		const babelConfig = require(path.resolve(process.cwd(), argv.babelConfig));
+
 		if (packageConfig.combineLanguages) {
-			return writeServerAppBundle('combined')().then(() => {
+			return writeServerAppBundle('combined', babelConfig)().then(() => {
 				writeServerAppMap(locales, true); // write an app map that covers _all_ locales
 			});
 		}
 
-		return promiseSerial(argv.locales.map(writeServerAppBundle)).then(() =>
+		return promiseSerial(argv.locales.map(locale => writeServerAppBundle(locale, babelConfig))).then(() =>
 			writeServerAppMap(argv.locales)
 		);
 	},
