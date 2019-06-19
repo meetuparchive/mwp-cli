@@ -6,7 +6,7 @@ const postCssLoaderConfig = require('./postCssLoaderConfig.js');
  * babelConfig is a file specified by the consumer app
  * that supplies options to babel-loader and webpack
  *
- * e.g. `mope build browser --babelConfig=./babel.config.browser.js`
+ * e.g. `mope build browser --babelConfig=./babel.config.js`
  *
  * @see https://webpack.js.org/configuration/module/#module-rules
  *

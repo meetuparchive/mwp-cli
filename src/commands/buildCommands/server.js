@@ -83,7 +83,7 @@ module.exports = {
 		 * babelConfig is a file specified by the consumer app
 		 * that supplies options to babel-loader and webpack
 		 *
-		 * e.g. `mope build browser --babelConfig=./babel.config.browser.js`
+		 * e.g. `mope build server --babelConfig=./babel.config.server.js`
 		 *
 		 * @see mwp-cli/src/commands/buildCommands/configs/rules.js
 		 */
