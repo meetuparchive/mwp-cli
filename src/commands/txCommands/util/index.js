@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const babel = require('babel-core');
+const babel = require('@babel/core');
 const glob = require('glob');
 const memoize = require('memoize-one');
 const { paths } = require('mwp-config');
