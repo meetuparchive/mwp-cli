@@ -1,3 +1,14 @@
+# [10.0]
+
+* **BREAKING CHANGE** Babel 7 upgrade. mope commands updated:
+  *    `mope build browser` requires a `--babelConfig` option.
+        e.g. `mope build browser --babelConfig=./babel.config.js`
+  *    `mope build server` requires a `--babelConfig` option.
+        e.g. `mope build server --babelConfig=./babel-loader.config.server.js`
+  *    `mope run` requires two new options, `--babelConfigBrowser`
+        and `--babelConfigServer`
+        e.g. `mope run --babelConfigBrowser=./babel.config.js --babelConfigServer=./babel-loader.config.server.js`
+
 # [9.0]
 
 *   **Removed** unused 'e2e' tests that had a heavy dependency we don't need
