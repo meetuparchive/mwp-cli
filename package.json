@@ -67,7 +67,7 @@
     "yargs": "11.0.0"
   },
   "peerDependencies": {
-    "mwp-config": "^22.0.2983",
+    "mwp-config": "^22.1.0",
     "react-dom": "^16.8.6"
   },
   "devDependencies": {

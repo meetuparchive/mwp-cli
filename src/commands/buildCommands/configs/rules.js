@@ -24,14 +24,12 @@ module.exports = (babelConfig, buildType) => {
 				options: {
 					cacheDirectory: true,
 					plugins: env.properties.isDev
-						? babelConfig.plugins.concat([
-								'react-hot-loader/babel'
-						])
+						? babelConfig.plugins.concat(['react-hot-loader/babel'])
 						: babelConfig.plugins,
-					presets: babelConfig.presets
-				}
-			}
-		]
+					presets: babelConfig.presets,
+				},
+			},
+		],
 	};
 
 	const serverJSRules = {
@@ -44,10 +42,10 @@ module.exports = (babelConfig, buildType) => {
 				options: {
 					cacheDirectory: true,
 					plugins: babelConfig.plugins,
-					presets: babelConfig.presets
-				}
-			}
-		]
+					presets: babelConfig.presets,
+				},
+			},
+		],
 	};
 
 	const jsRules = buildType === 'browser' ? browserJSRules : serverJSRules;
@@ -56,7 +54,7 @@ module.exports = (babelConfig, buildType) => {
 		js: jsRules,
 		scssModule: {
 			test: /\.module\.scss$/,
-			include: [paths.srcPath],
+			include: [paths.srcPath, paths.localPackages],
 			use: [
 				'isomorphic-style-loader',
 				{
@@ -64,12 +62,12 @@ module.exports = (babelConfig, buildType) => {
 					options: {
 						importLoaders: 2,
 						modules: true,
-						localIdentName: '_[name]_[local]__[hash:base64:5]'
-					}
+						localIdentName: '_[name]_[local]__[hash:base64:5]',
+					},
 				},
 				postCssLoaderConfig,
-				'sass-loader'
-			]
+				'sass-loader',
+			],
 		},
 		baseScss: {
 			test: /main\.scss$/,
@@ -78,31 +76,35 @@ module.exports = (babelConfig, buildType) => {
 				{
 					loader: 'file-loader',
 					options: {
-						name: '[name].[hash:8].css'
-					}
+						name: '[name].[hash:8].css',
+					},
 				},
 				'extract-loader',
 				'css-loader',
 				postCssLoaderConfig,
-				'sass-loader'
-			]
+				'sass-loader',
+			],
 		},
 		css: {
+			// local CSS files that may refer to other local static assets such as images
+			// that will be bundled with the application
 			test: /\.css$/,
-			include: [path.resolve(paths.src.asset, 'css')],
-			use: ['style-loader', 'css-loader']
+			include: [paths.srcPath, paths.localPackages],
+			use: ['style-loader', 'css-loader'],
 		},
 		externalCss: {
+			// third-party CSS that does not refer to local static assets - load as normal
+			// file without any translation of import paths
 			test: /\.css$/,
 			include: [path.resolve(paths.repoRoot, 'node_modules')],
 			use: [
 				{
 					loader: 'file-loader',
 					options: {
-						name: '[name].[hash:8].css'
-					}
-				}
-			]
+						name: '[name].[hash:8].css',
+					},
+				},
+			],
 		},
 		file: {
 			test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|mp4|m4a|aac|oga)$/,
@@ -110,14 +112,14 @@ module.exports = (babelConfig, buildType) => {
 				{
 					loader: 'file-loader',
 					options: {
-						name: '[name].[hash:8].[ext]'
-					}
-				}
-			]
+						name: '[name].[hash:8].[ext]',
+					},
+				},
+			],
 		},
 		raw: {
 			test: /\.inc?$/,
-			use: ['raw-loader']
-		}
+			use: ['raw-loader'],
+		},
 	};
 };
