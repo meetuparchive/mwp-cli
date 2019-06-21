@@ -10,6 +10,11 @@ const tfx = require('./transifex');
 const { logSuccess, logError } = require('./logger');
 
 const PO_DIR = path.resolve(paths.repoRoot, 'src/trns/po/');
+const TRN_SRC_GLOBS = [
+	'packages/**/src/**/*.jsx', // monorepo package TRN sources
+	'src/@(components|app)/**/*.jsx', // main app TRN sources
+];
+const TRN_SRC_GLOB = `${paths.repoRoot}/{${TRN_SRC_GLOBS.join()}}`;
 
 /**
  * This modules connects local file system content to the Transifex API,
@@ -62,17 +67,14 @@ const reduceUniques = localTrns => {
 // () => Array<MessageDescriptor>
 const extractTrnSource = () =>
 	glob
-		.sync(
-			`${paths.repoRoot}/src/+(components|app)/**/!(*.test|*.story).jsx`
-		)
+		.sync(TRN_SRC_GLOB)
 		.map(file =>
 			babel.transformFileSync(file, {
 				plugins: [['react-intl', { extractSourceLocation: true }]],
 			})
 		)
 		.map(
-			babelOut =>
-				((babelOut.metadata || {})['react-intl'] || {}).messages || []
+			babelOut => ((babelOut.metadata || {})['react-intl'] || {}).messages || []
 		)
 		.filter(trns => trns.length);
 
@@ -110,9 +112,7 @@ const getLocalLocaleMessages = () => {
 // returns keys which are not in main or have an updated value
 const objDiff = ([main, extracted]) =>
 	Object.keys(extracted)
-		.filter(
-			key => !main[key] || main[key].msgstr[0] != extracted[key].msgstr[0]
-		)
+		.filter(key => !main[key] || main[key].msgstr[0] != extracted[key].msgstr[0])
 		.reduce((obj, key) => {
 			obj[key] = extracted[key];
 			return obj;
@@ -154,8 +154,7 @@ const updateTfxSrcMaster = () => updateAllSrc(tfx.MASTER_RESOURCE);
 
 // convenience function for updating project's all_translations resource
 // _source_ data
-const updateTfxSrcAllTranslations = () =>
-	updateAllSrc(tfx.ALL_TRANSLATIONS_RESOURCE);
+const updateTfxSrcAllTranslations = () => updateAllSrc(tfx.ALL_TRANSLATIONS_RESOURCE);
 
 // Helper to update master with all local translated content
 // TODO: unit test when tfx can be mocked
