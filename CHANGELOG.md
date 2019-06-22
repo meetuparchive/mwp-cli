@@ -1,11 +1,20 @@
+# [10.1]
+
+*   **New feature** `mope trn` now writes package-specific TRNs to package-specific
+    TRN modules directory. Import package-specific TRNs in your code with
+    ```js
+    // /packages/my-cool-package/src/foo/ComponentWithTrns.jsx
+    import trns from 'trns/my-cool-package/foo/ComponentWithTrns';
+    ```
+
 # [10.0]
 
-* **BREAKING CHANGE** Babel 7 upgrade. mope commands updated:
-  *    `mope build browser` requires a `--babelConfig` option.
+*   **BREAKING CHANGE** Babel 7 upgrade. mope commands updated:
+    *   `mope build browser` requires a `--babelConfig` option.
         e.g. `mope build browser --babelConfig=./babel.config.js`
-  *    `mope build server` requires a `--babelConfig` option.
+    *   `mope build server` requires a `--babelConfig` option.
         e.g. `mope build server --babelConfig=./babel-loader.config.server.js`
-  *    `mope run` requires two new options, `--babelConfigBrowser`
+    *   `mope run` requires two new options, `--babelConfigBrowser`
         and `--babelConfigServer`
         e.g. `mope run --babelConfigBrowser=./babel.config.js --babelConfigServer=./babel-loader.config.server.js`
 
