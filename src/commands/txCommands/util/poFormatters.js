@@ -54,6 +54,7 @@ const poObjToPoString = poObj => {
 const msgDescriptorsToPoObj = messages =>
 	messages.reduce((acc, msg) => {
 		if (typeof msg.description !== 'object' || !msg.description.jira) {
+			console.log(msg.file);
 			throw new Error('Trn content missing jira story reference', msg);
 		}
 
