@@ -12,7 +12,7 @@ const { logSuccess, logError } = require('./logger');
 const PO_DIR = path.resolve(paths.repoRoot, 'src/trns/po/');
 const TRN_SRC_GLOBS = [
 	'packages/**/src/**/*.jsx', // monorepo package TRN sources
-	'src/@(components|app)/**/*.jsx', // main app TRN sources
+	'src/@(components|app)/**/!(*.test|*.story).jsx', // main app TRN sources
 ];
 const TRN_SRC_GLOB = `${paths.repoRoot}/{${TRN_SRC_GLOBS.join()}}`;
 
