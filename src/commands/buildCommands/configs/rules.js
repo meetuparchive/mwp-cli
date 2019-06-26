@@ -54,7 +54,11 @@ module.exports = (babelConfig, buildType) => {
 		js: jsRules,
 		scssModule: {
 			test: /\.module\.scss$/,
-			include: [paths.srcPath, paths.localPackages],
+			include: [
+				paths.srcPath,
+				paths.localPackages,
+				/\/node_modules\/@meetup\//,
+			],
 			use: [
 				'isomorphic-style-loader',
 				{
