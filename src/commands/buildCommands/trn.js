@@ -6,10 +6,7 @@ const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 
 const { paths, locales, package: packageConfig } = require('mwp-config');
-const {
-	getLocalLocaleMessages,
-	extractTrnSource,
-} = require('../txCommands/util');
+const { getLocalLocaleMessages, extractTrnSource } = require('../txCommands/util');
 
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');
 
@@ -19,6 +16,25 @@ const writeTrnFile = (destFilename, trns) => {
 	const destDirname = path.dirname(destFilename);
 	mkdirp.sync(destDirname);
 	return writeFile(destFilename, `${JSON.stringify(trns, null, 2)}\n`);
+};
+/**
+ * for files in the package 'main' src/ directory, return the file path
+ * relative to that src
+ * for files in the monorepo local pacakges/ directory, return the file path
+ * relatve to that src, with the package directory name as a prefix
+ *
+ * Example:
+ * - '/mup-web/src/path/to/trnSource' => '/path/to/trnSource'
+ * - '/mup-web/packages/foo-package/src/path/to/trnSource'
+ *     => '/foo-package/path/to/trnSource'
+ */
+const getRelDestFilename = filename => {
+	if (filename.startsWith(paths.localPackages)) {
+		const pathMatcher = new RegExp(`${paths.localPackages}/([^/]+)/src/(.+)$`);
+		const pathMatch = filename.match(pathMatcher);
+		return `${pathMatch[1]}/${pathMatch[2]}`;
+	}
+	return path.relative(paths.srcPath, filename);
 };
 
 const makeTrnModuleWriter = messagesByLocale => ({ filename, msgids }) => {
@@ -37,16 +53,13 @@ const makeTrnModuleWriter = messagesByLocale => ({ filename, msgids }) => {
 	}, {});
 
 	// in dev, we want to build a single module containing all locales
-	if (
-		packageConfig.combineLanguages ||
-		process.env.NODE_ENV !== 'production'
-	) {
+	if (packageConfig.combineLanguages || process.env.NODE_ENV !== 'production') {
 		// one trn file, all trns
-		const relPath = path.relative(paths.srcPath, filename);
+		const relDestFilename = getRelDestFilename(filename);
 		const destFilename = path.resolve(
 			MODULES_PATH,
 			'combined',
-			`${relPath}.json`
+			`${relDestFilename}.json`
 		);
 		return writeTrnFile(destFilename, trns);
 	}
@@ -107,10 +120,7 @@ const PICKER_LOCALES = {
 };
 const buildDateLocales = () => {
 	// in dev, we want to build a single module containing all locales
-	if (
-		packageConfig.combineLanguages ||
-		process.env.NODE_ENV !== 'production'
-	) {
+	if (packageConfig.combineLanguages || process.env.NODE_ENV !== 'production') {
 		const destFilename = path.resolve(
 			MODULES_PATH,
 			'combined',
@@ -164,9 +174,7 @@ function main() {
 		.then(
 			trnDefs => {
 				console.log(
-					chalk.green(
-						`Wrote TRN modules for ${trnDefs.length} components`
-					)
+					chalk.green(`Wrote TRN modules for ${trnDefs.length} components`)
 				);
 			},
 			err => {
