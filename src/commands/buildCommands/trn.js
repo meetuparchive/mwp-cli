@@ -52,10 +52,11 @@ const makeTrnModuleWriter = messagesByLocale => ({ filename, msgids }) => {
 		return acc;
 	}, {});
 
+	const relDestFilename = getRelDestFilename(filename);
+
 	// in dev, we want to build a single module containing all locales
 	if (packageConfig.combineLanguages || process.env.NODE_ENV !== 'production') {
 		// one trn file, all trns
-		const relDestFilename = getRelDestFilename(filename);
 		const destFilename = path.resolve(
 			MODULES_PATH,
 			'combined',
@@ -67,11 +68,10 @@ const makeTrnModuleWriter = messagesByLocale => ({ filename, msgids }) => {
 	return Promise.all(
 		locales.map(localeCode => {
 			const langTrns = { [localeCode]: trns[localeCode] };
-			const relPath = path.relative(paths.srcPath, filename);
 			const destFilename = path.resolve(
 				MODULES_PATH,
 				localeCode,
-				`${relPath}.json`
+				`${relDestFilename}.json`
 			);
 			return writeTrnFile(destFilename, langTrns);
 		})

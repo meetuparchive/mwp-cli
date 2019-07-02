@@ -5767,9 +5767,10 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
-mwp-config@22.1.2989:
-  version "22.1.2989"
-  resolved "https://registry.yarnpkg.com/mwp-config/-/mwp-config-22.1.2989.tgz#0c6a01d83113e89fbac7eee7c696d9e27b81ef00"
+mwp-config@^22.1.0:
+  version "22.1.2986"
+  resolved "https://registry.yarnpkg.com/mwp-config/-/mwp-config-22.1.2986.tgz#4109ddf411cd8f75a3001ca0e9f82284363427d8"
+  integrity sha512-bXGVPb+HCgJSSVAnxosK3mCA5UksCzAHH3hWVxSMJtM6HbN2XAA3QAn6AxXw6xNKQ53IaB+7kiLonJVEZFRgSQ==
   dependencies:
     convict "4.0.1"
     stylelint "9.4.0"
