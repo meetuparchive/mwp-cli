@@ -111,7 +111,7 @@ function getConfig(localeCode, babelConfig) {
 					: null,
 				whitelist: [
 					/^meetup-web-components/,
-					/^@meetup\/swarm-/, // allow swarm assets to be processed by bundler
+					/^@meetup\//, // allow meetup packages to be processed by bundler
 					/^swarm-icons\/dist\/sprite\/sprite\.inc$/,
 				],
 			}),
