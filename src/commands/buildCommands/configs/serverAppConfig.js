@@ -26,11 +26,7 @@ function getConfig(localeCode, babelConfig) {
 	const rules = getModuleRules(babelConfig, 'server');
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
-	const baseWebfontDir = path.resolve(
-		paths.src.server.app,
-		'assets',
-		'fonts'
-	);
+	const baseWebfontDir = path.resolve(paths.src.server.app, 'assets', 'fonts');
 	const webfontDir =
 		localeCode === 'ru-RU'
 			? path.resolve(baseWebfontDir, localeCode)
@@ -88,11 +84,7 @@ function getConfig(localeCode, babelConfig) {
 					path.resolve(paths.output.browser, 'manifest.json')
 				),
 				BROWSER_MANIFEST_PATH: JSON.stringify(
-					path.resolve(
-						paths.output.browser,
-						localeCode,
-						'manifest.json'
-					)
+					path.resolve(paths.output.browser, localeCode, 'manifest.json')
 				),
 			}),
 
@@ -106,12 +98,11 @@ function getConfig(localeCode, babelConfig) {
 
 		externals: [
 			nodeExternals({
-				modulesDir: process.env.NODE_PATH
-					? process.env.NODE_PATH
-					: null,
+				modulesDir: process.env.NODE_PATH ? process.env.NODE_PATH : null,
 				whitelist: [
 					/^meetup-web-components/,
-					/^@meetup\//, // allow meetup packages to be processed by bundler
+					/^@meetup\/swarm-/, // allow swam packages to be processed by bundler
+					/^@meetup\/mupweb-/, // allow mupweb packages to be processed by bundler
 					/^swarm-icons\/dist\/sprite\/sprite\.inc$/,
 				],
 			}),
