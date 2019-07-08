@@ -15,8 +15,8 @@ const postCssLoaderConfig = require('./postCssLoaderConfig.js');
 module.exports = (babelConfig, buildType) => {
 	const browserJSRules = {
 		// standard ES5 transpile through Babel
-		test: /\.jsx?$/,
-		include: [paths.src.browser.app, paths.packages.webComponents.src],
+		test: /\.(ts|js)x?$/,
+		include: [paths.src.browser.app, paths.packages.webComponents.src, paths.localPackages],
 		exclude: paths.src.asset,
 		use: [
 			{
@@ -33,8 +33,8 @@ module.exports = (babelConfig, buildType) => {
 	};
 
 	const serverJSRules = {
-		test: /\.jsx?$/,
-		include: [paths.src.server.app, paths.packages.webComponents.src],
+		test: /\.(ts|js)x?$/,
+		include: [paths.src.server.app, paths.packages.webComponents.src, paths.localPackages],
 		exclude: paths.src.asset,
 		use: [
 			{
