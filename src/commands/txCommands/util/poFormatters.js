@@ -51,19 +51,33 @@ const poObjToPoString = poObj => {
 };
 
 // Array<MessageDescriptor> => Po
+// https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html
+/**
+ * special handling of description object
+ * - 'text' will be assigned to `comments.extracted`.
+ * - all other key/values will be converted to a 'key: value; ...' string and
+ *   assigned to `comments.translator`, e.g.
+ *
+ * description = {
+ * 	text: 'info for translator',
+ *  jira: 'asdfas',
+ *  pivotal: 'asdfasd'
+ * }
+ *
+ * yields: 'jira: asdfas; pivotal: asdfasdf'
+ */
 const msgDescriptorsToPoObj = messages =>
 	messages.reduce((acc, msg) => {
-		if (typeof msg.description !== 'object' || !msg.description.jira) {
-			console.log(msg.file);
-			throw new Error('Trn content missing jira story reference', msg);
-		}
+		const { text, ...otherDesc } = msg.description;
 
 		acc[msg.id] = {
 			msgid: msg.id,
 			msgstr: [msg.defaultMessage],
 			comments: {
-				extracted: msg.description.text,
-				translator: msg.description.jira,
+				extracted: text,
+				translator: Object.keys(otherDesc)
+					.map(k => `${k}: ${otherDesc[k]}`)
+					.join('; '),
 				reference: `${msg.file}:${msg.start.line}:${msg.start.column}`,
 			},
 		};
