@@ -1,4 +1,4 @@
-# [10.2]
+# [11.0]
 
 *   **BREAKING CHANGE** `mwp-config` package updated with new Regex path to local 
 	mupweb packages which is used in babel-loader config
