@@ -1,3 +1,8 @@
+# [11.0]
+
+*   **BREAKING CHANGE** `mwp-config` package updated with new Regex path to local 
+	mupweb packages which is used in babel-loader config
+
 # [10.1]
 
 *   **New feature** `mope trn` now writes package-specific TRNs to package-specific
