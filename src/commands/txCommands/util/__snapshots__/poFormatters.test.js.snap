@@ -6,7 +6,7 @@ Object {
     "comments": Object {
       "extracted": "foo description text",
       "reference": "/src/path/to/source/file.jsx:10:11",
-      "translator": "WP-1234",
+      "translator": "jira: WP-1234",
     },
     "msgid": "msg.mock.id",
     "msgstr": Array [

@@ -50,20 +50,47 @@ const poObjToPoString = poObj => {
 	return `${gettextParser.po.compile(headerWrapped).toString()}\n`;
 };
 
-// Array<MessageDescriptor> => Po
+/**
+ * Convert array of message descriptors into a PO object
+ *   Array<MessageDescriptor> => Po
+ *
+ * https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html
+ *
+ * This transform includes special handling of the `description` parameter
+ * - `description.text` will be assigned to `comments.extracted`.
+ * - all other `description` key/values will be converted to a 'key: value; ...'
+ *   string and assigned to `comments.translator`, e.g.
+ *
+ * ```
+ * description = {
+ * 	text: 'info for translator',
+ *  jira: 'whatever',
+ *  pivotal: 'something else'
+ * }
+ * ```
+ *
+ * yields:
+ *
+ * ```
+ * comments: {
+ *  text: 'info for translator',
+ *  translator: 'jira: whatever; pivotal: asdfasdf'
+ *  ...
+ * }
+ * ```
+ */
 const msgDescriptorsToPoObj = messages =>
 	messages.reduce((acc, msg) => {
-		if (typeof msg.description !== 'object' || !msg.description.jira) {
-			console.log(msg.file);
-			throw new Error('Trn content missing jira story reference', msg);
-		}
+		const { text, ...otherDesc } = msg.description;
 
 		acc[msg.id] = {
 			msgid: msg.id,
 			msgstr: [msg.defaultMessage],
 			comments: {
-				extracted: msg.description.text,
-				translator: msg.description.jira,
+				extracted: text,
+				translator: Object.keys(otherDesc)
+					.map(k => `${k}: ${otherDesc[k]}`)
+					.join('; '),
 				reference: `${msg.file}:${msg.start.line}:${msg.start.column}`,
 			},
 		};
