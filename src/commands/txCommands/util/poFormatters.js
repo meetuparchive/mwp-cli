@@ -50,21 +50,34 @@ const poObjToPoString = poObj => {
 	return `${gettextParser.po.compile(headerWrapped).toString()}\n`;
 };
 
-// Array<MessageDescriptor> => Po
-// https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html
 /**
- * special handling of description object
- * - 'text' will be assigned to `comments.extracted`.
- * - all other key/values will be converted to a 'key: value; ...' string and
- *   assigned to `comments.translator`, e.g.
+ * Convert array of message descriptors into a PO object
+ *   Array<MessageDescriptor> => Po
  *
+ * https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html
+ *
+ * This transform includes special handling of the `description` parameter
+ * - `description.text` will be assigned to `comments.extracted`.
+ * - all other `description` key/values will be converted to a 'key: value; ...'
+ *   string and assigned to `comments.translator`, e.g.
+ *
+ * ```
  * description = {
  * 	text: 'info for translator',
- *  jira: 'asdfas',
- *  pivotal: 'asdfasd'
+ *  jira: 'whatever',
+ *  pivotal: 'something else'
  * }
+ * ```
  *
- * yields: 'jira: asdfas; pivotal: asdfasdf'
+ * yields:
+ *
+ * ```
+ * comments: {
+ *  text: 'info for translator',
+ *  translator: 'jira: whatever; pivotal: asdfasdf'
+ *  ...
+ * }
+ * ```
  */
 const msgDescriptorsToPoObj = messages =>
 	messages.reduce((acc, msg) => {
