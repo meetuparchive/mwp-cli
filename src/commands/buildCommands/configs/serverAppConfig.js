@@ -80,12 +80,15 @@ function getConfig(localeCode, babelConfig) {
 			new webpack.DefinePlugin({
 				// server bundles must reference _browser_ bundle public path
 				// - inject it as a 'global variable' here
+				// deprecated - use `mwp-config` paths directly in bundled scripts
 				VENDOR_MANIFEST_PATH: JSON.stringify(
 					path.resolve(paths.output.browser, 'manifest.json')
 				),
+				// deprecated - use `mwp-config` paths directly in bundled scripts
 				BROWSER_MANIFEST_PATH: JSON.stringify(
 					path.resolve(paths.output.browser, localeCode, 'manifest.json')
 				),
+				BUILD_LOCALE_CODE: JSON.stringify(localeCode),
 			}),
 
 			/**
@@ -108,6 +111,7 @@ function getConfig(localeCode, babelConfig) {
 			}),
 			new RegExp(paths.buildPath),
 			/\.\/build\//,
+			/\/manifest\.json/, // all manifest files are build outputs only available at runtime (external to build)
 		],
 
 		resolve: {
