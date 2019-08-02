@@ -2,6 +2,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
+const chalk = require('chalk');
 const dogapi = require('dogapi');
 
 const TIMER_FILE = path.resolve(os.tmpdir(), '__mwp-timers.json');
@@ -85,6 +86,11 @@ module.exports = {
 					const NOW = new Date().getTime() / 1000; // one timestamp in seconds for all reported metrics
 					// create a record based on the requested attributes
 					const current = getCurrentTimes();
+
+					console.log(
+						chalk.yellow('Elapsed time:')
+					);
+
 					const metrics = argv.attributes.map(attr => {
 						if (!current[attr]) {
 							throw new Error(`${attr} not started`);
@@ -95,6 +101,11 @@ module.exports = {
 						const currentTime =
 							current[attr].end -
 							current[attr].start;
+
+						console.log(
+							chalk.yellow(`${argv.attributes}: ${currentTime/1000}`)
+						);
+
 						return {
 							metric: `mwp.${argv.type}.time`,
 							points: [[NOW, currentTime/1000]],
