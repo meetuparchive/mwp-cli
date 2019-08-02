@@ -88,7 +88,7 @@ module.exports = {
 					const current = getCurrentTimes();
 
 					console.log(
-						chalk.yellow('Elapsed time:')
+						chalk.yellow('Elapsed time in seconds:')
 					);
 
 					const metrics = argv.attributes.map(attr => {
