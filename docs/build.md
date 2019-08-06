@@ -1,4 +1,4 @@
-### Build: `mope build [<target>|push|pull|status]`
+### Build: `mope build [<target>|pull|status]`
 
 We currently have 4 builds:
 
@@ -30,21 +30,14 @@ $ mope build [browser|server|vendor|trn]
 
 [Browser and server targets also support specifying locales](locales.md)
 
-#### Synopsis (build push|pull)
+#### Synopsis (build pull)
 
 ```
-$ mope build push --versionId=12345 --tag=foo
-```
-
-Push the build artifacts for the supplied version to cloud storage.
-Tag the archive.
-
-```
-$ mope build pull --versionId=12345 --tags foo bar baz
+$ mope build pull --versionId=12345 --s3Bucket=s3-bucket-name --tags foo bar baz
 ```
 
 Pull the build artifacts with the supplied tags for the supplied version from
-cloud storage. Unpack them into the current directory.
+AWS S3 storage. Unpack them into the current directory.
 
 #### Synopsis (build status)
 
@@ -68,8 +61,8 @@ run this command to log built asset size statistics to DataDog.
 
 The reported metrics are
 
-*   `mwp.bundle.size` (total JS asset size)
-*   `mwp.bundle.chunk_size` (individual chunk size)
+-   `mwp.bundle.size` (total JS asset size)
+-   `mwp.bundle.chunk_size` (individual chunk size)
 
 Use the metric tags to filter by chunk name, application (e.g. mup-web or pro-web),
 and build number
@@ -311,9 +304,9 @@ _\*: **Child process**_
 
 ### References
 
-*   Webpack Node API for compiling in watch mode: https://webpack.js.org/api/node/#watching
-*   Configuring watch mode behavior: https://webpack.js.org/configuration/watch/#watchoptions
-*   Webpack Dev Server: https://webpack.js.org/configuration/dev-server/
+-   Webpack Node API for compiling in watch mode: https://webpack.js.org/api/node/#watching
+-   Configuring watch mode behavior: https://webpack.js.org/configuration/watch/#watchoptions
+-   Webpack Dev Server: https://webpack.js.org/configuration/dev-server/
 
 ## Analyzing the bundle
 
@@ -324,6 +317,6 @@ various tools.
 
 ### References
 
-*   Webpack stats config docs: https://webpack.js.org/api/cli/#common-options
-*   Summary of webpack build analyzers:
+-   Webpack stats config docs: https://webpack.js.org/api/cli/#common-options
+-   Summary of webpack build analyzers:
     https://survivejs.com/webpack/optimizing/analyzing-build-statistics/
