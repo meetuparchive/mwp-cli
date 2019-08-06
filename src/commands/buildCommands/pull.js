@@ -4,19 +4,21 @@ const chalk = require('chalk');
 
 const { locales, package: packageConfig } = require('mwp-config');
 const addLocalesOption = require('../../util/addLocalesOption');
-const api = require('../buildUtils/cloudApi');
+
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
 
 const { CI_BUILD_NUMBER } = process.env;
-const unpackBundle = file =>
-	file.createReadStream().pipe(gunzip()).pipe(tar.extract());
-
-const getArchiveDir = ({ serviceId, versionId }) => `${serviceId}-${versionId}/`;
 
 module.exports = {
 	command: 'pull',
 	description: 'pull the built app from cloud storage',
 	builder: yargs =>
 		addLocalesOption(yargs).options({
+			s3Bucket: {
+				demandOption: true,
+				describe: 'Name of AWS S3 bucket',
+			},
 			versionId: {
 				default: CI_BUILD_NUMBER,
 				demandOption: true,
@@ -32,8 +34,7 @@ module.exports = {
 			},
 			timeout: {
 				default: 30 * 60 * 1000,
-				describe:
-					'Time to wait for bundles to become available for pull',
+				describe: 'Time to wait for bundles to become available for pull',
 			},
 			tags: {
 				default: locales,
@@ -44,25 +45,47 @@ module.exports = {
 		}),
 	handler: argv => {
 		const startTime = new Date();
-		const { serviceId, versionId, timeout, tags } = argv;
+		const { s3Bucket, serviceId, versionId, timeout, tags } = argv;
 		const expectedBundleCount = tags.length;
 		const pulledBundles = [];
 
 		// define recursive function to poll for completed app bundles
 		const pull = () => {
+			const archiveDir = `${serviceId}-${versionId}/`;
+
 			if (new Date() - startTime > timeout) {
 				throw new Error(`Timeout - ${Math.floor(timeout / 1000)}sec`);
 			}
-			return api
-				.list(getArchiveDir({ serviceId, versionId }))
+
+			return s3
+				.listObjectsV2({
+					Bucket: s3Bucket,
+					Prefix: archiveDir,
+				})
+				.promise() // AWS SDK promise instead of default callback
+				.then(s3Response =>
+					s3Response.Contents.map(s3Object => s3Object.Key).filter(
+						fileName => fileName !== archiveDir
+					)
+				)
 				.then(bundles => {
 					// only pull _new_ bundles
 					const bundlesToPull = bundles.filter(
-						b => !pulledBundles.some(({ name }) => name === b.name)
+						bundleName => !pulledBundles.some(name => name === bundleName)
 					);
 					if (bundlesToPull.length) {
 						// loop through bundles and unzip, untar contents
-						bundlesToPull.forEach(unpackBundle);
+						bundlesToPull.forEach(bundleName =>
+							s3
+								.getObject({
+									Bucket: s3Bucket,
+									Key: bundleName,
+								})
+								.createReadStream()
+								.pipe(gunzip())
+								.pipe(tar.extract())
+						);
+
 						// add pulled bundles to complete array
 						pulledBundles.push(...bundlesToPull);
 						console.log(
@@ -71,9 +94,7 @@ module.exports = {
 							),
 							chalk.green('bundles pulled:')
 						);
-						console.log(
-							pulledBundles.map(({ name }) => name).join('\n')
-						);
+						console.log(pulledBundles.join('\n'));
 					}
 
 					if (pulledBundles.length === expectedBundleCount) {
