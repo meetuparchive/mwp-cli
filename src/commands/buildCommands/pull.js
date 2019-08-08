@@ -49,6 +49,10 @@ module.exports = {
 		const expectedBundleCount = tags.length;
 		const pulledBundles = [];
 
+		console.log(
+			chalk.blue(`Expecting ${expectedBundleCount} bundles: ${tags.join(', ')}`)
+		);
+
 		// define recursive function to poll for completed app bundles
 		const pull = () => {
 			const archiveDir = `${serviceId}-${versionId}/`;
@@ -56,6 +60,10 @@ module.exports = {
 			if (new Date() - startTime > timeout) {
 				throw new Error(`Timeout - ${Math.floor(timeout / 1000)}sec`);
 			}
+
+			console.log(
+				chalk.blue(`Searching for bundles in s3://${s3Bucket}/${archiveDir}`)
+			);
 
 			return s3
 				.listObjectsV2({
@@ -69,6 +77,12 @@ module.exports = {
 					)
 				)
 				.then(bundles => {
+					console.log(
+						chalk.blue(
+							`Found ${bundles.length} bundles: ${bundles.join(', ')}`
+						)
+					);
+
 					// only pull _new_ bundles
 					const bundlesToPull = bundles.filter(
 						bundleName => !pulledBundles.some(name => name === bundleName)
