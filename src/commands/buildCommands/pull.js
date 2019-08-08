@@ -77,12 +77,6 @@ module.exports = {
 					)
 				)
 				.then(bundles => {
-					console.log(
-						chalk.blue(
-							`Found ${bundles.length} bundles: ${bundles.join(', ')}`
-						)
-					);
-
 					// only pull _new_ bundles
 					const bundlesToPull = bundles.filter(
 						bundleName => !pulledBundles.some(name => name === bundleName)
