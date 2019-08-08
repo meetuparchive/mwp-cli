@@ -1,6 +1,6 @@
 {
   "name": "mwp-cli",
-  "version": "1.0.0",
+  "version": "12.0.674",
   "description": "CLI for Meetup Web Platform apps",
   "main": "index.js",
   "repository": "git@github.com:meetup/mwp-cli.git",
