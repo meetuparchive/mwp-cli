@@ -41,7 +41,9 @@ module.exports = {
 			.demandCommand()
 			.command('start', 'record a start time', { attribute }, argv => {
 				const current = getCurrentTimes();
-				current[argv.attribute] = { start: new Date().getTime() };
+				const start = new Date().getTime();
+				console.log(chalk.blue(`Start ${argv.attribute}: ${start}`));
+				current[argv.attribute] = { start };
 				return setCurrentTimes(current);
 			})
 			.command('end', 'record an end time', { attribute }, argv => {
@@ -50,7 +52,9 @@ module.exports = {
 				if (!currentTime) {
 					throw new Error(`${argv.attribute} not started`);
 				}
-				currentTime.end = new Date().getTime();
+				const end = new Date().getTime();
+				console.log(chalk.blue(`End ${argv.attribute}: ${end}`));
+				currentTime.end = end;
 				return setCurrentTimes(current);
 			})
 			.command(
@@ -63,8 +67,7 @@ module.exports = {
 						describe: 'The New Relic custom event type name',
 					},
 					attributes: {
-						describe:
-							'the set of attributes to send with this record',
+						describe: 'the set of attributes to send with this record',
 						type: 'array',
 					},
 					key: {
@@ -87,9 +90,7 @@ module.exports = {
 					// create a record based on the requested attributes
 					const current = getCurrentTimes();
 
-					console.log(
-						chalk.yellow('Elapsed time in seconds:')
-					);
+					console.log(chalk.yellow('Logging elapsed time (seconds):'));
 
 					const metrics = argv.attributes.map(attr => {
 						if (!current[attr]) {
@@ -98,18 +99,20 @@ module.exports = {
 						if (!current[attr].end) {
 							throw new Error(`${attr} not finished`);
 						}
-						const currentTime =
-							current[attr].end -
-							current[attr].start;
+						const currentTime = current[attr].end - current[attr].start;
 
 						console.log(
-							chalk.yellow(`${argv.attributes}: ${currentTime/1000}`)
+							chalk.yellow(`${argv.attributes}: ${currentTime / 1000}`)
 						);
 
 						return {
 							metric: `mwp.${argv.type}.time`,
-							points: [[NOW, currentTime/1000]],
-							tags: [`application:${argv.appName}`, `build:${argv.build}`, `attribute:${attr}`]
+							points: [[NOW, currentTime / 1000]],
+							tags: [
+								`application:${argv.appName}`,
+								`build:${argv.build}`,
+								`attribute:${attr}`,
+							],
 						};
 					});
 
