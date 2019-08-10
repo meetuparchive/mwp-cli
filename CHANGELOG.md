@@ -1,3 +1,11 @@
+# [12.1]
+
+- **Fixed** postcss-loader will no longer emit warnings for 'undefined' properties
+  implicitly loaded in global scope from `@meetup/swarm-constants`. Note that there
+  is a new peer dependency on that package, which is technically a breaking change,
+  but all consumers are already using that package, so it won't require anything
+  other than a dependency version bump.
+
 # [12.0]
 
 -   **BREAKING CHANGE** Build artifacts are synched through AWS S3 rather than GCS.
