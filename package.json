@@ -67,10 +67,10 @@
     "yargs": "11.0.0"
   },
   "peerDependencies": {
-    "@meetup/swarm-constants": ">0.3.3",
+    "@meetup/swarm-constants": ">=0.4.0",
     "mwp-config": "^22.3.0",
     "react-dom": "^16.8.6",
-    "swarm-constants": ">1.2.112"
+    "swarm-constants": ">=1.2.112"
   },
   "devDependencies": {
     "babel-eslint": "10.0.2",
