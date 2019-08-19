@@ -90,7 +90,8 @@ module.exports = {
 					// create a record based on the requested attributes
 					const current = getCurrentTimes();
 
-					console.log(chalk.yellow('Logging elapsed time (seconds):'));
+					const metric = `mwp.${argv.type}.time`;
+					console.log(chalk.yellow(`⏱ logging ${metric}:`));
 
 					const metrics = argv.attributes.map(attr => {
 						if (!current[attr]) {
@@ -99,20 +100,19 @@ module.exports = {
 						if (!current[attr].end) {
 							throw new Error(`${attr} not finished`);
 						}
-						const currentTime = current[attr].end - current[attr].start;
-
-						console.log(
-							chalk.yellow(`${argv.attributes}: ${currentTime / 1000}`)
-						);
+						const elapsedTime = current[attr].end - current[attr].start;
+						const value = elapsedTime / 1000;
+						const tags = [
+							`application:${argv.appName}`,
+							`build:${argv.build}`,
+							`attribute:${attr}`,
+						];
+						console.log(chalk.yellow(`${attr}: ${value}`));
 
 						return {
-							metric: `mwp.${argv.type}.time`,
-							points: [[NOW, currentTime / 1000]],
-							tags: [
-								`application:${argv.appName}`,
-								`build:${argv.build}`,
-								`attribute:${attr}`,
-							],
+							metric,
+							points: [[NOW, value]],
+							tags,
 						};
 					});
 
