@@ -1,6 +1,6 @@
 {
   "name": "mwp-cli",
-  "version": "1.0.0",
+  "version": "12.1.682-beta",
   "description": "CLI for Meetup Web Platform apps",
   "engineStrict": true,
   "engines": {
