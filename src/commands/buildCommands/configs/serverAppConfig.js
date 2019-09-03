@@ -90,11 +90,6 @@ function getConfig(localeCode, babelConfig) {
 				),
 				BUILD_LOCALE_CODE: JSON.stringify(localeCode),
 			}),
-
-			/**
-			 * @see https://github.com/FormidableLabs/webpack-stats-plugin
-			 */
-			new StatsPlugin({ fields: null }), // null means 'all fields in stats file'
 		],
 
 		target: 'node',

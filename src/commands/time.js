@@ -29,7 +29,7 @@ const logMetrics = (datadogApiKey, metrics) => {
 		if (err) {
 			throw err;
 		}
-		console.log(results);
+		console.log(`logged [${metrics.map(m => m.metric)}] to DataDog`);
 	});
 };
 
@@ -72,7 +72,6 @@ module.exports = {
 					},
 					key: {
 						describe: 'The Datadog API key',
-						demandOption: true,
 						default: process.env.DATADOG_API_KEY,
 					},
 					build: {
@@ -116,7 +115,9 @@ module.exports = {
 						};
 					});
 
-					logMetrics(argv.key, metrics);
+					if (argv.key) {
+						logMetrics(argv.key, metrics);
+					}
 				}
 			),
 };
