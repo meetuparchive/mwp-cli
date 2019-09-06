@@ -9,7 +9,6 @@ const prodPlugins = require('./prodPlugins');
 const getModuleRules = require('./rules');
 
 const legacySrcPath = path.resolve(process.cwd(), 'packages', 'mupweb-legacy', 'src');
-console.log('srcpath', legacySrcPath);
 
 /*
  * Webpack config object determined by passed-in localeCode. The language is

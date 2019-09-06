@@ -22,7 +22,7 @@ module.exports = (babelConfig, buildType) => {
 		test: /\.(ts|js)x?$/,
 		include: [
 			legacySrcPath,
-			entrySrcPath,
+			entrySrcPath, // only used for JSX in app entry modules (e.g. browser-app-entry)
 			paths.packages.webComponents.src,
 			paths.packages.mupwebPackages.lib,
 		], // need localPackages here for source maps to work
