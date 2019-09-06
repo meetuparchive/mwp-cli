@@ -7,7 +7,7 @@ const {
 } = require('./poFormatters');
 
 const PO_FILE_CONTENT = `# WP-1234
-#: src/path/to/component.trns.jsx:4:45
+#: packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45
 msgid "mockMessage.id"
 msgstr "mock translated copy"`;
 
@@ -28,7 +28,7 @@ describe('poStringToPoObj', () => {
 	});
 	it('does not return empty trn content', () => {
 		const PO_EMPTY_TRN = `# WP-1234
-#: src/path/to/component.trns.jsx:4:45
+#: packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45
 msgid "mockMessage.id"
 msgstr "" # this is intentionally empty - edge case`;
 		expect(poStringToPoObj(PO_EMPTY_TRN)).toEqual({});
@@ -43,7 +43,7 @@ describe('poObjToPoString', () => {
 msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
 
 # WP-1234
-#: src/path/to/component.trns.jsx:4:45
+#: packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45
 msgid \\"mockMessage.id\\"
 msgstr \\"mock translated copy\\"
 "
@@ -80,7 +80,7 @@ test('poStringToPoResource', () => {
 		.toMatchInlineSnapshot(`
 Object {
   "content": "# WP-1234
-#: src/path/to/component.trns.jsx:4:45
+#: packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45
 msgid \\"mockMessage.id\\"
 msgstr \\"mock translated copy\\"",
   "i18n_type": "PO",

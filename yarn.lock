@@ -327,6 +327,18 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
+"@meetup/swarm-constants@>=0.4.0":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@meetup/swarm-constants/-/swarm-constants-0.4.4.tgz#e5bb0a2610fc7f19014fe606c9e9ca41e6846f73"
+  integrity sha512-PE+znIz4oZzoGX7HgF+YAEikj0dbVDVC2m2O7ZDoIKfMc6MBTT8giydW66iXYv2XIZWiuNC5f4TWJVveMwaJDA==
+  dependencies:
+    "@meetup/swarm-icons" "^0.2.1"
+
+"@meetup/swarm-icons@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@meetup/swarm-icons/-/swarm-icons-0.2.1.tgz#69f33e9d8875ba1428287a7c69f0c0632aa17af5"
+  integrity sha512-fs8OAgPsdnwiTvpxOPQ416W8UwGRYeEnq35aHZz/A3xuL6omKSXw9SbK8jFUW5V9nh2nMZ6SpsgNOT6enHzb6g==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -7447,6 +7459,16 @@ react-dev-utils@7.0.3:
     strip-ansi "5.0.0"
     text-table "0.2.0"
 
+react-dom@^16.8.6:
+  version "16.9.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.9.0.tgz#5e65527a5e26f22ae3701131bcccaee9fb0d3962"
+  integrity sha512-YFT2rxO9hM70ewk9jq0y6sQk8cL02xm4+IzYBz75CQGlClQQ1Bxq0nhHF6OtSbit+AIahujJgb/CPRibFkMNJQ==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
+    scheduler "^0.15.0"
+
 react-error-overlay@^5.1.3:
   version "5.1.6"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.1.6.tgz#0cd73407c5d141f9638ae1e0c63e7b2bf7e9929d"
@@ -7949,6 +7971,14 @@ sax@>=0.6.0, sax@^1.2.4, sax@~1.2.4:
 scheduler@^0.13.6:
   version "0.13.6"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.6.tgz#466a4ec332467b31a91b9bf74e5347072e4cd889"
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+
+scheduler@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.15.0.tgz#6bfcf80ff850b280fed4aeecc6513bc0b4f17f8e"
+  integrity sha512-xAefmSfN6jqAa7Kuq7LIJY0bwAPG3xlCj0HMEBQk1lxYiDKZscY2xJ5U/61ZTrYbmNQbXa+gc7czPkVo11tnCg==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -8751,6 +8781,11 @@ sw-toolbox@^3.4.0:
   dependencies:
     path-to-regexp "^1.0.1"
     serviceworker-cache-polyfill "^4.0.0"
+
+swarm-constants@>=1.2.112:
+  version "2.2.122"
+  resolved "https://registry.yarnpkg.com/swarm-constants/-/swarm-constants-2.2.122.tgz#bdc7573e1f2691b8dfd3a730cdf01e5b91d8e6fc"
+  integrity sha512-yDLr2+lDzXx/F1yOX4Oo+rRqMvsz4/yeAgj5bOc8Pu5UmNAVv3+AJFSaH9DtpktoIfZcril8njLoGz5XDrggCw==
 
 symbol-observable@1.0.1:
   version "1.0.1"

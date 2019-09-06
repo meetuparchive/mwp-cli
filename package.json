@@ -73,6 +73,7 @@
     "swarm-constants": ">=1.2.112"
   },
   "devDependencies": {
+    "@meetup/swarm-constants": ">=0.4.0",
     "babel-eslint": "10.0.2",
     "babel-jest": "24.8.0",
     "eslint": "4.19.1",
@@ -82,7 +83,9 @@
     "jest": "24.8.0",
     "lint-staged": "7.0.5",
     "mwp-config": "^22.3.0",
-    "prettier": "1.18.2"
+    "prettier": "1.18.2",
+    "react-dom": "^16.8.6",
+    "swarm-constants": ">=1.2.112"
   },
   "lint-staged": {
     "{src,tests,__mocks__}/**/*.{js,jsx}": [

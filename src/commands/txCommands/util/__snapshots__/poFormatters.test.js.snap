@@ -21,7 +21,7 @@ exports[`poObjToPoString takes trn content, returns po file:
 msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
 
 # WP-1234
-#: src/path/to/component.trns.jsx:4:45
+#: packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45
 msgid \\"mockMessage.id\\"
 msgstr \\"mock translated copy\\"
 "
@@ -30,7 +30,7 @@ msgstr \\"mock translated copy\\"
 msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
 
 # WP-1234
-#: src/path/to/component.trns.jsx:4:45
+#: packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45
 msgid \\"mockMessage.id\\"
 msgstr \\"mock translated copy\\"
 "
