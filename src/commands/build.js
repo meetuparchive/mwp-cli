@@ -1,5 +1,5 @@
 module.exports = {
 	command: 'build',
-	description: 'build application rendering bundle(s)',
+	description: 'DEPRECATED: legacy system to build application rendering bundle(s)',
 	builder: yargs => yargs.commandDir('buildCommands').demandCommand(),
 };

@@ -3,7 +3,8 @@ const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const { env } = require('mwp-config');
 
-const getBrowserAppConfig = require('../buildCommands/configs/browserAppConfig');
+// TODO: FORK THIS INTO MONOREPO vs MONOLITH IMPORT - use CLI flag or separate run command?
+const getBrowserAppConfig = require('../bundleCommands/configs/browserAppConfig');
 
 // Set up webpack multicompiler - one for each localeCode specified in CLI args
 const babelConfigBrowser = require(process.argv[2]);
@@ -18,8 +19,7 @@ const options = {
 	hot: true,
 	https: env.properties.asset_server.protocol === 'https',
 	stats: 'minimal', // only log errors/warnings/completion
-	publicPath: `//${env.properties.asset_server.host}:${env.properties
-		.asset_server.port}${env.properties.asset_server.path}/`,
+	publicPath: `//${env.properties.asset_server.host}:${env.properties.asset_server.port}${env.properties.asset_server.path}/`,
 	disableHostCheck: true, // can be accessed by any network request
 	headers: {
 		'Access-Control-Allow-Origin': '*', // will respond to any host
@@ -37,7 +37,4 @@ options.publicPath = `${env.properties.asset_server.path}/combined/`;
 
 const server = new WebpackDevServer(compiler, options);
 
-server.listen(
-	env.properties.asset_server.port,
-	env.properties.asset_server.host
-);
+server.listen(env.properties.asset_server.port, env.properties.asset_server.host);
