@@ -7,8 +7,7 @@
   "author": "Meetup",
   "license": "MIT",
   "config": {
-    "txProject": "test",
-    "gaeModuleId": "default"
+    "txProject": "test"
   },
   "bin": {
     "mope": "bin/mope.js"
@@ -20,7 +19,6 @@
   "dependencies": {
     "@alrra/travis-scripts": "3.0.1",
     "@babel/core": "7.4.5",
-    "@google-cloud/storage": "2.5.0",
     "@octokit/rest": "15.9.5",
     "ajv": "6.10.0",
     "aws-sdk": "2.504.0",
