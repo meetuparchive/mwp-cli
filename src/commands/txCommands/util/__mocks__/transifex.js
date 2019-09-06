@@ -1,7 +1,7 @@
 const transifex = require.requireActual('transifex');
 
 const PO_STRING = `# WP-1234
-#: src/path/to/component.trns.jsx:4:45
+#: packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45
 msgid "mockMessage.id"
 msgstr "mock translated copy"`;
 
@@ -38,11 +38,9 @@ transifex.prototype.sourceLanguageMethods = (project, slug, cb) => {
 	cb(null, PO_STRING);
 };
 
-transifex.prototype.resourceCreateMethod = jest.fn(
-	(project, poResource, cb) => {
-		cb(null);
-	}
-);
+transifex.prototype.resourceCreateMethod = jest.fn((project, poResource, cb) => {
+	cb(null);
+});
 
 transifex.prototype.resourceDeleteMethod = jest.fn((project, slug, cb) => {
 	cb(null);

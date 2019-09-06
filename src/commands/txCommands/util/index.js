@@ -112,7 +112,12 @@ const getLocalLocaleMessages = () => {
 // returns keys which are not in main or have an updated value
 const objDiff = ([main, extracted]) =>
 	Object.keys(extracted)
-		.filter(key => !main[key] || main[key].msgstr[0] != extracted[key].msgstr[0])
+		.filter(
+			key =>
+				!main[key] ||
+				main[key].msgstr[0] != extracted[key].msgstr[0] ||
+				main[key].comments.translator != extracted[key].comments.translator
+		)
 		.reduce((obj, key) => {
 			obj[key] = extracted[key];
 			return obj;

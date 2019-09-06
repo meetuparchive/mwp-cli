@@ -2,12 +2,12 @@ jest.mock('mwp-config');
 jest.mock('glob');
 jest.mock('fs', () => ({
 	readFileSync: filename => `# WP-1234
-	#: src/path/to/${filename}.trns.jsx:1:2
+	#: packages/mupweb-legacy/src/path/to/${filename}.trns.jsx:1:2
 	msgid "mockMessage.id"
 	msgstr "mock translated copy"
 	
 	# WP-2345
-	#: src/path/to/${filename}.trns.jsx:3:4
+	#: packages/mupweb-legacy/src/path/to/${filename}.trns.jsx:3:4
 	msgid "mockMessage.id.${filename}"
 	msgstr "mock translated copy from ${filename}"`,
 	existsSync: () => true,
