@@ -2,6 +2,9 @@ const path = require('path');
 const { env, paths } = require('mwp-config');
 const postCssLoaderConfig = require('./postCssLoaderConfig.js');
 
+const srcPath = path.resolve(process.cwd(), 'packages', 'mupweb-legacy', 'src');
+const assetPath = path.resolve(srcPath, 'assets');
+
 /**
  * babelConfig is a file specified by the consumer app
  * that supplies options to babel-loader and webpack
@@ -16,8 +19,12 @@ module.exports = (babelConfig, buildType) => {
 	const browserJSRules = {
 		// standard ES5 transpile through Babel
 		test: /\.(ts|js)x?$/,
-		include: [paths.src.browser.app, paths.packages.webComponents.src, paths.packages.mupwebPackages.lib],// need localPackages here for source maps to work
-		exclude: paths.src.asset,
+		include: [
+			srcPath,
+			paths.packages.webComponents.src,
+			paths.packages.mupwebPackages.lib,
+		], // need localPackages here for source maps to work
+		exclude: assetPath,
 		use: [
 			{
 				loader: 'babel-loader',
@@ -34,8 +41,8 @@ module.exports = (babelConfig, buildType) => {
 
 	const serverJSRules = {
 		test: /\.jsx?$/,
-		include: [paths.src.server.app, paths.packages.webComponents.src],
-		exclude: paths.src.asset,
+		include: [srcPath, paths.packages.webComponents.src],
+		exclude: assetPath,
 		use: [
 			{
 				loader: 'babel-loader',
@@ -54,11 +61,7 @@ module.exports = (babelConfig, buildType) => {
 		js: jsRules,
 		scssModule: {
 			test: /\.module\.scss$/,
-			include: [
-				paths.srcPath,
-				paths.localPackages,
-				/\/node_modules\/@meetup\//,
-			],
+			include: [srcPath, paths.localPackages, /\/node_modules\/@meetup\//],
 			use: [
 				'isomorphic-style-loader',
 				{
@@ -75,7 +78,7 @@ module.exports = (babelConfig, buildType) => {
 		},
 		baseScss: {
 			test: /main\.scss$/,
-			include: [paths.srcPath],
+			include: [srcPath],
 			use: [
 				{
 					loader: 'file-loader',
@@ -93,7 +96,7 @@ module.exports = (babelConfig, buildType) => {
 			// local CSS files that may refer to other local static assets such as images
 			// that will be bundled with the application
 			test: /\.css$/,
-			include: [paths.srcPath, paths.localPackages],
+			include: [srcPath, paths.localPackages],
 			use: ['style-loader', 'css-loader'],
 		},
 		externalCss: {
