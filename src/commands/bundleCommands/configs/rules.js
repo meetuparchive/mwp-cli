@@ -2,8 +2,9 @@ const path = require('path');
 const { env, paths } = require('mwp-config');
 const postCssLoaderConfig = require('./postCssLoaderConfig.js');
 
-const srcPath = path.resolve(process.cwd(), 'packages', 'mupweb-legacy', 'src');
-const assetPath = path.resolve(srcPath, 'assets');
+const entrySrcPath = path.resolve(process.cwd(), 'src');
+const legacySrcPath = path.resolve(process.cwd(), 'packages', 'mupweb-legacy', 'src');
+const assetPath = path.resolve(legacySrcPath, 'assets');
 
 /**
  * babelConfig is a file specified by the consumer app
@@ -20,7 +21,8 @@ module.exports = (babelConfig, buildType) => {
 		// standard ES5 transpile through Babel
 		test: /\.(ts|js)x?$/,
 		include: [
-			srcPath,
+			legacySrcPath,
+			entrySrcPath,
 			paths.packages.webComponents.src,
 			paths.packages.mupwebPackages.lib,
 		], // need localPackages here for source maps to work
@@ -41,7 +43,7 @@ module.exports = (babelConfig, buildType) => {
 
 	const serverJSRules = {
 		test: /\.jsx?$/,
-		include: [srcPath, paths.packages.webComponents.src],
+		include: [legacySrcPath, entrySrcPath, paths.packages.webComponents.src],
 		exclude: assetPath,
 		use: [
 			{
@@ -61,7 +63,11 @@ module.exports = (babelConfig, buildType) => {
 		js: jsRules,
 		scssModule: {
 			test: /\.module\.scss$/,
-			include: [srcPath, paths.localPackages, /\/node_modules\/@meetup\//],
+			include: [
+				legacySrcPath,
+				paths.localPackages,
+				/\/node_modules\/@meetup\//,
+			],
 			use: [
 				'isomorphic-style-loader',
 				{
@@ -78,7 +84,7 @@ module.exports = (babelConfig, buildType) => {
 		},
 		baseScss: {
 			test: /main\.scss$/,
-			include: [srcPath],
+			include: [legacySrcPath],
 			use: [
 				{
 					loader: 'file-loader',
@@ -96,7 +102,7 @@ module.exports = (babelConfig, buildType) => {
 			// local CSS files that may refer to other local static assets such as images
 			// that will be bundled with the application
 			test: /\.css$/,
-			include: [srcPath, paths.localPackages],
+			include: [legacySrcPath, paths.localPackages],
 			use: ['style-loader', 'css-loader'],
 		},
 		externalCss: {
