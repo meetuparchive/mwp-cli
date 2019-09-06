@@ -44,71 +44,71 @@ const PO_OBJ = {
 test('resource.pullAll', () => {
 	return resource.pullAll(SLUG).then(response => {
 		expect(response).toMatchInlineSnapshot(`
-Object {
-  "mockMessage.id": Object {
-    "comments": Object {
-      "reference": "src/path/to/component.trns.jsx:4:45",
-      "translator": "WP-1234",
-    },
-    "msgid": "mockMessage.id",
-    "msgstr": Array [
-      "mock translated copy",
-    ],
-  },
-}
-`);
+		Object {
+		  "mockMessage.id": Object {
+		    "comments": Object {
+		      "reference": "packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45",
+		      "translator": "WP-1234",
+		    },
+		    "msgid": "mockMessage.id",
+		    "msgstr": Array [
+		      "mock translated copy",
+		    ],
+		  },
+		}
+	`);
 	});
 });
 
 test('resource.pullLang', () =>
 	resource.pullLang(SLUG, 'en-US').then(poObj => {
 		expect(poObj).toMatchInlineSnapshot(`
-Object {
-  "mockMessage.id": Object {
-    "comments": Object {
-      "reference": "src/path/to/component.trns.jsx:4:45",
-      "translator": "WP-1234",
-    },
-    "msgid": "mockMessage.id",
-    "msgstr": Array [
-      "mock translated copy",
-    ],
-  },
-}
-`);
+		Object {
+		  "mockMessage.id": Object {
+		    "comments": Object {
+		      "reference": "packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45",
+		      "translator": "WP-1234",
+		    },
+		    "msgid": "mockMessage.id",
+		    "msgstr": Array [
+		      "mock translated copy",
+		    ],
+		  },
+		}
+	`);
 	}));
 
 test('resource.list', () =>
 	resource.list().then(resources => {
 		expect(resources).toMatchInlineSnapshot(`
-Array [
-  "resource_1_slug",
-  "resource_2_slug",
-]
-`);
+		Array [
+		  "resource_1_slug",
+		  "resource_2_slug",
+		]
+	`);
 	}));
 
 test('resource.listComplete', () =>
 	resource.listComplete().then(resources =>
 		expect(resources).toMatchInlineSnapshot(`
-Array [
-  "resource_2_slug",
-]
-`)
+		Array [
+		  "resource_2_slug",
+		]
+	`)
 	));
 
 test('resource.listIncomplete', () =>
 	resource.listIncomplete().then(resources =>
 		expect(resources).toMatchInlineSnapshot(`
-Array [
-  Array [
-    "resource_1_slug",
-    Object {
-      "en-US": "50%",
-    },
-  ],
-]
-`)
+		Array [
+		  Array [
+		    "resource_1_slug",
+		    Object {
+		      "en-US": "50%",
+		    },
+		  ],
+		]
+	`)
 	));
 
 test('resource.updateCopy', () =>
@@ -134,17 +134,17 @@ test('resource.create', () =>
 test('project.pullAll', () =>
 	project.pullAll().then(resources =>
 		expect(resources).toMatchInlineSnapshot(`
-Object {
-  "mockMessage.id": Object {
-    "comments": Object {
-      "reference": "src/path/to/component.trns.jsx:4:45",
-      "translator": "WP-1234",
-    },
-    "msgid": "mockMessage.id",
-    "msgstr": Array [
-      "mock translated copy",
-    ],
-  },
-}
-`)
+		Object {
+		  "mockMessage.id": Object {
+		    "comments": Object {
+		      "reference": "packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45",
+		      "translator": "WP-1234",
+		    },
+		    "msgid": "mockMessage.id",
+		    "msgstr": Array [
+		      "mock translated copy",
+		    ],
+		  },
+		}
+	`)
 	));
