@@ -5,7 +5,8 @@ const chalk = require('chalk');
 const webpack = require('webpack');
 const { package: packageConfig } = require('mwp-config');
 
-const getServerAppConfig = require('../buildCommands/configs/serverAppConfig');
+// TODO: FORK THIS INTO MONOREPO vs MONOLITH IMPORT - use CLI flag or separate run command?
+const getServerAppConfig = require('../bundleCommands/configs/serverAppConfig');
 
 const ready = {
 	browserApp: false,
@@ -26,11 +27,11 @@ const replaceCwd = s => s.replace(new RegExp(`${process.cwd()}/`, 'g'), '');
 const errorLogLines = lines => [...lines.slice(0, 2), ...lines.slice(5, 7)];
 
 const killChildProcesses = () => {
-	if(wdsProcess) {
+	if (wdsProcess) {
 		wdsProcess.kill();
 	}
 
-	if(appServerProcess) {
+	if (appServerProcess) {
 		appServerProcess.kill();
 	}
 };
@@ -38,9 +39,7 @@ const killChildProcesses = () => {
 const getCompileLogger = type => (err, stats) => {
 	// handle fatal webpack errors (wrong configuration, etc.)
 	if (err) {
-		console.error(
-			chalk.red('webpack error:')
-		);
+		console.error(chalk.red('webpack error:'));
 		console.error(err);
 
 		if (!ready.browserApp) {
@@ -69,9 +68,7 @@ const getCompileLogger = type => (err, stats) => {
 		}
 
 		if (stats.hasWarnings()) {
-			console.log(
-				chalk.red('webpack compilation warning:')
-			);
+			console.log(chalk.red('webpack compilation warning:'));
 			console.info(info.warnings);
 		}
 	}
@@ -119,18 +116,30 @@ const startServer = () => {
 };
 
 function run(babelConfigServerPath, babelConfigBrowserPath) {
-	const babelConfigServerFullPath = path.resolve(process.cwd(), babelConfigServerPath);
-	const babelConfigBrowserFullPath = path.resolve(process.cwd(), babelConfigBrowserPath);
+	const babelConfigServerFullPath = path.resolve(
+		process.cwd(),
+		babelConfigServerPath
+	);
+	const babelConfigBrowserFullPath = path.resolve(
+		process.cwd(),
+		babelConfigBrowserPath
+	);
 	const babelConfigServer = require(babelConfigServerFullPath);
 
 	const scriptName = path.basename(__filename, path.extname(__filename));
-	log(chalk.blue(`${scriptName}: Preparing the Dev App Server using existing vendor bundle...`));
+	log(
+		chalk.blue(
+			`${scriptName}: Preparing the Dev App Server using existing vendor bundle...`
+		)
+	);
 
 	/**
 	 * 1. Start the Webpack Dev Server for the Browser application bundle
 	 */
 	const browserAppCompileLogger = getCompileLogger('browserApp');
-	wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'), [babelConfigBrowserFullPath]);
+	wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'), [
+		babelConfigBrowserFullPath,
+	]);
 
 	// the dev server compiler will send a message each time it completes a build
 	wdsProcess.on('message', message => {
@@ -151,7 +160,9 @@ function run(babelConfigServerPath, babelConfigBrowserPath) {
 	 * error messages whenever there is something wrong.
 	 */
 	const serverAppCompileLogger = getCompileLogger('serverApp');
-	const serverAppCompiler = webpack(getServerAppConfig('combined', babelConfigServer));
+	const serverAppCompiler = webpack(
+		getServerAppConfig('combined', babelConfigServer)
+	);
 
 	serverAppCompiler.watch(
 		{
@@ -161,10 +172,7 @@ function run(babelConfigServerPath, babelConfigBrowserPath) {
 		(err, stats) => {
 			serverAppCompileLogger(err, stats);
 
-			if (
-				stats.hasErrors() &&
-				stats.toJson().errors[0].includes('trns/app/')
-			) {
+			if (stats.hasErrors() && stats.toJson().errors[0].includes('trns/app/')) {
 				log(
 					`Try running '${chalk.yellow('yarn start:full')}'`,
 					'- if that fails, check error output for typos'
@@ -189,9 +197,8 @@ function run(babelConfigServerPath, babelConfigBrowserPath) {
 	 * 3. watch for server dep changes in order to restart
 	 */
 	fs.watchFile(`${process.cwd()}/scripts/app-server.js`, () => startServer());
-	fs.watchFile(
-		`${process.cwd()}/node_modules/mwp-app-server/lib/index.js`,
-		() => startServer()
+	fs.watchFile(`${process.cwd()}/node_modules/mwp-app-server/lib/index.js`, () =>
+		startServer()
 	);
 }
 
