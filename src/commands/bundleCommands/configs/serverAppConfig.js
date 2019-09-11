@@ -2,12 +2,13 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
-const StatsPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const { env, paths } = require('mwp-config');
 
 // Build settings
 const prodPlugins = require('./prodPlugins');
 const getModuleRules = require('./rules');
+
+const legacySrcPath = path.resolve(process.cwd(), 'packages', 'mupweb-legacy', 'src');
 
 /*
  * Webpack config object determined by passed-in localeCode. The language is
@@ -26,7 +27,7 @@ function getConfig(localeCode, babelConfig) {
 	const rules = getModuleRules(babelConfig, 'server');
 	const publicPath = `${env.properties.publicPathBase}${localeCode}/`;
 
-	const baseWebfontDir = path.resolve(paths.src.server.app, 'assets', 'fonts');
+	const baseWebfontDir = path.resolve(legacySrcPath, 'assets', 'fonts');
 	const webfontDir =
 		localeCode === 'ru-RU'
 			? path.resolve(baseWebfontDir, localeCode)
@@ -111,7 +112,7 @@ function getConfig(localeCode, babelConfig) {
 
 		resolve: {
 			alias: {
-				src: paths.src.server.app,
+				src: legacySrcPath,
 				trns: path.resolve(paths.src.trns, 'modules', localeCode),
 				webfont: webfontDir,
 			},

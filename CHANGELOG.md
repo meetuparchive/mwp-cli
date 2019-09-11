@@ -1,3 +1,8 @@
+# [13.0]
+
+-   **BREAKING CHANGE** Deprecate `mope deploy`, now we are using aws native command for deploy app.
+-   Cleanup GCS references
+
 # [12.1]
 
 - **Fixed** postcss-loader will no longer emit warnings for 'undefined' properties

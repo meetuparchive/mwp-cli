@@ -6,7 +6,7 @@ Array [
   Object {
     "mockMessage.id": Object {
       "comments": Object {
-        "reference": "src/path/to/en-US.po.trns.jsx:1:2",
+        "reference": "packages/mupweb-legacy/src/path/to/en-US.po.trns.jsx:1:2",
         "translator": "WP-1234",
       },
       "msgid": "mockMessage.id",
@@ -16,7 +16,7 @@ Array [
     },
     "mockMessage.id.en-US.po": Object {
       "comments": Object {
-        "reference": "src/path/to/en-US.po.trns.jsx:3:4",
+        "reference": "packages/mupweb-legacy/src/path/to/en-US.po.trns.jsx:3:4",
         "translator": "WP-2345",
       },
       "msgid": "mockMessage.id.en-US.po",

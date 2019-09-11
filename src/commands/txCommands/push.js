@@ -12,10 +12,7 @@ const pushSrcDiff = poData => {
 		if (Object.keys(poData).length) {
 			console.log(chalk.blue('Pushing new source content to Transifex'));
 			console.log('keys:', Object.keys(poData).join(', '));
-			console.log(
-				branchResourceExists ? 'Updating' : 'Creating',
-				'resource'
-			);
+			console.log(branchResourceExists ? 'Updating' : 'Creating', 'resource');
 			const push = branchResourceExists
 				? tfx.resource.updateSrc
 				: tfx.resource.create;

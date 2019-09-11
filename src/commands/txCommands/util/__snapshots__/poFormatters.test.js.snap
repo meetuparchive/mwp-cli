@@ -21,7 +21,7 @@ exports[`poObjToPoString takes trn content, returns po file:
 msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
 
 # WP-1234
-#: src/path/to/component.trns.jsx:4:45
+#: packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45
 msgid \\"mockMessage.id\\"
 msgstr \\"mock translated copy\\"
 "
@@ -40,7 +40,7 @@ exports[`poStringToPoObj parses PO-formatted file content into a plain JS object
 Object {
   "mockMessage.id": Object {
     "comments": Object {
-      "reference": "src/path/to/component.trns.jsx:4:45",
+      "reference": "packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45",
       "translator": "WP-1234",
     },
     "msgid": "mockMessage.id",

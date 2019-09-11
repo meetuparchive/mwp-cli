@@ -24,6 +24,10 @@ module.exports = {
 				demandOption: true,
 				describe: 'The version ID to pull',
 			},
+			serviceId: {
+				default: packageConfig.gaeModuleId,
+				describe: 'The GAE service name',
+			},
 			pollWait: {
 				default: 5000, // 5 seconds
 				describe: 'The time to wait between bundle progress checks',
@@ -41,7 +45,7 @@ module.exports = {
 		}),
 	handler: argv => {
 		const startTime = new Date();
-		const { s3Bucket, versionId, timeout, tags } = argv;
+		const { s3Bucket, serviceId, versionId, timeout, tags } = argv;
 		const expectedBundleCount = tags.length;
 		const pulledBundles = [];
 
@@ -51,7 +55,7 @@ module.exports = {
 
 		// define recursive function to poll for completed app bundles
 		const pull = () => {
-			const archiveDir = `${versionId}/`;
+			const archiveDir = `${serviceId}-${versionId}/`;
 
 			if (new Date() - startTime > timeout) {
 				throw new Error(`Timeout - ${Math.floor(timeout / 1000)}sec`);

@@ -12,8 +12,7 @@
   "author": "Meetup",
   "license": "MIT",
   "config": {
-    "txProject": "test",
-    "gaeModuleId": "default"
+    "txProject": "test"
   },
   "bin": {
     "mope": "bin/mope.js"
@@ -25,7 +24,6 @@
   "dependencies": {
     "@alrra/travis-scripts": "3.0.1",
     "@babel/core": "7.4.5",
-    "@google-cloud/storage": "2.5.0",
     "@octokit/rest": "15.9.5",
     "ajv": "6.10.0",
     "aws-sdk": "2.504.0",
@@ -40,7 +38,6 @@
     "file-loader": "1.1.11",
     "gettext-parser": "1.2.2",
     "glob": "7.1.4",
-    "googleapis": "23.0.0",
     "gunzip-maybe": "1.4.1",
     "isomorphic-style-loader": "4.0.0",
     "memoize-one": "5.0.4",
@@ -78,6 +75,7 @@
     "swarm-constants": ">=1.2.112"
   },
   "devDependencies": {
+    "@meetup/swarm-constants": ">=0.4.0",
     "babel-eslint": "10.0.2",
     "babel-jest": "24.8.0",
     "eslint": "4.19.1",
@@ -86,8 +84,10 @@
     "eslint-plugin-react": "7.14.2",
     "jest": "24.8.0",
     "lint-staged": "7.0.5",
-    "mwp-config": "22.4.3063-beta",
-    "prettier": "1.18.2"
+    "mwp-config": "22.4.3064-beta",
+    "prettier": "1.18.2",
+    "react-dom": "^16.8.6",
+    "swarm-constants": ">=1.2.112"
   },
   "lint-staged": {
     "{src,tests,__mocks__}/**/*.{js,jsx}": [
