@@ -14,7 +14,6 @@ $ mope <command> [<args>]
 ## Commands
 
 *   [build](docs/build.md)
-*   [deploy](docs/deploy.md)
 *   [run](docs/run.md)
 *   [time](docs/time.md)
 *   [tx](docs/tx.md)
