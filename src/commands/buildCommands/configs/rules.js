@@ -1,6 +1,4 @@
-const os = require('os');
 const path = require('path');
-const mkdirp = require('mkdirp');
 const { env, paths } = require('mwp-config');
 const postCssLoaderConfig = require('./postCssLoaderConfig.js');
 
@@ -14,25 +12,17 @@ const postCssLoaderConfig = require('./postCssLoaderConfig.js');
  *
  * @param buildtype string one of [browser|server]
  */
-
-// custom cache directory that can be saved between runs of CI build
-const cacheDirectory = mkdirp.sync(path.resolve(os.homedir(), '.cache/babel/'));
-
 module.exports = (babelConfig, buildType) => {
 	const browserJSRules = {
 		// standard ES5 transpile through Babel
 		test: /\.(ts|js)x?$/,
-		include: [
-			paths.src.browser.app,
-			paths.packages.webComponents.src,
-			paths.packages.mupwebPackages.lib,
-		], // need localPackages here for source maps to work
+		include: [paths.src.browser.app, paths.packages.webComponents.src, paths.packages.mupwebPackages.lib],// need localPackages here for source maps to work
 		exclude: paths.src.asset,
 		use: [
 			{
 				loader: 'babel-loader',
 				options: {
-					cacheDirectory,
+					cacheDirectory: true,
 					plugins: env.properties.isDev
 						? babelConfig.plugins.concat(['react-hot-loader/babel'])
 						: babelConfig.plugins,
@@ -50,7 +40,7 @@ module.exports = (babelConfig, buildType) => {
 			{
 				loader: 'babel-loader',
 				options: {
-					cacheDirectory,
+					cacheDirectory: true,
 					plugins: babelConfig.plugins,
 					presets: babelConfig.presets,
 				},
