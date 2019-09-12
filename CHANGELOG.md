@@ -1,8 +1,9 @@
 # [13.1]
 
--   **New feature** The babel-loader config now specifies a cache directory that
-    can be used to speed up subsequent builds: `~/.cache/babel`. To take advantage
-    of this in CI, make sure you add this directory to the CI cache, e.g. in Travis:
+-   **New feature** The babel-loader config used by `mope bundle` now specifies
+    a cache directory that can be used to speed up subsequent builds: `~/.cache/babel`.
+    To take advantage of this in CI, make sure you add this directory to the CI
+    cache, e.g. in Travis:
 
     ```yaml
     cache:
