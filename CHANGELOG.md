@@ -1,3 +1,14 @@
+# [13.1]
+
+-   **New feature** The babel-loader config now specifies a cache directory that
+    can be used to speed up subsequent builds: `~/.cache/babel`. To take advantage
+    of this in CI, make sure you add this directory to the CI cache, e.g. in Travis:
+
+    ```yaml
+    cache:
+        - $HOME/.cache/babel
+    ```
+
 # [13.0]
 
 -   **BREAKING CHANGE** Deprecate `mope deploy`, now we are using aws native command for deploy app.
@@ -5,11 +16,11 @@
 
 # [12.1]
 
-- **Fixed** postcss-loader will no longer emit warnings for 'undefined' properties
-  implicitly loaded in global scope from `@meetup/swarm-constants`. Note that there
-  is a new peer dependency on that package, which is technically a breaking change,
-  but all consumers are already using that package, so it won't require anything
-  other than a dependency version bump.
+-   **Fixed** postcss-loader will no longer emit warnings for 'undefined' properties
+    implicitly loaded in global scope from `@meetup/swarm-constants`. Note that there
+    is a new peer dependency on that package, which is technically a breaking change,
+    but all consumers are already using that package, so it won't require anything
+    other than a dependency version bump.
 
 # [12.0]
 
