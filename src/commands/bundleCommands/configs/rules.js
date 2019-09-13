@@ -1,3 +1,4 @@
+const os = require('os');
 const path = require('path');
 const { env, paths } = require('mwp-config');
 const postCssLoaderConfig = require('./postCssLoaderConfig.js');
@@ -16,6 +17,9 @@ const assetPath = path.resolve(legacySrcPath, 'assets');
  *
  * @param buildtype string one of [browser|server]
  */
+// custom cache directory that can be saved between runs of CI build
+const cacheDirectory = path.resolve(os.homedir(), '.cache/babel-loader/');
+
 module.exports = (babelConfig, buildType) => {
 	const browserJSRules = {
 		// standard ES5 transpile through Babel
@@ -31,7 +35,7 @@ module.exports = (babelConfig, buildType) => {
 			{
 				loader: 'babel-loader',
 				options: {
-					cacheDirectory: true,
+					cacheDirectory,
 					plugins: env.properties.isDev
 						? babelConfig.plugins.concat(['react-hot-loader/babel'])
 						: babelConfig.plugins,
@@ -49,7 +53,7 @@ module.exports = (babelConfig, buildType) => {
 			{
 				loader: 'babel-loader',
 				options: {
-					cacheDirectory: true,
+					cacheDirectory,
 					plugins: babelConfig.plugins,
 					presets: babelConfig.presets,
 				},
