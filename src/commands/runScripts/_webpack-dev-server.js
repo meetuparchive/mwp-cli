@@ -5,7 +5,7 @@ const { env } = require('mwp-config');
 
 // Set up webpack multicompiler - one for each localeCode specified in CLI args
 const babelConfigBrowser = require(process.argv[2]);
-const getBrowserAppConfig = process.argv[3];
+const getBrowserAppConfig = require(process.argv[3]);
 
 const compiler = webpack(getBrowserAppConfig('combined', babelConfigBrowser));
 if (process.send) {

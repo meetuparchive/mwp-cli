@@ -113,16 +113,16 @@ const startServer = () => {
 };
 
 function run(babelConfigServerPath, babelConfigBrowserPath, monorepo) {
-	let getServerAppConfig, getBrowserAppConfig;
+	let getServerAppConfig, browserAppConfig;
 
 	if (monorepo) {
 		// mup-web monorepo
 		getServerAppConfig = require('../bundleCommands/configs/serverAppConfig');
-		getBrowserAppConfig = require('../bundleCommands/configs/browserAppConfig');
+		browserAppConfig = '../bundleCommands/configs/browserAppConfig';
 	} else {
 		// pro-web monolith
 		getServerAppConfig = require('../buildCommands/configs/serverAppConfig');
-		getBrowserAppConfig = require('../buildCommands/configs/browserAppConfig');
+		browserAppConfig = '../buildCommands/configs/browserAppConfig';
 	}
 
 	const babelConfigServerFullPath = path.resolve(
@@ -148,7 +148,7 @@ function run(babelConfigServerPath, babelConfigBrowserPath, monorepo) {
 	const browserAppCompileLogger = getCompileLogger('browserApp');
 	wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'), [
 		babelConfigBrowserFullPath,
-		getBrowserAppConfig
+		browserAppConfig
 	]);
 
 	// the dev server compiler will send a message each time it completes a build
