@@ -3,11 +3,10 @@ const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const { env } = require('mwp-config');
 
-// TODO: FORK THIS INTO MONOREPO vs MONOLITH IMPORT - use CLI flag or separate run command?
-const getBrowserAppConfig = require('../bundleCommands/configs/browserAppConfig');
-
 // Set up webpack multicompiler - one for each localeCode specified in CLI args
 const babelConfigBrowser = require(process.argv[2]);
+const getBrowserAppConfig = require(process.argv[3]);
+
 const compiler = webpack(getBrowserAppConfig('combined', babelConfigBrowser));
 if (process.send) {
 	// we are in a child process. communicate with parent through `process.send`
