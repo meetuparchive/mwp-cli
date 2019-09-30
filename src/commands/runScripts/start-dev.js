@@ -122,7 +122,7 @@ function run(babelConfigServerPath, babelConfigBrowserPath, monorepo) {
 	} else {
 		// pro-web monolith
 		getServerAppConfig = require('../buildCommands/configs/serverAppConfig');
-		getBrowserAppConfig = require('../bundleCommands/configs/browserAppConfig');
+		getBrowserAppConfig = require('../buildCommands/configs/browserAppConfig');
 	}
 
 	const babelConfigServerFullPath = path.resolve(
