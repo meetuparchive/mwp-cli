@@ -5,9 +5,6 @@ const chalk = require('chalk');
 const webpack = require('webpack');
 const { package: packageConfig } = require('mwp-config');
 
-// TODO: FORK THIS INTO MONOREPO vs MONOLITH IMPORT - use CLI flag or separate run command?
-const getServerAppConfig = require('../bundleCommands/configs/serverAppConfig');
-
 const ready = {
 	browserApp: false,
 	serverApp: false,
@@ -115,7 +112,17 @@ const startServer = () => {
 	ready.appServer = true;
 };
 
-function run(babelConfigServerPath, babelConfigBrowserPath) {
+function run(babelConfigServerPath, babelConfigBrowserPath, monorepo) {
+	let getServerAppConfig;
+
+	if (monorepo) {
+		// mup-web monorepo
+		getServerAppConfig = require('../bundleCommands/configs/serverAppConfig');
+	} else {
+		// pro-web monolith
+		getServerAppConfig = require('../buildCommands/configs/serverAppConfig');
+	}
+
 	const babelConfigServerFullPath = path.resolve(
 		process.cwd(),
 		babelConfigServerPath

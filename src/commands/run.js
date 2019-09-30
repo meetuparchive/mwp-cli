@@ -16,6 +16,11 @@ module.exports = {
 			demandOption: true,
 			type: 'string'
 		});
+		yargs.option('monorepo', {
+			decription: 'client application is the mup-web monorepo',
+			type: 'boolean',
+			default: true
+		});
 	},
 	handler: argv => {
 		const { NODE_ENV } = process.env;
@@ -36,7 +41,7 @@ module.exports = {
 		}
 
 		// execute the start-dev script
-		startDev(argv.babelConfigServer, argv.babelConfigBrowser);
+		startDev(argv.babelConfigServer, argv.babelConfigBrowser, argv.monorepo);
 
 		return;
 	},
