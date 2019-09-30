@@ -117,10 +117,12 @@ function run(babelConfigServerPath, babelConfigBrowserPath, monorepo) {
 
 	if (monorepo) {
 		// mup-web monorepo
+		log(chalk.blue('Configuring for mup-web monorepo'));
 		getServerAppConfig = require('../bundleCommands/configs/serverAppConfig');
 		browserAppConfig = '../bundleCommands/configs/browserAppConfig';
 	} else {
 		// pro-web monolith
+		log(chalk.blue('Configuring for pro-web monolith'));
 		getServerAppConfig = require('../buildCommands/configs/serverAppConfig');
 		browserAppConfig = '../buildCommands/configs/browserAppConfig';
 	}
