@@ -1,5 +1,7 @@
 const yargs = require('yargs');
 
+console.log('foo')
+
 const run = () =>
 	yargs
 		.commandDir('commands') // commands are in the './commands/' dir
