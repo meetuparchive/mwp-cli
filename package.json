@@ -13,7 +13,6 @@
     "mope": "bin/mope.js"
   },
   "scripts": {
-    "precommit": "lint-staged",
     "test": "jest --coverage",
     "test:watch": "yarn test -- --watch --verbose"
   },
@@ -76,6 +75,7 @@
     "eslint-config-prettier": "6.4.0",
     "eslint-plugin-flowtype": "4.3.0",
     "eslint-plugin-react": "7.16.0",
+    "husky": "3.0.9",
     "jest": "24.8.0",
     "lint-staged": "9.4.2",
     "mwp-config": "22.4.3073",
