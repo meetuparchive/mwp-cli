@@ -6,5 +6,5 @@ module.exports = [
 		minimize: true,
 		debug: false,
 		quiet: true,
-	})
+	}),
 ];

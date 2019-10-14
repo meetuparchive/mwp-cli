@@ -98,9 +98,7 @@ const list = memoize((project = PROJECT) =>
 			)
 		)
 		.then(resourceInfo =>
-			resourceInfo
-				.sort(lastUpdateComparator)
-				.map(resource => resource['slug'])
+			resourceInfo.sort(lastUpdateComparator).map(resource => resource['slug'])
 		)
 );
 
@@ -149,9 +147,7 @@ const getTfxResourceCompletion = memoize(() =>
 
 const listIncomplete = () =>
 	getTfxResourceCompletion().then(completionTuple =>
-		completionTuple.filter(
-			([r, completion]) => Object.keys(completion).length
-		)
+		completionTuple.filter(([r, completion]) => Object.keys(completion).length)
 	);
 
 const listComplete = () =>
@@ -205,9 +201,7 @@ const exists = branch => list().then(list => list.includes(branch));
 const projectPullAll = (filter = () => true, project = PROJECT) =>
 	list()
 		// transform resource list to resource content, maintaining order
-		.then(slugs =>
-			Promise.all(slugs.filter(filter).map(slug => pullAll(slug)))
-		)
+		.then(slugs => Promise.all(slugs.filter(filter).map(slug => pullAll(slug))))
 		.then(resourcesContent =>
 			resourcesContent.reduce(
 				(acc, resourceTrns) => Object.assign(acc, resourceTrns),

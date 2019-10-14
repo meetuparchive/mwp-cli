@@ -32,9 +32,7 @@ const pullResource = slug => {
 const promiseSerial = funcs =>
 	funcs.reduce(
 		(promise, func) =>
-			promise.then(result =>
-				func().then(Array.prototype.concat.bind(result))
-			),
+			promise.then(result => func().then(Array.prototype.concat.bind(result))),
 		Promise.resolve([])
 	);
 
@@ -67,9 +65,7 @@ module.exports = {
 		console.log(chalk.magenta('Pulling all resources...'));
 
 		getProjectResourcesList()
-			.then(slugs =>
-				promiseSerial(slugs.map(makeDeferredPull(argv.commit)))
-			)
+			.then(slugs => promiseSerial(slugs.map(makeDeferredPull(argv.commit))))
 			.then(
 				() => console.log(chalk.green('All resources pulled.')),
 				err => {
