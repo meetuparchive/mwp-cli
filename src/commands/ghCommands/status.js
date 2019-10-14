@@ -45,17 +45,13 @@ module.exports = {
 			.check((argv, opts) => {
 				if (argv.commit.length < 40) {
 					throw new Error(
-						`Full 40-character SHA-1 value must be provided - recieved ${
-							argv.commit
-						}`
+						`Full 40-character SHA-1 value must be provided - recieved ${argv.commit}`
 					);
 				}
 				if (argv.repo.split('/').length !== 2) {
 					console.warn(
 						chalk.yellow(
-							`'repo' should be in the form :owner/:repo - received ${
-								argv.repo
-							}`
+							`'repo' should be in the form :owner/:repo - received ${argv.repo}`
 						)
 					);
 				}

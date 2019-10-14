@@ -16,7 +16,11 @@ module.exports = (babelConfig, buildType) => {
 	const browserJSRules = {
 		// standard ES5 transpile through Babel
 		test: /\.(ts|js)x?$/,
-		include: [paths.src.browser.app, paths.packages.webComponents.src, paths.packages.mupwebPackages.lib],// need localPackages here for source maps to work
+		include: [
+			paths.src.browser.app,
+			paths.packages.webComponents.src,
+			paths.packages.mupwebPackages.lib,
+		], // need localPackages here for source maps to work
 		exclude: paths.src.asset,
 		use: [
 			{

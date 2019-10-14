@@ -9,12 +9,9 @@ module.exports = {
 		console.log(chalk.blue('building vendor bundles...\n\n'));
 
 		webpack(vendorBundlesConfig, (err, stats) => {
-
 			// handle fatal webpack errors (wrong configuration, etc.)
 			if (err) {
-				console.error(
-					chalk.red('vendor bundle webpack error:')
-				);
+				console.error(chalk.red('vendor bundle webpack error:'));
 				console.error(err);
 				process.exit(1);
 			}
@@ -23,18 +20,14 @@ module.exports = {
 
 			// handle compilation errors (missing modules, syntax errors, etc)
 			if (stats.hasErrors()) {
-				console.log(
-					chalk.red('vendor bundle compilation error')
-				);
+				console.log(chalk.red('vendor bundle compilation error'));
 				console.error(info.errors);
 				process.exit(1);
 			}
 
 			// handle compilation warnings
 			if (stats.hasWarnings()) {
-				console.log(
-					chalk.red('vendor bundle compilation warning:')
-				);
+				console.log(chalk.red('vendor bundle compilation warning:'));
 				console.info(info.warnings);
 			}
 
