@@ -13,6 +13,7 @@
     "mope": "bin/mope.js"
   },
   "scripts": {
+    "precommit": "lint-staged",
     "test": "jest --coverage",
     "test:watch": "yarn test -- --watch --verbose"
   },
