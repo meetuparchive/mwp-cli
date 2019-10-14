@@ -150,7 +150,7 @@ function run(babelConfigServerPath, babelConfigBrowserPath, monorepo) {
 	const browserAppCompileLogger = getCompileLogger('browserApp');
 	wdsProcess = fork(path.resolve(__dirname, '_webpack-dev-server'), [
 		babelConfigBrowserFullPath,
-		browserAppConfig
+		browserAppConfig,
 	]);
 
 	// the dev server compiler will send a message each time it completes a build

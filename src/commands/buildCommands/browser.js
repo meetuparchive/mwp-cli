@@ -16,9 +16,7 @@ const {
 const getBundlePath = getRelativeBundlePath('app', paths.output.browser);
 
 const buildBrowserApp = (localeCode, babelConfig) => () => {
-	console.log(
-		chalk.blue(`building browser app (${chalk.yellow(localeCode)})...`)
-	);
+	console.log(chalk.blue(`building browser app (${chalk.yellow(localeCode)})...`));
 
 	return compile(
 		getBundlePath,
@@ -57,6 +55,8 @@ module.exports = {
 			return buildBrowserApp('combined', babelConfig)();
 		}
 
-		return promiseSerial(argv.locales.map(locale => buildBrowserApp(locale, babelConfig)));
+		return promiseSerial(
+			argv.locales.map(locale => buildBrowserApp(locale, babelConfig))
+		);
 	},
 };

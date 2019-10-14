@@ -2,7 +2,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
-const StatsPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const { env, paths } = require('mwp-config');
 
 // Build settings

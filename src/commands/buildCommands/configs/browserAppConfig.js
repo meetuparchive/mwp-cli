@@ -20,9 +20,7 @@ function injectHotReloadConfig(config) {
 	 * 		- "Option 2: Webpack Dev Server with custom server (client-side rendering only)"
 	 */
 	config.entry.app.unshift(
-		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${
-			env.properties.asset_server.port
-		}/`, // connect to HMR websocket
+		`webpack-dev-server/client?http://${env.properties.asset_server.host}:${env.properties.asset_server.port}/`, // connect to HMR websocket
 		'webpack/hot/only-dev-server' // run the dev server
 	);
 
@@ -31,7 +29,7 @@ function injectHotReloadConfig(config) {
 
 	// show HMR module filenames
 	config.optimization = {
-		namedModules: true
+		namedModules: true,
 	};
 
 	return config;
@@ -63,7 +61,7 @@ function getConfig(localeCode, babelConfig) {
 		mode: env.properties.isProd ? 'production' : 'development',
 
 		entry: {
-			app: [paths.src.browser.entry]
+			app: [paths.src.browser.entry],
 		},
 
 		output: {
@@ -75,7 +73,7 @@ function getConfig(localeCode, babelConfig) {
 				? '[name].js'
 				: '[name].[chunkhash].js',
 			hashDigestLength: 8,
-			publicPath
+			publicPath,
 		},
 
 		devtool: 'cheap-module-source-map', // similar speed to 'eval', but with proper source maps
@@ -88,20 +86,20 @@ function getConfig(localeCode, babelConfig) {
 				rules.css,
 				rules.externalCss,
 				rules.js,
-				rules.raw
-			]
+				rules.raw,
+			],
 		},
 
 		resolve: {
 			alias: {
 				src: paths.src.browser.app,
 				trns: path.resolve(paths.src.trns, 'modules', localeCode),
-				webfont: webfontDir
+				webfont: webfontDir,
 			},
 
 			// module name extensions that Webpack will try if no extension provided
 			// '*' matches imports with extensions
-			extensions: ['.js', '.jsx', '.json', '*']
+			extensions: ['.js', '.jsx', '.json', '*'],
 		},
 
 		plugins: [
@@ -115,7 +113,7 @@ function getConfig(localeCode, babelConfig) {
 				// React relies on process.env.NODE_ENV for including dev warnings,
 				// and we use it for similar purposes in application code.
 				NODE_ENV: 'development',
-				INTERCOM_APP_ID: null // only needs to be overriden if application wants Intercom config available on client and server
+				INTERCOM_APP_ID: null, // only needs to be overriden if application wants Intercom config available on client and server
 			}),
 
 			/**
@@ -126,7 +124,7 @@ function getConfig(localeCode, babelConfig) {
 				manifest: require(path.resolve(
 					paths.output.vendor,
 					'react-dll-manifest.json'
-				))
+				)),
 			}),
 
 			/**
@@ -137,7 +135,7 @@ function getConfig(localeCode, babelConfig) {
 				manifest: require(path.resolve(
 					paths.output.vendor,
 					'vendor-dll-manifest.json'
-				))
+				)),
 			}),
 
 			/**
@@ -145,16 +143,16 @@ function getConfig(localeCode, babelConfig) {
 			 */
 			new ManifestPlugin({
 				publicPath,
-				writeToFileEmit: true // emit manifest from dev-server build
+				writeToFileEmit: true, // emit manifest from dev-server build
 			}),
 
 			/**
 			 * @see https://github.com/FormidableLabs/webpack-stats-plugin
 			 */
 			new StatsPlugin({
-				fields: null // null means `all fields in stats file`
-			})
-		]
+				fields: null, // null means `all fields in stats file`
+			}),
+		],
 	};
 
 	if (env.properties.isDev) {
@@ -175,8 +173,8 @@ function getConfig(localeCode, babelConfig) {
 					/.json$/, // manifest files
 					/.jpg$/,
 					/.png$/,
-					/.mp4$/
-				]
+					/.mp4$/,
+				],
 			})
 		);
 	}

@@ -9,17 +9,17 @@ module.exports = {
 		yargs.option('babelConfigServer', {
 			description: 'path to file for babel-loader server options',
 			demandOption: true,
-			type: 'string'
+			type: 'string',
 		});
 		yargs.option('babelConfigBrowser', {
 			description: 'path to file for babel-loader browser options',
 			demandOption: true,
-			type: 'string'
+			type: 'string',
 		});
 		yargs.option('monorepo', {
 			decription: 'client application is the mup-web monorepo',
 			type: 'boolean',
-			default: true
+			default: true,
 		});
 	},
 	handler: argv => {
