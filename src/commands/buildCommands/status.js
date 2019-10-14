@@ -28,9 +28,7 @@ const getTravisApi = ({ token, repo }) => {
 					.catch(console.error),
 			// https://developer.travis-ci.com/resource/build#find
 			get: id =>
-				get(`/build/${id}`, { headers }).then(({ body }) =>
-					JSON.parse(body)
-				),
+				get(`/build/${id}`, { headers }).then(({ body }) => JSON.parse(body)),
 			latest: (repo, prNumber) => {
 				// 'latest' build of interest are _active_ builds only (started/created)
 				// need PR number for PR builds in order to filter all recent PR builds
@@ -89,8 +87,7 @@ module.exports = {
 			.options({
 				autoCancel: {
 					default: false,
-					describe:
-						'Cancel the build if a newer one started recently',
+					describe: 'Cancel the build if a newer one started recently',
 				},
 				id: {
 					default: process.env.TRAVIS_BUILD_ID,
@@ -136,9 +133,8 @@ module.exports = {
 			travisApi.build
 				.latest(repo, prNumber !== 'false' && prNumber)
 				.then(testShortInterval)
-				.then(
-					isNewer =>
-						isNewer ? travisApi.build.cancel(id) : Promise.resolve()
+				.then(isNewer =>
+					isNewer ? travisApi.build.cancel(id) : Promise.resolve()
 				)
 				.catch(console.error);
 		});

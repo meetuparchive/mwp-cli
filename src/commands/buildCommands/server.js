@@ -19,9 +19,7 @@ const {
 const getBundlePath = getRelativeBundlePath('server-app', paths.output.server);
 
 const writeServerAppBundle = (localeCode, babelConfig) => () => {
-	console.log(
-		chalk.blue(`building server app (${chalk.yellow(localeCode)})...`)
-	);
+	console.log(chalk.blue(`building server app (${chalk.yellow(localeCode)})...`));
 
 	return compile(
 		getBundlePath,
@@ -95,9 +93,9 @@ module.exports = {
 			});
 		}
 
-		return promiseSerial(argv.locales.map(locale => writeServerAppBundle(locale, babelConfig))).then(() =>
-			writeServerAppMap(argv.locales)
-		);
+		return promiseSerial(
+			argv.locales.map(locale => writeServerAppBundle(locale, babelConfig))
+		).then(() => writeServerAppMap(argv.locales));
 	},
 	writeServerAppBundle,
 	writeServerAppMap,
