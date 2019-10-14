@@ -2,7 +2,7 @@ const tar = require('tar-fs');
 const gunzip = require('gunzip-maybe');
 const chalk = require('chalk');
 
-const { locales, package: packageConfig } = require('mwp-config');
+const { locales } = require('mwp-config');
 const addLocalesOption = require('../../util/addLocalesOption');
 
 const AWS = require('aws-sdk');
