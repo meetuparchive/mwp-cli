@@ -20,6 +20,14 @@ const PO_OBJ = {
 		msgid: 'mockMessage.id',
 		msgstr: ['mock translated copy'],
 	},
+	'aMockMessage.id2': {
+		comments: {
+			reference: 'src/path/to/component.trns.jsx:5:45',
+			translator: 'WP-12345',
+		},
+		msgid: 'aMockMessage.id2',
+		msgstr: ['mock translated copy'],
+	},
 };
 
 describe('poStringToPoObj', () => {
@@ -78,21 +86,22 @@ test('msgDescriptorsToPoObj', () => {
 test('poStringToPoResource', () => {
 	expect(poStringToPoResource('WP_slug_example', PO_FILE_CONTENT))
 		.toMatchInlineSnapshot(`
-Object {
-  "content": "# WP-1234
-#: packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45
-msgid \\"mockMessage.id\\"
-msgstr \\"mock translated copy\\"",
-  "i18n_type": "PO",
-  "name": "WP_slug_example",
-  "slug": "WP_slug_example",
-}
-`);
+		Object {
+		  "content": "# WP-1234
+		#: packages/mupweb-legacy/src/path/to/component.trns.jsx:4:45
+		msgid \\"mockMessage.id\\"
+		msgstr \\"mock translated copy\\"",
+		  "i18n_type": "PO",
+		  "name": "WP_slug_example",
+		  "slug": "WP_slug_example",
+		}
+	`);
 });
 test('poObjToMsgObj', () => {
 	expect(poObjToMsgObj(PO_OBJ)).toMatchInlineSnapshot(`
-Object {
-  "mockMessage.id": "mock translated copy",
-}
-`);
+		Object {
+		  "aMockMessage.id2": "mock translated copy",
+		  "mockMessage.id": "mock translated copy",
+		}
+	`);
 });
