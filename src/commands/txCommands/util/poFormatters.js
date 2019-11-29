@@ -38,13 +38,17 @@ const poStringToPoObj = fileContent => {
 
 // take a set of PoTrn and compile a po file contents string
 const poObjToPoString = poObj => {
+	// sort the object to help make PO file output deterministic
+	const sortedPoObj = Object.keys(poObj)
+		.sort()
+		.reduce((acc, key) => ({ ...acc, [key]: poObj[key] }), {});
 	const headerWrapped = {
 		charset: 'utf-8',
 		headers: {
 			'content-type': 'text/plain; charset=utf-8',
 		},
 		translations: {
-			'': poObj,
+			'': sortedPoObj,
 		},
 	};
 	return `${gettextParser.po.compile(headerWrapped).toString()}\n`;
