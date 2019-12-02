@@ -29,6 +29,11 @@ msgstr \\"mock translated copy\\"
 "msgid \\"\\"
 msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
 
+# WP-12345
+#: src/path/to/component.trns.jsx:5:45
+msgid \\"aMockMessage.id2\\"
+msgstr \\"mock translated copy\\"
+
 # WP-1234
 #: src/path/to/component.trns.jsx:4:45
 msgid \\"mockMessage.id\\"
