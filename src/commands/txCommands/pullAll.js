@@ -58,6 +58,7 @@ module.exports = {
 				alias: 'c',
 				describe:
 					'automatically commit the downloaded translations to the current branch',
+				type: 'boolean',
 				default: false,
 			},
 		}),
