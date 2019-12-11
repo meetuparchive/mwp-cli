@@ -58,10 +58,12 @@ module.exports = {
 			project: {
 				alias: 'p',
 				default: tfx.PROJECT,
+				type: 'string',
 			},
 			all: {
 				alias: 'a',
 				default: false,
+				type: 'boolean'
 			},
 		}),
 	handler: argv => {
