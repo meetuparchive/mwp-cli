@@ -6,6 +6,9 @@ update_configs:
   - package_manager: "javascript"
     directory: "/"
     update_schedule: "live"
+    commit_message:
+      prefix: "chore"
+      include_scope: true
     allowed_updates:
     - match:
         update_type: "security"
