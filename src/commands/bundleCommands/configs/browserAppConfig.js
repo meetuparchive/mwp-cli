@@ -115,7 +115,6 @@ function getConfig(localeCode, babelConfig) {
 				// React relies on process.env.NODE_ENV for including dev warnings,
 				// and we use it for similar purposes in application code.
 				NODE_ENV: 'development',
-				INTERCOM_APP_ID: null, // only needs to be overriden if application wants Intercom config available on client and server
 			}),
 
 			/**
