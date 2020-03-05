@@ -2,6 +2,10 @@
 
 -   **Removed** Retire newrelic integration
 
+# [13.2]
+
+-   Migrate to github action as CI
+
 # [13.1]
 
 -   **New feature** The babel-loader config used by `mope bundle` now specifies

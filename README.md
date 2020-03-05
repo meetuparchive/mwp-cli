@@ -1,7 +1,7 @@
 # `mope`
 
 [![npm version](https://badge.fury.io/js/mwp-cli.svg)](https://badge.fury.io/js/mwp-cli)
-[![Build Status](https://travis-ci.org/meetup/mwp-cli.svg?branch=master)](https://travis-ci.org/meetup/mwp-cli)
+![ci](https://github.com/meetup/mwp-cli/workflows/ci/badge.svg)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=meetup/mwp-cli)](https://dependabot.com)
 
 The CLI for building apps with meetup-web-platform (internal).
