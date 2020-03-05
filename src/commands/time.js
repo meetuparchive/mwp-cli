@@ -64,7 +64,7 @@ module.exports = {
 					type: {
 						alias: 't',
 						demandOption: true,
-						describe: 'The New Relic custom event type name',
+						describe: 'Build event type name (like `DeployBuild`)',
 					},
 					attributes: {
 						describe: 'the set of attributes to send with this record',
@@ -78,10 +78,6 @@ module.exports = {
 						describe: 'The build number',
 						demandOption: false,
 						default: process.env.TRAVIS_BUILD_NUMBER,
-					},
-					appName: {
-						describe: 'The name of the app reporting data',
-						default: process.env.NEW_RELIC_APP_NAME,
 					},
 				},
 				argv => {

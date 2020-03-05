@@ -1,3 +1,7 @@
+# [14.0]
+
+-   **Removed** Retire newrelic integration
+
 # [13.2]
 
 -   Migrate to github action as CI

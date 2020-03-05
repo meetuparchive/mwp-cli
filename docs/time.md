@@ -1,19 +1,11 @@
 ## Time `mope time [start|end|track]`
 
 This utility keeps track of time values, using the file system to persist and
-aggregate data that can be sent to a third party tracker such as New Relic
-Insights
+aggregate data that can be sent to DataDog.
 
 ### Env requirements
 
-This command is currently configured to send data to
-[New Relic Insights](https://newrelic.com/insights). In general, you will want
-to supply env variables that enable API authentication, and an app name to tag
-the timing data
-
-*   `NEW_RELIC_ACCOUNT_ID` the integer ID of your New Relic account
-*   `NEW_RELIC_INSERT_KEY` the _private_ API key from New Relic
-    *   Get a new key at https://insights.newrelic.com/accounts/{ACCOUNT_ID}/manage/api_keys
+Since v6.1, the mope command starts to use datadog to track the start/stop tracking.
 
 ### Commands
 
@@ -42,12 +34,6 @@ timing data in the third party tracker. Usually TitleCase.
 ##### Option: `--attributes`
 
 _Required_. A CSV list of attributes that have been timed with `time [start|end]`.
-
-##### Option: `--appName`
-
-The name of the application to associate the record with - doesn't have to be a
-valid name, just something to 'tag' the data with. Defaults to `NEW_RELIC_APP_NAME`
-env var.
 
 ##### Conditions:
 
