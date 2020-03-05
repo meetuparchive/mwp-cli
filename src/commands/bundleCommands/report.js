@@ -19,11 +19,6 @@ module.exports = {
 	description: 'log build statistics (stats.json)',
 	builder: yargs =>
 		yargs.options({
-			application: {
-				demandOption: true,
-				default: process.env.NEW_RELIC_APP_NAME,
-				describe: 'application name that will be used to tag the data',
-			},
 			build: {
 				default: process.env.TRAVIS_BUILD_NUMBER,
 				demandOption: true,
