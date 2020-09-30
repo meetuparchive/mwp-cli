@@ -12,4 +12,5 @@ updates:
   commit-message:
     prefix: "chore"
     include: "scope"
-  open-pull-requests-limit: 30
+  # FIXME: disable the PR generation for now (need to find a good way to only generate security PRs)
+  open-pull-requests-limit: 0
