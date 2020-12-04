@@ -309,18 +309,96 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@octokit/rest@15.9.5":
-  version "15.9.5"
-  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-15.9.5.tgz#e356d202bd0b517e381f705ad77d98ccb84e0c65"
+"@octokit/auth-token@^2.4.4":
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@octokit/auth-token/-/auth-token-2.4.4.tgz#ee31c69b01d0378c12fd3ffe406030f3d94d3b56"
   dependencies:
-    before-after-hook "^1.1.0"
-    btoa-lite "^1.0.0"
-    debug "^3.1.0"
-    http-proxy-agent "^2.1.0"
-    https-proxy-agent "^2.2.0"
-    lodash "^4.17.4"
-    node-fetch "^2.1.1"
-    url-template "^2.0.8"
+    "@octokit/types" "^6.0.0"
+
+"@octokit/core@^3.2.3":
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/@octokit/core/-/core-3.2.4.tgz#5791256057a962eca972e31818f02454897fd106"
+  dependencies:
+    "@octokit/auth-token" "^2.4.4"
+    "@octokit/graphql" "^4.5.8"
+    "@octokit/request" "^5.4.12"
+    "@octokit/types" "^6.0.3"
+    before-after-hook "^2.1.0"
+    universal-user-agent "^6.0.0"
+
+"@octokit/endpoint@^6.0.1":
+  version "6.0.10"
+  resolved "https://registry.yarnpkg.com/@octokit/endpoint/-/endpoint-6.0.10.tgz#741ce1fa2f4fb77ce8ebe0c6eaf5ce63f565f8e8"
+  dependencies:
+    "@octokit/types" "^6.0.0"
+    is-plain-object "^5.0.0"
+    universal-user-agent "^6.0.0"
+
+"@octokit/graphql@^4.5.8":
+  version "4.5.8"
+  resolved "https://registry.yarnpkg.com/@octokit/graphql/-/graphql-4.5.8.tgz#d42373633c3015d0eafce64a8ce196be167fdd9b"
+  dependencies:
+    "@octokit/request" "^5.3.0"
+    "@octokit/types" "^6.0.0"
+    universal-user-agent "^6.0.0"
+
+"@octokit/openapi-types@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@octokit/openapi-types/-/openapi-types-2.0.0.tgz#6d8f8ad9db3b75a39115f5def2654df8bed39f28"
+
+"@octokit/plugin-paginate-rest@^2.6.2":
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/@octokit/plugin-paginate-rest/-/plugin-paginate-rest-2.6.2.tgz#45d13dbf5ff8aed54f1a3716b1d57fdc62720c5f"
+  dependencies:
+    "@octokit/types" "^6.0.1"
+
+"@octokit/plugin-request-log@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@octokit/plugin-request-log/-/plugin-request-log-1.0.2.tgz#394d59ec734cd2f122431fbaf05099861ece3c44"
+
+"@octokit/plugin-rest-endpoint-methods@4.3.1":
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@octokit/plugin-rest-endpoint-methods/-/plugin-rest-endpoint-methods-4.3.1.tgz#2447983f5d7fab44ce147e4ba0515838a05fb038"
+  dependencies:
+    "@octokit/types" "^6.0.3"
+    deprecation "^2.3.1"
+
+"@octokit/request-error@^2.0.0":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@octokit/request-error/-/request-error-2.0.4.tgz#07dd5c0521d2ee975201274c472a127917741262"
+  dependencies:
+    "@octokit/types" "^6.0.0"
+    deprecation "^2.0.0"
+    once "^1.4.0"
+
+"@octokit/request@^5.3.0", "@octokit/request@^5.4.12":
+  version "5.4.12"
+  resolved "https://registry.yarnpkg.com/@octokit/request/-/request-5.4.12.tgz#b04826fa934670c56b135a81447be2c1723a2ffc"
+  dependencies:
+    "@octokit/endpoint" "^6.0.1"
+    "@octokit/request-error" "^2.0.0"
+    "@octokit/types" "^6.0.3"
+    deprecation "^2.0.0"
+    is-plain-object "^5.0.0"
+    node-fetch "^2.6.1"
+    once "^1.4.0"
+    universal-user-agent "^6.0.0"
+
+"@octokit/rest@18.0.11":
+  version "18.0.11"
+  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-18.0.11.tgz#2b20eb7366ea3c11aae8e3befa29e165d0ed4e65"
+  dependencies:
+    "@octokit/core" "^3.2.3"
+    "@octokit/plugin-paginate-rest" "^2.6.2"
+    "@octokit/plugin-request-log" "^1.0.2"
+    "@octokit/plugin-rest-endpoint-methods" "4.3.1"
+
+"@octokit/types@^6.0.0", "@octokit/types@^6.0.1", "@octokit/types@^6.0.3":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-6.1.0.tgz#126197ceb802220fee920d5ea6d568c2c63365cc"
+  dependencies:
+    "@octokit/openapi-types" "^2.0.0"
+    "@types/node" ">= 8"
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
@@ -397,6 +475,10 @@
 "@types/node@*":
   version "12.7.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.12.tgz#7c6c571cc2f3f3ac4a59a5f2bd48f5bdbc8653cc"
+
+"@types/node@>= 8":
+  version "14.14.10"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.10.tgz#5958a82e41863cfc71f2307b3748e3491ba03785"
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -612,12 +694,6 @@ address@1.1.2:
 address@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/address/-/address-1.1.0.tgz#ef8e047847fcd2c5b6f50c16965f924fd99fe709"
-
-agent-base@4, agent-base@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-4.3.0.tgz#8165f01c436009bccad0b1d122f05ed770efc6ee"
-  dependencies:
-    es6-promisify "^5.0.0"
 
 aggregate-error@^3.0.0:
   version "3.0.1"
@@ -1024,9 +1100,9 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-before-after-hook@^1.1.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/before-after-hook/-/before-after-hook-1.4.0.tgz#2b6bf23dca4f32e628fd2747c10a37c74a4b484d"
+before-after-hook@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/before-after-hook/-/before-after-hook-2.1.0.tgz#b6c03487f44e24200dd30ca5e6a1979c5d2fb635"
 
 big.js@^5.2.2:
   version "5.2.2"
@@ -1243,10 +1319,6 @@ bser@^2.0.0:
   resolved "https://registry.yarnpkg.com/bser/-/bser-2.0.0.tgz#9ac78d3ed5d915804fd87acb158bc797147a1719"
   dependencies:
     node-int64 "^0.4.0"
-
-btoa-lite@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/btoa-lite/-/btoa-lite-1.0.0.tgz#337766da15801210fdd956c22e9c6891ab9d0337"
 
 buffer-from@^1.0.0:
   version "1.1.1"
@@ -2234,6 +2306,10 @@ depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
 
+deprecation@^2.0.0, deprecation@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/deprecation/-/deprecation-2.3.1.tgz#6368cbdb40abf3373b525ac87e4a260c3a700919"
+
 des.js@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/des.js/-/des.js-1.0.0.tgz#c074d2e2aa6a8a9a07dbd61f9a15c2cd83ec8ecc"
@@ -2521,15 +2597,9 @@ es6-iterator@~2.0.3:
     es5-ext "^0.10.35"
     es6-symbol "^3.1.1"
 
-es6-promise@^4.0.3, es6-promise@^4.0.5:
+es6-promise@^4.0.5:
   version "4.2.8"
   resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.2.8.tgz#4eb21594c972bc40553d276e510539143db53e0a"
-
-es6-promisify@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/es6-promisify/-/es6-promisify-5.0.0.tgz#5109d62f3e56ea967c4b63505aef08291c8a5203"
-  dependencies:
-    es6-promise "^4.0.3"
 
 es6-symbol@^3.1.1, es6-symbol@~3.1.1:
   version "3.1.1"
@@ -3746,13 +3816,6 @@ http-parser-js@>=0.4.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/http-parser-js/-/http-parser-js-0.5.0.tgz#d65edbede84349d0dc30320815a15d39cc3cbbd8"
 
-http-proxy-agent@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/http-proxy-agent/-/http-proxy-agent-2.1.0.tgz#e4821beef5b2142a2026bd73926fe537631c5405"
-  dependencies:
-    agent-base "4"
-    debug "3.1.0"
-
 http-proxy-middleware@~0.18.0:
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-0.18.0.tgz#0987e6bb5a5606e5a69168d8f967a87f15dd8aab"
@@ -3781,13 +3844,6 @@ http-signature@~1.2.0:
 https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
-
-https-proxy-agent@^2.2.0:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-2.2.4.tgz#4ee7a737abd92678a293d9b34a1af4d0d08c787b"
-  dependencies:
-    agent-base "^4.3.0"
-    debug "^3.1.0"
 
 husky@3.0.9:
   version "3.0.9"
@@ -4294,6 +4350,10 @@ is-plain-object@^2.0.1, is-plain-object@^2.0.3, is-plain-object@^2.0.4:
   resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-2.0.4.tgz#2c163b3fafb1b606d9d17928f05c2a1c38e07677"
   dependencies:
     isobject "^3.0.1"
+
+is-plain-object@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-5.0.0.tgz#4427f50ab3429e9025ea7d52e9043a9ef4159344"
 
 is-posix-bracket@^0.1.0:
   version "0.1.1"
@@ -5679,7 +5739,7 @@ nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
 
-node-fetch@^2.1.1:
+node-fetch@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
 
@@ -9024,6 +9084,10 @@ unist-util-visit@^1.1.0:
   dependencies:
     unist-util-visit-parents "^2.0.0"
 
+universal-user-agent@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/universal-user-agent/-/universal-user-agent-6.0.0.tgz#3381f8503b251c0d9cd21bc1de939ec9df5480ee"
+
 universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
@@ -9096,10 +9160,6 @@ url-parse@^1.4.3:
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
-
-url-template@^2.0.8:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/url-template/-/url-template-2.0.8.tgz#fc565a3cccbff7730c775f5641f9555791439f21"
 
 url@0.10.3:
   version "0.10.3"
