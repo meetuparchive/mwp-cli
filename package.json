@@ -19,7 +19,7 @@
   "dependencies": {
     "@babel/core": "7.4.5",
     "@octokit/rest": "15.9.5",
-    "aws-sdk": "2.504.0",
+    "aws-sdk": "2.849.0",
     "babel-loader": "8.0.6",
     "babel-plugin-react-intl": "3.3.3",
     "chalk": "2.4.2",
