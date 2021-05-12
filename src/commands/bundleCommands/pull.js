@@ -33,7 +33,7 @@ module.exports = {
 				describe: 'The time to wait between bundle progress checks',
 			},
 			timeout: {
-				default: 30 * 60 * 1000,
+				default: 60 * 60 * 1000,
 				describe: 'Time to wait for bundles to become available for pull',
 			},
 			tags: {
