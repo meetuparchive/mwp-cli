@@ -429,15 +429,15 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
-"@meetup/swarm-constants@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@meetup/swarm-constants/-/swarm-constants-0.7.0.tgz#70040df1adb0d67c1606b51b042984adafcb7f8f"
+"@meetup/swarm-constants@0.9.11":
+  version "0.9.11"
+  resolved "https://registry.yarnpkg.com/@meetup/swarm-constants/-/swarm-constants-0.9.11.tgz#ae297b5fcbb61d42a02ac16fcb1351c3d1bddc78"
   dependencies:
-    "@meetup/swarm-icons" "^0.3.0"
+    "@meetup/swarm-icons" "^0.6.0"
 
-"@meetup/swarm-icons@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@meetup/swarm-icons/-/swarm-icons-0.3.0.tgz#1b60e677e78fb9479d9f181ebd4c6beb0c940600"
+"@meetup/swarm-icons@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@meetup/swarm-icons/-/swarm-icons-0.6.0.tgz#6c975ea002f4bc60677589fd137734a4a6e71004"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
