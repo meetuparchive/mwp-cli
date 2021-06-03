@@ -67,7 +67,7 @@
     "swarm-constants": ">=2.2.122"
   },
   "devDependencies": {
-    "@meetup/swarm-constants": "0.7.0",
+    "@meetup/swarm-constants": "0.9.11",
     "babel-eslint": "10.0.2",
     "babel-jest": "24.8.0",
     "eslint": "6.5.1",
