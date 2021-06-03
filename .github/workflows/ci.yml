@@ -34,7 +34,7 @@ jobs:
         env:
           CI: true
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Release beta
+      - name: Release ${{ github.run_number }}-beta
         if: github.event_name == 'pull_request'
         run: |
           export GIT_TAG=$(make version)-beta
@@ -46,7 +46,7 @@ jobs:
         env:
           CI_BUILD_NUMBER: ${{ github.run_number }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Release latest
+      - name: Release ${{ github.run_number }}
         if: github.ref == 'refs/heads/master'
         run: |
           export GIT_TAG=$(make version)
