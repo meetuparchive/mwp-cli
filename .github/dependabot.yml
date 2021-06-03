@@ -12,6 +12,9 @@ updates:
   commit-message:
     prefix: "chore"
     include: "scope"
+  ignore:
+    # aws-sdk upgrades too often, do this manually
+    - dependency-name: aws-sdk
   # FIXME: disable the PR generation for now (need to find a good way to only generate security PRs)
   open-pull-requests-limit: 10
 
