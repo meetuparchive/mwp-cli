@@ -8,9 +8,18 @@ updates:
 - package-ecosystem: npm
   directory: "/"
   schedule:
-    interval: daily
+    interval: "daily"
   commit-message:
     prefix: "chore"
     include: "scope"
   # FIXME: disable the PR generation for now (need to find a good way to only generate security PRs)
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 10
+
+# Maintain dependencies for GitHub Actions
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "daily"
+  commit-message:
+    prefix: "chore"
+    include: "scope"
