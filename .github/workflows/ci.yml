@@ -36,25 +36,33 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Release ${{ github.run_number }}-beta
         if: github.event_name == 'pull_request'
-        run: |
-          export GIT_TAG=$(make version)-beta
-          export NPM_TAG=beta
-          git config --global user.email "revenue-guardians@meetup.com"
-          git config --global user.name "meetcvs"
-          npm version $GIT_TAG -m "Version $GIT_TAG built by Github action"
-          npm publish --tag $NPM_TAG
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 2
+          max_attempts: 3
+          command: |
+            export GIT_TAG=$(make version)-beta
+            export NPM_TAG=beta
+            git config --global user.email "revenue-guardians@meetup.com"
+            git config --global user.name "meetcvs"
+            npm version $GIT_TAG -m "Version $GIT_TAG built by Github action"
+            npm publish --tag $NPM_TAG
         env:
           CI_BUILD_NUMBER: ${{ github.run_number }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Release ${{ github.run_number }}
         if: github.ref == 'refs/heads/master'
-        run: |
-          export GIT_TAG=$(make version)
-          export NPM_TAG=latest
-          git config --global user.email "revenue-guardians@meetup.com"
-          git config --global user.name "meetcvs"
-          npm version $GIT_TAG -m "Version $GIT_TAG built by Github action"
-          npm publish --tag $NPM_TAG
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 2
+          max_attempts: 3
+          command: |
+            export GIT_TAG=$(make version)
+            export NPM_TAG=latest
+            git config --global user.email "revenue-guardians@meetup.com"
+            git config --global user.name "meetcvs"
+            npm version $GIT_TAG -m "Version $GIT_TAG built by Github action"
+            npm publish --tag $NPM_TAG
         env:
           CI_BUILD_NUMBER: ${{ github.run_number }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
