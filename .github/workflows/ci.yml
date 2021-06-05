@@ -36,7 +36,11 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Release ${{ github.run_number }}-beta
         if: github.event_name == 'pull_request'
-        run: |
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 2
+          max_attempts: 3
+          command: |
           export GIT_TAG=$(make version)-beta
           export NPM_TAG=beta
           git config --global user.email "revenue-guardians@meetup.com"
@@ -48,7 +52,11 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Release ${{ github.run_number }}
         if: github.ref == 'refs/heads/master'
-        run: |
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 2
+          max_attempts: 3
+          command: |
           export GIT_TAG=$(make version)
           export NPM_TAG=latest
           git config --global user.email "revenue-guardians@meetup.com"
