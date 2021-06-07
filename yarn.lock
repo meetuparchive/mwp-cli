@@ -7587,13 +7587,13 @@ postcss-convert-values@^4.0.1:
     postcss "^7.0.0"
     postcss-value-parser "^3.0.0"
 
-postcss-css-variables@0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/postcss-css-variables/-/postcss-css-variables-0.18.0.tgz#d97b6da19e86245eb817006e11117382f997bb93"
+postcss-css-variables@0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/postcss-css-variables/-/postcss-css-variables-0.13.0.tgz#42adcec7e963020801b106b6452d6a3e9c24bc87"
   dependencies:
-    balanced-match "^1.0.0"
     escape-string-regexp "^1.0.3"
     extend "^3.0.1"
+    postcss "^6.0.8"
 
 postcss-custom-media@^7.0.8:
   version "7.0.8"
