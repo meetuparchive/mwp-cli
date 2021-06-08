@@ -33,7 +33,7 @@
     "gunzip-maybe": "1.4.1",
     "isomorphic-style-loader": "4.0.0",
     "memoize-one": "5.1.1",
-    "mkdirp": "0.5.1",
+    "mkdirp": "1.0.4",
     "node-sass": "4.13.1",
     "postcss": "8.3.0",
     "postcss-css-variables": "0.13.0",
