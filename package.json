@@ -79,7 +79,7 @@
     "lint-staged": "9.4.2",
     "mwp-config": "22.4.3073",
     "prettier": "1.18.2",
-    "react-dom": "16.8.6",
+    "react-dom": "16.13.0",
     "swarm-constants": "2.2.122"
   },
   "lint-staged": {
