@@ -85,7 +85,7 @@ const poObjToPoString = poObj => {
  */
 const msgDescriptorsToPoObj = messages =>
 	messages.reduce((acc, msg) => {
-		const { text, ...otherDesc } = msg.description;
+		const { text = '', ...otherDesc } = (msg && msg.description) || {};
 
 		acc[msg.id] = {
 			msgid: msg.id,
