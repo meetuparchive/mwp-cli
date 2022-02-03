@@ -83,6 +83,22 @@ test('msgDescriptorsToPoObj', () => {
 	const output = msgDescriptorsToPoObj(msgDescriptors);
 	expect(output).toMatchSnapshot();
 });
+test('msgDescriptorsToPoObj no description', () => {
+	// output of react-intl babel plugin
+	const msgDescriptors = [
+		{
+			id: 'msg.mock.id',
+			file: '/src/path/to/source/file.jsx',
+			defaultMessage: 'test defaultMessage',
+			start: {
+				line: 10,
+				column: 11,
+			},
+		},
+	];
+	const output = msgDescriptorsToPoObj(msgDescriptors);
+	expect(output).toMatchSnapshot();
+});
 test('poStringToPoResource', () => {
 	expect(poStringToPoResource('WP_slug_example', PO_FILE_CONTENT))
 		.toMatchInlineSnapshot(`

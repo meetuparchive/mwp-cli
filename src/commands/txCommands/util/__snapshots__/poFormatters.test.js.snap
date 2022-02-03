@@ -16,6 +16,22 @@ Object {
 }
 `;
 
+exports[`msgDescriptorsToPoObj no description 1`] = `
+Object {
+  "msg.mock.id": Object {
+    "comments": Object {
+      "extracted": undefined,
+      "reference": "/src/path/to/source/file.jsx:10:11",
+      "translator": "",
+    },
+    "msgid": "msg.mock.id",
+    "msgstr": Array [
+      "test defaultMessage",
+    ],
+  },
+}
+`;
+
 exports[`poObjToPoString takes trn content, returns po file: 
 "msgid \\"\\"
 msgstr \\"Content-Type: text/plain; charset=utf-8\\\\n\\"
