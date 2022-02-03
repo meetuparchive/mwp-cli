@@ -20,7 +20,7 @@ exports[`msgDescriptorsToPoObj no description 1`] = `
 Object {
   "msg.mock.id": Object {
     "comments": Object {
-      "extracted": "",
+      "extracted": undefined,
       "reference": "/src/path/to/source/file.jsx:10:11",
       "translator": "",
     },
