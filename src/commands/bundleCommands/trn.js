@@ -6,6 +6,7 @@ const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 
 const { paths, locales, package: packageConfig } = require('mwp-config');
+
 const { getLocalLocaleMessages, extractTrnSource } = require('../txCommands/util');
 
 const MODULES_PATH = path.resolve(paths.repoRoot, 'src/trns/modules/');

@@ -116,10 +116,52 @@ const poObjToMsgObj = trns =>
 		return acc;
 	}, {});
 
+const resourceStringToPoObj = resourceString => ({
+	[resourceString.attributes.key]: {
+		msgid: resourceString.attributes.key,
+		comments: {
+			translator: resourceString.attributes.developer_comment,
+			reference: resourceString.attributes.occurrences,
+		},
+		msgstr: [resourceString.attributes.strings.other],
+	},
+});
+
+const resourceStringsToPoObj = (data, source = {}) => {
+	return data.reduce((acc, item) => {
+		return {
+			...acc,
+			...resourceStringToPoObj(item),
+		};
+	}, source);
+};
+
+const resourceTranslationsToPoObj = (response, source) =>
+	response.included.reduce((acc, inc, i) => {
+		const translatedStrings = response.data[i].attributes.strings;
+		return {
+			...acc,
+			[inc.attributes.key]: {
+				msgid: inc.attributes.key,
+				comments: {
+					translator: inc.attributes.developer_comment,
+					reference: inc.attributes.occurrences,
+				},
+				msgstr: [
+					translatedStrings
+						? translatedStrings.other
+						: inc.attributes.strings.other,
+				],
+			},
+		};
+	}, source);
+
 module.exports = {
 	poStringToPoObj,
 	poObjToPoString,
 	poObjToMsgObj,
 	poStringToPoResource,
 	msgDescriptorsToPoObj,
+	resourceStringsToPoObj,
+	resourceTranslationsToPoObj,
 };
