@@ -1,3 +1,9 @@
+# [14.1]
+
+- Adds utilities to use Transifex api v3 for pull, pullAll, push commands. Introduces temporary --v3 argument
+  --version3, --v3 Use Transifex v3 under the hood [boolean] [default: false]
+  to specify that new utilities should be used.
+
 # [14.0]
 
 -   **Removed** Retire newrelic integration
