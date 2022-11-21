@@ -34,7 +34,7 @@
     "isomorphic-style-loader": "4.0.0",
     "memoize-one": "5.1.1",
     "mkdirp": "0.5.1",
-    "node-fetch": "2.6.1",
+    "node-fetch": "2.6.7",
     "node-sass": "4.13.1",
     "postcss": "8.3.0",
     "postcss-css-variables": "0.13.0",
