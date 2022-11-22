@@ -90,6 +90,8 @@ const TransifexApi = (function(options = {}) {
 	const uploadsResourceStrings = (resource, poObjectContent) => {
 		const url = `${API}/resource_strings_async_uploads`;
 		const content = poFormatters.poObjToPoString(poObjectContent);
+		const resourceId = `o:${organization}:p:${project}:r:${resource}`;
+		console.log(`Updating resource with id: ${resourceId}`);
 
 		return fetch(url, {
 			method: 'POST',
@@ -109,7 +111,7 @@ const TransifexApi = (function(options = {}) {
 					relationships: {
 						resource: {
 							data: {
-								id: `o:${organization}:p:${project}:r:${resource}`,
+								id: resourceId,
 								type: 'resources',
 							},
 						},

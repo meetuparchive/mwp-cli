@@ -7,7 +7,6 @@ const memoize = require('memoize-one');
 const { paths } = require('mwp-config');
 const poFormatters = require('./poFormatters');
 const tfx = require('./transifex');
-const { logSuccess, logError } = require('./logger');
 const { TransifexApi } = require('./transifexApi');
 
 const PO_DIR = path.resolve(paths.repoRoot, 'src/trns/po/');
@@ -138,14 +137,22 @@ const trnSrcDiffVerbose = (master, content) =>
 		});
 
 // Helper to update tx resource with all local trns
-const updateAllSrc = (slug, project) => {
+const updateAllSrc = slug => {
 	const allPoContent = getLocalTrnSourcePo(); // from JSX, in PO format
-	return TransifexApi.uploadsResourceStrings(slug, allPoContent)
-		.then(updateResult => [slug, updateResult])
-		.then(
-			logSuccess(`Update ${project}/${slug} success`),
-			logError(`ERROR: update failed for ${project}/${slug}`)
-		);
+	return TransifexApi.uploadsResourceStrings(slug, allPoContent).then(r => {
+		if (r.errors) {
+			console.error(`Current upload errors: `, r.errors);
+			return;
+		}
+		console.log(`Link to check async upload: ${r.data.links.self}`);
+		console.log(`Current upload status: ${r.data.attributes.status}`);
+
+		if (r.data.attributes.errors.length) {
+			console.error(`Current upload errors: ${r.data.attributes.errors}`);
+		}
+
+		return r;
+	});
 };
 
 // convenience function for updating project's master resource
