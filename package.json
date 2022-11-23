@@ -32,7 +32,7 @@
     "glob": "7.1.7",
     "gunzip-maybe": "1.4.1",
     "isomorphic-style-loader": "4.0.0",
-    "memoize-one": "5.1.1",
+    "memoize-one": "6.0.0",
     "mkdirp": "0.5.1",
     "node-fetch": "2.6.1",
     "node-sass": "4.13.1",
