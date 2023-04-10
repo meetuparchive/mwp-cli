@@ -2,23 +2,23 @@ name: ci
 
 on:
   push:
-    branches: master
+    branches: main
   pull_request:
-    branches: master
+    branches: main
 
 jobs:
   build_publish:
     name: Build and publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '10'
           check-latest: true
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
       - uses: actions/cache@v2
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
@@ -51,7 +51,7 @@ jobs:
           CI_BUILD_NUMBER: ${{ github.run_number }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Release ${{ github.run_number }}
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: nick-invision/retry@v2
         with:
           timeout_minutes: 2
