@@ -29,12 +29,14 @@ jobs:
       - name: Run build
         run: |
           yarn install --frozen-lockfile
+
       - name: Prep to publish
         run: npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
         env:
           CI: true
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Release ${{ github.run_number }}-beta
+
+      - name: Beta release
         if: github.event_name == 'pull_request'
         uses: nick-invision/retry@v2
         with:
@@ -50,7 +52,8 @@ jobs:
         env:
           CI_BUILD_NUMBER: ${{ github.run_number }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Release ${{ github.run_number }}
+
+      - name: Stable release
         if: github.ref == 'refs/heads/main'
         uses: nick-invision/retry@v2
         with:
