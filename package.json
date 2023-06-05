@@ -28,7 +28,7 @@
     "dogapi": "2.8.3",
     "extract-loader": "2.0.1",
     "file-loader": "1.1.11",
-    "gettext-parser": "1.2.2",
+    "gettext-parser": "7.0.1",
     "glob": "7.1.7",
     "gunzip-maybe": "1.4.1",
     "isomorphic-style-loader": "4.0.0",
