@@ -17,7 +17,7 @@
     "test:watch": "yarn test -- --watch --verbose"
   },
   "dependencies": {
-    "@babel/core": "7.4.5",
+    "@babel/core": "7.22.9",
     "@octokit/rest": "15.9.5",
     "aws-sdk": "2.920.0",
     "babel-loader": "8.2.2",
