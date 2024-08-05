@@ -38,7 +38,7 @@ jobs:
 
       - name: Beta release
         if: github.event_name == 'pull_request'
-        uses: nick-invision/retry@v2
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 2
           max_attempts: 3
@@ -55,7 +55,7 @@ jobs:
 
       - name: Stable release
         if: github.ref == 'refs/heads/main'
-        uses: nick-invision/retry@v2
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 2
           max_attempts: 3
